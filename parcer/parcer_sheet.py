@@ -5,7 +5,6 @@
 """
 
 import gspread
-import numpy as np
 import pandas as pd
 
 sa = gspread.service_account(filename='service_account.json')
