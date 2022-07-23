@@ -36,12 +36,3 @@ def get_dish(sheet=work_sheet, cat='Бургеры'):
     del dt['Категория']
 
     return dt.to_dict(orient='split')['data'][1]
-
-
-
-
-
-
-
-
-
