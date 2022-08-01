@@ -1,12 +1,9 @@
-"""
-1.Получить список ресторнов - есть
-2.Получить категории меню/блюд - есть
-3.Получить блюда категории
-"""
+
 
 import gspread
-import numpy as np
 import pandas as pd
+import requests
+import shutil
 
 sa = gspread.service_account(filename='service_account.json')
 
@@ -26,17 +23,28 @@ def get_markets(sheets=work_sheets):
 
 
 def get_market_categories(sheet=work_sheet):
-    dataframe = pd.DataFrame(work_sheet.get_all_records())
+    dataframe = pd.DataFrame(sheet.get_all_records())
     return dataframe['Категория'].unique().tolist()
 
 
 def get_dish(sheet=work_sheet, cat='Бургеры'):
-    df = pd.DataFrame(work_sheet.get_all_records())
-    dt = df.loc[df['Категория'] == cat]
+    df = pd.DataFrame(sheet.get_all_records())
+    dt = df.loc[df['Категория'] == cat].loc[df['стоп-лист'] == 'FALSE']
     del dt['Категория']
+    del df['стоп-лист']
 
-    return dt.to_dict(orient='split')['data'][1]
+    return dt.to_dict(orient='split')['data']
 
+
+def load_img(img_url):
+    file_name = 'menu_img.jpg'
+    res = requests.get(img_url, stream=True)
+    if res.status_code == 200:
+        with open(file_name, 'wb') as f:
+            shutil.copyfileobj(res.raw, f)
+        return res.content
+    else:
+        print('Image Couldn\'t be retrieved')
 
 
 
