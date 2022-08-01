@@ -49,7 +49,7 @@ def load_img(img_url):
 
 
 
-'111111111'
+
 
 
 
