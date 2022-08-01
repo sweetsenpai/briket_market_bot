@@ -168,3 +168,174 @@ paths:
       responses:
         200:
           description: Successfully deleted a customer
+  /residents:
+      get:
+        operationId: briket_DB.residents.read_all
+        tags:
+          - Residents
+        summary: 'Read the entire set of residents, sorted by id'
+        description: 'Read the entire set of residents, sorted by id'
+        responses:
+          '200':
+            description: Successful read customers set operation
+            schema:
+              type: array
+              items:
+                properties:
+                  resident_id :
+                    type: integer
+                  resident_name:
+                    type: string
+                  chat_id:
+                    type: integer
+                  resident_addres:
+                    type: string
+                  resident_phone:
+                    type: string
+                  resident_email:
+                    type: string
+
+      post:
+        operationId: briket_DB.residents.create
+        tags:
+          - Residents
+        summary: 'Create a resident'
+        description: 'Create a resident'
+        parameters:
+          - name: resident
+            in: body
+            description: Resident to create
+            required: True
+            schema:
+              type: object
+              properties:
+                resident_name:
+                  type: string
+                  description: Name of resident
+                chat_id:
+                  type: integer
+                  description: User id
+                resident_addres:
+                  type: string
+                  description: Resident addres
+                resident_phone:
+                  type: string
+                  description: Resident contact number
+                resident_email:
+                  type: string
+                  description: Resident contact email
+        responses:
+          201:
+            description: Successfully created resident
+            schema:
+              properties:
+                resident_id:
+                  type: integer
+                  description: ID
+                resident_name:
+                  type: string
+                  description: Name of resident
+                chat_id:
+                  type: integer
+                  description: User id
+                resident_addres:
+                  type: string
+                  description: Resident addres
+                resident_phone:
+                  type: string
+                  description: Resident contact number
+                resident_email:
+                  type: string
+                  description: Resident contact email
+  /residents/{resident_id}:
+    get:
+      operationId: briket_DB.residents.read_one
+      tags:
+        - Residents
+      summary: 'Read one residents'
+      description: 'Read one residents'
+      parameters:
+        - name: resident_id
+          in: path
+          description: Id of the resident to get
+          type: integer
+          required: True
+      responses:
+        '200':
+          description: Successful read one resident
+          schema:
+            type: object
+            items:
+              properties:
+                resident_id:
+                  type: integer
+                resident_name:
+                  type: string
+                chat_id:
+                  type: integer
+                resident_addres:
+                  type: string
+                resident_phone:
+                  type: string
+                resident_email:
+                  type: string
+    put:
+      operationId: briket_DB.residents.update
+      tags:
+        - Residents
+      summary: Update a resident
+      description: Update a resident
+      parameters:
+        - name: resident_id
+          in: path
+          description: Id of a resident
+          type: integer
+          required: True
+
+        - name: resident
+          in: body
+          schema:
+            type: object
+            properties:
+              resident_name:
+                type: string
+              chat_id:
+                type: integer
+              resident_addres:
+                type: string
+              resident_phone:
+                type: string
+              resident_email:
+                type: string
+      responses:
+        200:
+          description: Successfully updated resident
+          schema:
+            properties:
+              resident_id:
+                type: integer
+              resident_name:
+                type: string
+              chat_id:
+                type: integer
+              resident_addres:
+                type: string
+              resident_phone:
+                type: string
+              resident_email:
+                type: string
+    delete:
+      operationId: briket_DB.residents.delete
+      tags:
+        - Residents
+      summary: Delete a resident by ID
+      description: Delete a resident
+      parameters:
+        - name: resident_id
+          in: path
+          type: integer
+          description: Id of the resident to delete
+          required: True
+      responses:
+        200:
+          description: Successfully deleted a resident

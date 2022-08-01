@@ -1,7 +1,6 @@
 from flask import make_response, abort, jsonify
 from briket_DB.config import db
-from briket_DB.customer_model import Customer, CustomerSchema
-import json
+from briket_DB.models import Customer, CustomerSchema
 
 
 def read_all():
@@ -46,19 +45,11 @@ def update(customer_id, customer):
     phone = customer.get('phone')
     addres = customer.get('addres')
     disc_status = customer.get('disc_status')
-    existing_customer = Customer.query.filter(Customer.phone == phone).filter(Customer.chat_id == chat_id).one_or_none()
 
     if update_customer is None:
         abort(
             404,
             "Customer not found for id {}".format(customer_id)
-        )
-    elif (
-      existing_customer is not None and existing_customer.customer_id != customer_id
-    ):
-        abort(
-            409,
-            "Customer with chat_id {} and phone {}".format(chat_id, phone)
         )
     else:
         schema = CustomerSchema()
