@@ -1,6 +1,6 @@
 import os
-from config import db
-from models import Customer, Resident
+from briket_DB.config import db
+from briket_DB.models import Customer, Resident
 
 RESIDENTS = [{
     "resident_name": 'KFC',
@@ -10,12 +10,20 @@ RESIDENTS = [{
     "resident_email": 'kfc@gmail.com'
 },
     {
-        "resident_name": 'Macdonalds',
+        "resident_name": 'Вкусно и точка',
         "chat_id": 1488,
         "resident_addres": 'New-York',
         "resident_phone": '+78123744444',
         "resident_email": 'macdonalds@bk.ru'
-    }]
+    },
+    {
+        "resident_name": 'Burger King',
+        "chat_id": 1222,
+        "resident_addres": 'OMSK',
+        "resident_phone": '+71111111',
+        "resident_email": 'bk@bk.ru'
+    }
+]
 
 CUSTOMER = [
     {'chat_id': 1, 'phone': '+79118468177', 'addres': 'SPB', 'disc_status': True},

@@ -52,4 +52,3 @@ def load_img(img_url):
 
 
 
-
