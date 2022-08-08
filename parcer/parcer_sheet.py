@@ -33,7 +33,7 @@ def get_dish(sheet=work_sheet, cat='Бургеры'):
     del dt['Категория']
     del df['стоп-лист']
 
-    return dt.to_dict(orient='split')['data']
+    return dt.to_dict(orient='split')['data'], sheet
 
 
 def load_img(img_url):
