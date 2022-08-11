@@ -26,7 +26,7 @@ test_order3 = [{'resident': 'Бургер Кинг', 'category': 'бургеры
              {'resident': 'Бургер Кинг', 'category': 'картошка', 'dish': 'картофель фри','quantity': 15, 'price': 73},
              {'resident': 'Бургер Кинг', 'category': 'напитки', 'dish': 'Bud','quantity':9 , 'price': 89}]
 
-status_list = ['new', 'prepare','delivery', 'finished']
+status_list = ['new', 'waiting for confirmation', 'prepare','delivery', 'finished']
 
 def cancel_order(order_id: int, reason: str):
     objInstance = ObjectId(order_id)
@@ -62,6 +62,15 @@ def status_step_up(order_id):
                                      update={ '$set': { "status" : new_status}})
     return orders.find_one({"_id": objInstance})
 
+def add_more_or_less(order_id, resident:str, new_quantity:int, dish:str):
+    objInstance = ObjectId(order_id)
+    order = orders.find_one({"_id": objInstance})
+    if orders.find_one({"_id": objInstance}) is not None:
+        orders.update_one(filter={"_id": objInstance, 'resident': resident, 'dish': dish},
+                          update={'$set': {"quantity": new_quantity}})
+    return orders.find_one({"_id": objInstance})
+
+
 
 def get_sum(dishes: dict):
     sum_price = 0
@@ -80,6 +89,6 @@ def new_order(order_obj: list, user_id: int, comment=''):
     return order
 
 
-print(cancel_order('62f11cafac0d21f872fef48e', 'Run out of burgers'))
+#print(cancel_order('62f11cafac0d21f872fef48e', 'Run out of burgers'))
 
 

@@ -25,6 +25,7 @@ class Resident(db.Model):
     resident_addres = db.Column(db.String(32))
     resident_phone = db.Column(db.String(32))
     resident_email = db.Column(db.String(32))
+    description = db.Column(db.String(32))
 
 
 class ResidentSchema(ma.SQLAlchemyAutoSchema):

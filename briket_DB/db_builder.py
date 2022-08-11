@@ -7,21 +7,24 @@ RESIDENTS = [{
     "chat_id": 1337,
     "resident_addres": 'EKB',
     "resident_phone": '+78123743122',
-    "resident_email": 'kfc@gmail.com'
+    "resident_email": 'kfc@gmail.com',
+    "description": 'Хорошо всем известная не вкусная курица'
 },
     {
         "resident_name": 'Вкусно и точка',
         "chat_id": 1488,
         "resident_addres": 'New-York',
         "resident_phone": '+78123744444',
-        "resident_email": 'macdonalds@bk.ru'
+        "resident_email": 'macdonalds@bk.ru',
+        "description": 'Стыд и срам'
     },
     {
         "resident_name": 'Burger King',
         "chat_id": 1222,
         "resident_addres": 'OMSK',
         "resident_phone": '+71111111',
-        "resident_email": 'bk@bk.ru'
+        "resident_email": 'bk@bk.ru',
+        "description": 'Отличное место'
     }
 ]
 
@@ -41,7 +44,8 @@ for resident in RESIDENTS:
         chat_id=resident.get('chat_id'),
         resident_addres=resident.get('resident_addres'),
         resident_phone=resident.get('resident_phone'),
-        resident_email=resident.get('resident_email')
+        resident_email=resident.get('resident_email'),
+        description=resident.get('description')
     )
     db.session.add(r)
 
