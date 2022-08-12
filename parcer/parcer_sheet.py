@@ -1,11 +1,11 @@
 
-
+from briket_DB.passwords import credentials
 import gspread
 import pandas as pd
 import requests
 import shutil
 
-sa = gspread.service_account(filename='service_account.json')
+sa = gspread.service_account_from_dict(credentials)
 
 sheet = sa.open('Меню')
 
@@ -45,6 +45,8 @@ def load_img(img_url):
         return res.content
     else:
         print('Image Couldn\'t be retrieved')
+
+
 
 
 

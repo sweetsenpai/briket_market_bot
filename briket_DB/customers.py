@@ -21,6 +21,15 @@ def read_one(customer_id):
         )
 
 
+def find_id(chat_id):
+    customer = Customer.query.filter(Customer.chat_id == chat_id).one_or_none()
+    if customer is not None:
+        customer_schema = CustomerSchema()
+        return customer_schema.dump(customer)
+    else:
+        return None
+
+
 def create(customer):
     chat_id = customer.get('chat_id')
     phone = customer.get('phone')
@@ -74,4 +83,5 @@ def delete(customer_id):
             404,
             "Customer not found by id {}".format(customer_id)
         )
+
 

@@ -1,3 +1,5 @@
 .idea/
 venv/
 *.pyc
+briket_DB/passwords.py
+briket_DB/passwords.py
