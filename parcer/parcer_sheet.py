@@ -50,7 +50,7 @@ def load_img(img_url):
 
 
 
-
+print(get_dish())
 
 
 

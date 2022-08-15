@@ -1,15 +1,11 @@
 import logging
+
 from briket_DB.customers import find_id
-import telegram
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
+from telegram import ReplyKeyboardRemove, Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import (
-    Application,
-    CommandHandler,
     ContextTypes,
     ConversationHandler,
-    MessageHandler,
-    filters,
-CallbackContext
+
 )
 
 logging.basicConfig(
@@ -17,23 +13,42 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-PHONE, LOCATION, INFO = range(3)
+PHONE, LOCATION, INFO, DB = range(4)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    reply_keyboard = [['Регистрация']]
-    await update.message.reply_text(
-        'Привет, давай познакомимся! Для начала пришли мне свой номер)', reply_markup=ReplyKeyboardMarkup(
-            reply_keyboard, one_time_keyboard=True, input_field_placeholder='Зарегистритуйся'
-        ),)
-    return PHONE
+    chat_id = update.message.chat_id
+    share_button = KeyboardButton(text='Share my contact', request_contact=True)
+
+    key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
+                                    keyboard=[[share_button]],
+                                    resize_keyboard=True)
+
+    if find_id(chat_id) is not None:
+        await update.message.reply_text('Рад видеть тебя снова!')
+
+    elif find_id(chat_id) is None:
+        await update.message.reply_text('Давай знакомиться!, '
+                                        'пришли мне свой номер телефона',
+                                        reply_markup=key_board)
+        return PHONE
 
 
 async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.from_user
-    user_phone = update.message.contact
-    logger.info('Phone number is {}'.format(user_phone))
-    await update.message.reply_text('Спасибо за номер')
+    user_contact = update.message.contact.phone_number
+
+    logger.info(
+        "Contact of {}: {}".format(user.first_name, user_contact)
+    )
+
+    share_button = KeyboardButton(text='Share my location', request_location=True)
+    key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
+                                    keyboard=[[share_button]],
+                                    resize_keyboard=True)
+
+    await update.message.reply_text('Сяп, теперь пришли мне свой адрес или нажми /skip',
+                                    reply_markup=key_board)
     return LOCATION
 
 
@@ -44,9 +59,8 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Location of %s: %f / %f", user.first_name, user_location.latitude, user_location.longitude
     )
     await update.message.reply_text(
-        "Maybe I can visit you sometime! At last, tell me something about yourself."
+        "Maybe I can visit you sometime! At last, tell me something about yourself.", reply_markup=ReplyKeyboardRemove()
     )
-
     return INFO
 
 
@@ -63,8 +77,9 @@ async def skip_location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.from_user
-    logger.info("INFO of %s: %s", user.first_name, update.message.text)
+    logger.info("info of %s: %s", user.first_name, update.message.text)
     await update.message.reply_text("Thank you! I hope we can talk again some day.")
+
     return ConversationHandler.END
 
 
