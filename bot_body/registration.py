@@ -1,6 +1,6 @@
 import logging
 
-from briket_DB.customers import find_id
+from briket_DB.customers import find_id, create, update_addres
 from telegram import ReplyKeyboardRemove, Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import (
     ContextTypes,
@@ -13,7 +13,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-PHONE, LOCATION, INFO, DB = range(4)
+PHONE, LOCATION, INFO = range(3)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -31,10 +31,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text('Давай знакомиться!, '
                                         'пришли мне свой номер телефона',
                                         reply_markup=key_board)
+
         return PHONE
 
 
 async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
     user = update.message.from_user
     user_contact = update.message.contact.phone_number
 
@@ -49,6 +51,11 @@ async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text('Сяп, теперь пришли мне свой адрес или нажми /skip',
                                     reply_markup=key_board)
+    customer = {'chat_id': user.id,
+                'phone': str(user_contact),
+                'addres': str(''),
+                'disc_status': True}
+    create(customer)
     return LOCATION
 
 
@@ -61,6 +68,7 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "Maybe I can visit you sometime! At last, tell me something about yourself.", reply_markup=ReplyKeyboardRemove()
     )
+    update_addres(user.id, str([user_location.latitude, user_location.longitude]))
     return INFO
 
 
