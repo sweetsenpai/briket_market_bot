@@ -4,8 +4,10 @@ from telegram.ext import (
     CommandHandler,
     ConversationHandler,
     MessageHandler,
-    filters)
+    filters,
+    InlineQueryHandler)
 import registration as rg
+import menu
 
 
 def main() -> None:
@@ -22,7 +24,7 @@ def main() -> None:
         fallbacks=[CommandHandler("cancel", rg.cancel)],
 
     )
-
+    application.add_handler(InlineQueryHandler(menu.inline_query))
     application.add_handler(reg_user)
     application.run_polling()
 
