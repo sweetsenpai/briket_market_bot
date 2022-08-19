@@ -8,7 +8,8 @@ RESIDENTS = [{
     "resident_addres": 'EKB',
     "resident_phone": '+78123743122',
     "resident_email": 'kfc@gmail.com',
-    "description": 'Хорошо всем известная не вкусная курица'
+    "description": 'Хорошо всем известная не вкусная курица',
+    "img_url": str('https://upload.wikimedia.org/wikipedia/sco/thumb/b/bf/KFC_logo.svg/1200px-KFC_logo.svg.png')
 },
     {
         "resident_name": 'Вкусно и точка',
@@ -16,7 +17,8 @@ RESIDENTS = [{
         "resident_addres": 'New-York',
         "resident_phone": '+78123744444',
         "resident_email": 'macdonalds@bk.ru',
-        "description": 'Стыд и срам'
+        "description": 'Стыд и срам',
+        "img_url": str('https://upload.wikimedia.org/wikipedia/commons/c/cc/%D0%92%D0%BA%D1%83%D1%81%D0%BD%D0%BE_%E2%80%94_%D0%B8_%D1%82%D0%BE%D1%87%D0%BA%D0%B0.jpg')
     },
     {
         "resident_name": 'Burger King',
@@ -24,7 +26,8 @@ RESIDENTS = [{
         "resident_addres": 'OMSK',
         "resident_phone": '+71111111',
         "resident_email": 'bk@bk.ru',
-        "description": 'Отличное место'
+        "description": 'Отличное место',
+        "img_url": str('https://play-lh.googleusercontent.com/PDSuJ9JjikJ2kNqMoKFEOJ6NpX7_SNXJuW7ixBRiqR_ptEBjjYn5JFm3W4DO7zHMQ5M')
     }
 ]
 
@@ -45,7 +48,8 @@ for resident in RESIDENTS:
         resident_addres=resident.get('resident_addres'),
         resident_phone=resident.get('resident_phone'),
         resident_email=resident.get('resident_email'),
-        description=resident.get('description')
+        description=resident.get('description'),
+        img_url=resident.get('img_url')
     )
     db.session.add(r)
 

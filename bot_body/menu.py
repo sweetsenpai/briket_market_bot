@@ -15,12 +15,16 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     """Handle the inline query. This is run when you type: @botusername <query>"""
     query = update.inline_query.query
     results = []
-    for market in get_markets():
+    for market in read_all():
         results.append(
             InlineQueryResultArticle(
                 id=str(uuid4()),
-                title=market,
-                input_message_content=InputTextMessageContent(market)
+                title=market['resident_name'],
+                description=market['description'],
+                input_message_content=InputTextMessageContent(market['phone']),
+                thumb_url=market['img_url'],
+                thumb_width=50,
+                thumb_height=50,
             ))
     await update.inline_query.answer(results)
 
