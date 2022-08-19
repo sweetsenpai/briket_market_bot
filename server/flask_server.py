@@ -1,5 +1,5 @@
 import connexion
-from flask import render_template
+from flask import render_template,Flask
 from briket_DB import config
 
 
@@ -9,8 +9,8 @@ connex_app = config.connex_app
 # Read the swagger.yml file to configure the endpoints
 connex_app.add_api("swagger.yml")
 
-
 # create a URL route in our application for "/"
+
 @connex_app.route("/")
 def home():
     """
