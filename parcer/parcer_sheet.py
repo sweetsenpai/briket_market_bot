@@ -7,11 +7,11 @@ import shutil
 
 sa = gspread.service_account_from_dict(credentials)
 
-sheet = sa.open('Меню')
+sheet_main = sa.open('Меню')
 
 
-work_sheets = sheet.worksheets()
-work_sheet = sheet.worksheet('KFC')
+work_sheets = sheet_main.worksheets()
+work_sheet = sheet_main.worksheet('KFC')
 
 
 def get_markets(sheets=work_sheets):
@@ -22,8 +22,9 @@ def get_markets(sheets=work_sheets):
     return market_list
 
 
-def get_market_categories(sheet=work_sheet):
-    dataframe = pd.DataFrame(sheet.get_all_records())
+def get_market_categories(work_sheet:str):
+    ws = sheet_main.worksheet(work_sheet)
+    dataframe = pd.DataFrame(ws.get_all_records())
     return dataframe['Категория'].unique().tolist()
 
 
@@ -50,7 +51,7 @@ def load_img(img_url):
 
 
 
-print(get_dish())
+
 
 
 
