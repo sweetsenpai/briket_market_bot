@@ -24,6 +24,7 @@ def main() -> None:
         fallbacks=[CommandHandler("cancel", rg.cancel)],
 
     )
+    application.add_handler(CommandHandler('menu', menu.menu))
     application.add_handler(InlineQueryHandler(menu.inline_query))
     application.add_handler(reg_user)
     application.run_polling()

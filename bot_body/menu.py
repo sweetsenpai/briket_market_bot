@@ -4,7 +4,8 @@ from telegram import (InlineQueryResultArticle,
                       InputTextMessageContent,
                       Update,
                       InlineKeyboardMarkup,
-                      InlineKeyboardButton)
+                      InlineKeyboardButton,
+                      CallbackQuery)
 from telegram.ext import ContextTypes
 from briket_DB.residents import read_all
 from parcer.parcer_sheet import get_market_categories, get_markets
@@ -15,11 +16,21 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = [[InlineKeyboardButton(text='Понятно, хочу есть!',
+                                      switch_inline_query_current_chat='')]]
+    reply = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text(
+        text='Скорее нажимай на кнопку «Хочу есть» и выбирай блюда от резидентов фуд-корта «Брикет Маркет»!',
+        reply_markup=reply)
+    return
+
+
 def inline_generator(resident: str) -> InlineKeyboardMarkup:
     categories = get_market_categories(resident)
     keyboard = []
     for category in categories:
-        keyboard.append(InlineKeyboardButton(category, callback_data=category))
+        keyboard.append(InlineKeyboardButton(text=category, callback_data=CallbackQuery(from_user=)))
 
     reply = InlineKeyboardMarkup([keyboard])
     return reply
