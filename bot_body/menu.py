@@ -30,7 +30,7 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
     categories = get_market_categories(resident)
     keyboard = []
     for category in categories:
-        keyboard.append(InlineKeyboardButton(text=category, callback_data=CallbackQuery(from_user=)))
+        keyboard.append(InlineKeyboardButton(text=category))
 
     reply = InlineKeyboardMarkup([keyboard])
     return reply
