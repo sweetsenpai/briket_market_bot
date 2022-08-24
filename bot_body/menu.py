@@ -8,7 +8,7 @@ from telegram import (InlineQueryResultArticle,
                       CallbackQuery)
 from telegram.ext import ContextTypes
 from briket_DB.residents import read_all
-from parcer.parcer_sheet import get_market_categories, get_markets
+from parcer.parcer_sheet import get_market_categories, get_dishs
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -27,31 +27,59 @@ async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 def inline_generator(resident: str) -> InlineKeyboardMarkup:
+
     categories = get_market_categories(resident)
     keyboard = []
+
     for category in categories:
-        keyboard.append(InlineKeyboardButton(text=category))
+        keyboard.append(
+            InlineKeyboardButton(
+                text=category,
+                switch_inline_query_current_chat='cat#{}'.format(category),
+                callback_data=resident
+            )
+        )
 
     reply = InlineKeyboardMarkup([keyboard])
     return reply
 
 
-async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Handle the inline query. This is run when you type: @botusername <query>"""
-    results = []
-    for market in read_all():
-        results.append(
+async def dish_inline(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    resident = update.callback_query
+    category = update.inline_query.query
+    await resident.answer()
+    answer = []
+    for dish in get_dishs(sheet=resident, cat=category)[0]:
+        answer.append(
             InlineQueryResultArticle(
                 id=str(uuid4()),
-                title=market['resident_name'],
-                description=market['description'],
-                input_message_content=InputTextMessageContent('---------------------------------------------- '),
-                thumb_url=market['img_url'],
-                thumb_width=50,
-                thumb_height=50,
-                reply_markup=inline_generator(market['resident_name'])
+                title=dish[0],
+                description='Вес:{} гр.\n'
+                            'Цена:{}'.format(dish[1], dish[2]),
+                input_message_content=InputTextMessageContent('--------------')
+            )
+        )
+    await update.inline_query.answer(answer)
 
-            ))
-    await update.inline_query.answer(results)
+
+async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    query = update.inline_query.query
+    if query == "":
+        results = []
+        for market in read_all():
+            results.append(
+                InlineQueryResultArticle(
+                    id=str(uuid4()),
+                    title=market['resident_name'],
+                    description=market['description'],
+                    input_message_content=InputTextMessageContent('---------------------------------------------- '),
+                    thumb_url=market['img_url'],
+                    thumb_width=50,
+                    thumb_height=50,
+                    reply_markup=inline_generator(market['resident_name'])
+                ))
+        await update.inline_query.answer(results)
+
+
 
 

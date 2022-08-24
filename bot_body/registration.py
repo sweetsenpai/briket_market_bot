@@ -24,7 +24,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                     resize_keyboard=True)
 
     if find_id(chat_id) is not None:
-        await update.message.reply_text('Рад видеть тебя снова!')
+        await update.message.reply_text('Рад видеть тебя снова! Нажми /menu')
 
     elif find_id(chat_id) is None:
         await update.message.reply_text('Давай знакомиться!, '
@@ -65,7 +65,7 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Location of %s: %f / %f", user.first_name, user_location.latitude, user_location.longitude
     )
     await update.message.reply_text(
-        "Maybe I can visit you sometime! At last, tell me something about yourself.", reply_markup=ReplyKeyboardRemove()
+        "А теперь расскажи о себе", reply_markup=ReplyKeyboardRemove()
     )
     update_addres(user.id, str([user_location.latitude, user_location.longitude]))
     return INFO
@@ -85,7 +85,7 @@ async def skip_location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.from_user
     logger.info("info of %s: %s", user.first_name, update.message.text)
-    await update.message.reply_text("Thank you! I hope we can talk again some day.")
+    await update.message.reply_text("Спасибо")
 
     return ConversationHandler.END
 
@@ -95,7 +95,7 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     user = update.message.from_user
     logger.info("User %s canceled the conversation.", user.first_name)
     await update.message.reply_text(
-        "Bye! I hope we can talk again some day.", reply_markup=ReplyKeyboardRemove()
+        "Рад был познакомиться! Нажми /menu", reply_markup=ReplyKeyboardRemove()
     )
 
     return ConversationHandler.END

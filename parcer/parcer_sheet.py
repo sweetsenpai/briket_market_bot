@@ -28,13 +28,13 @@ def get_market_categories(work_sheet:str):
     return dataframe['Категория'].unique().tolist()
 
 
-def get_dish(sheet=work_sheet, cat='Бургеры'):
+def get_dishs(sheet=work_sheet, cat='Бургеры'):
     df = pd.DataFrame(sheet.get_all_records())
     dt = df.loc[df['Категория'] == cat].loc[df['стоп-лист'] == 'FALSE']
     del dt['Категория']
     del df['стоп-лист']
 
-    return dt.to_dict(orient='split')['data'], sheet
+    return dt.to_dict(orient='split')['data']
 
 
 def load_img(img_url):
