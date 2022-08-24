@@ -26,7 +26,7 @@ def main() -> None:
 
     )
     application.add_handler(CommandHandler('menu', menu.menu))
-    application.add_handler(InlineQueryHandler(menu.dish_inline))
+    application.add_handler(CallbackQueryHandler(menu.dish_inline))
     application.add_handler(InlineQueryHandler(menu.inline_query))
     application.add_handler(reg_user)
     application.run_polling()

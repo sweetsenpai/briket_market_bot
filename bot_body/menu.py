@@ -36,7 +36,7 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
             InlineKeyboardButton(
                 text=category,
                 switch_inline_query_current_chat='cat#{}'.format(category),
-                callback_data=resident
+                callback_data='{},{}'.format(resident, category)
             )
         )
 
@@ -45,11 +45,11 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
 
 
 async def dish_inline(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    resident = update.callback_query
-    category = update.inline_query.query
-    await resident.answer()
+    data = update.callback_query.data.split(',')
+    resident = data[0]
+    category = data[1]
     answer = []
-    for dish in get_dishs(sheet=resident, cat=category)[0]:
+    for dish in get_dishs(sheet=resident, cat=category):
         answer.append(
             InlineQueryResultArticle(
                 id=str(uuid4()),

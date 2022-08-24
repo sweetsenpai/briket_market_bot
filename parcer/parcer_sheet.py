@@ -28,8 +28,9 @@ def get_market_categories(work_sheet:str):
     return dataframe['Категория'].unique().tolist()
 
 
-def get_dishs(sheet=work_sheet, cat='Бургеры'):
-    df = pd.DataFrame(sheet.get_all_records())
+def get_dishs(sheet='KFC', cat='Бургеры'):
+    ws = sheet_main.worksheet(sheet)
+    df = pd.DataFrame(ws.get_all_records())
     dt = df.loc[df['Категория'] == cat].loc[df['стоп-лист'] == 'FALSE']
     del dt['Категория']
     del df['стоп-лист']
