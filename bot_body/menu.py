@@ -4,11 +4,11 @@ from telegram import (InlineQueryResultArticle,
                       InputTextMessageContent,
                       Update,
                       InlineKeyboardMarkup,
-                      InlineKeyboardButton,
-                      CallbackQuery)
+                      InlineKeyboardButton)
 from telegram.ext import ContextTypes
 from briket_DB.residents import read_all
 from parcer.parcer_sheet import get_market_categories, get_dishs
+import re
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -35,8 +35,7 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
         keyboard.append(
             InlineKeyboardButton(
                 text=category,
-                switch_inline_query_current_chat='cat#{}'.format(category),
-                callback_data='{},{}'.format(resident, category)
+                switch_inline_query_current_chat=' #/{}/{}'.format(resident, category)
             )
         )
 
@@ -44,22 +43,7 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
     return reply
 
 
-async def dish_inline(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    data = update.callback_query.data.split(',')
-    resident = data[0]
-    category = data[1]
-    answer = []
-    for dish in get_dishs(sheet=resident, cat=category):
-        answer.append(
-            InlineQueryResultArticle(
-                id=str(uuid4()),
-                title=dish[0],
-                description='Вес:{} гр.\n'
-                            'Цена:{}'.format(dish[1], dish[2]),
-                input_message_content=InputTextMessageContent('--------------')
-            )
-        )
-    await update.inline_query.answer(answer)
+
 
 
 async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -79,6 +63,24 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     reply_markup=inline_generator(market['resident_name'])
                 ))
         await update.inline_query.answer(results)
+    elif '#' in query:
+        answer = []
+        data = query.split('/')
+        for dish in get_dishs(sheet=data[1], cat=data[2]):
+            answer.append(
+                InlineQueryResultArticle(
+                    id=str(uuid4()),
+                    title=dish[0],
+                    description='Вес:{} гр.\n'
+                                'Цена:{}'.format(dish[1], dish[2]),
+                    input_message_content=InputTextMessageContent('--------------'),
+                    thumb_url=dish[3],
+                    thumb_height=50,
+                    thumb_width=50
+                )
+            )
+        await update.inline_query.answer(answer)
+
 
 
 
