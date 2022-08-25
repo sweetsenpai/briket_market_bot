@@ -38,6 +38,17 @@ def get_dishs(sheet='KFC', cat='Бургеры'):
     return dt.to_dict(orient='split')['data']
 
 
+def get_one_dish(sheet='KFC', cat='Бургеры', name='Шефбургер'):
+    ws = sheet_main.worksheet(sheet)
+    df = pd.DataFrame(ws.get_all_records())
+
+    dt = df.loc[df['Категория'] == cat].loc[df['стоп-лист'] == 'FALSE'].loc[df['Название'] == name]
+
+    del dt['Категория'], df['стоп-лист']
+
+    return dt.to_dict(orient='split')['data']
+
+
 def load_img(img_url):
     file_name = 'menu_img.jpg'
     res = requests.get(img_url, stream=True)

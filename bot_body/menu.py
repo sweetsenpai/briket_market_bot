@@ -43,7 +43,10 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
     return reply
 
 
-
+def dish_card(resident: str, dish: str) -> InlineKeyboardMarkup:
+    keyboard = []
+    reply = InlineKeyboardMarkup([keyboard])
+    return reply
 
 
 async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -73,7 +76,7 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     title=dish[0],
                     description='Вес:{} гр.\n'
                                 'Цена:{}'.format(dish[1], dish[2]),
-                    input_message_content=InputTextMessageContent('--------------'),
+                    input_message_content=InputTextMessageContent('Отличная еда по приятной цене!'),
                     thumb_url=dish[3],
                     thumb_height=50,
                     thumb_width=50
