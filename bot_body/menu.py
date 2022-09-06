@@ -4,11 +4,12 @@ from telegram import (InlineQueryResultArticle,
                       InputTextMessageContent,
                       Update,
                       InlineKeyboardMarkup,
-                      InlineKeyboardButton)
+                      InlineKeyboardButton,
+                      InlineQueryResultPhoto)
 from telegram.ext import ContextTypes
 from briket_DB.residents import read_all
 from parcer.parcer_sheet import get_market_categories, get_dishs
-import re
+
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -43,8 +44,17 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
     return reply
 
 
-def dish_card(resident: str, dish: str) -> InlineKeyboardMarkup:
-    keyboard = []
+def dish_card_keyboard(query: str):
+
+    rez1 = InlineKeyboardButton(callback_data='add',
+                                text='➕ Добавить в корзину')
+    rez2 = InlineKeyboardButton(switch_inline_query_current_chat=query,
+                                text='◀️Назад')
+    rez3 = InlineKeyboardButton(callback_data='delet',
+                                text='➖ Удалить')
+    rez4 = InlineKeyboardButton(callback_data='shopping cart',
+                                text='🛒')
+    keyboard = [rez1, rez2, rez3, rez4]
     reply = InlineKeyboardMarkup([keyboard])
     return reply
 
@@ -76,7 +86,14 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     title=dish[0],
                     description='Вес:{} гр.\n'
                                 'Цена:{}'.format(dish[1], dish[2]),
-                    input_message_content=InputTextMessageContent('Отличная еда по приятной цене!'),
+                    input_message_content=InputTextMessageContent(
+                        message_text='Вес:{} гр.\n'
+                                     'Цена:{}\n'
+                                     '<a href="{}">ТЕсьт</a>'.format(dish[1], dish[2], dish[3]),
+                        disable_web_page_preview=False,
+                        parse_mode='HTML'
+                        ),
+                    reply_markup=dish_card_keyboard(query),
                     thumb_url=dish[3],
                     thumb_height=50,
                     thumb_width=50
