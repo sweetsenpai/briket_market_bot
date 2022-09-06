@@ -45,17 +45,17 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
 
 
 def dish_card_keyboard(query: str):
-
-    rez1 = InlineKeyboardButton(callback_data='add',
+    keyboard = []
+    rez1 = InlineKeyboardButton(callback_data=1,
                                 text='➕ Добавить в корзину')
     rez2 = InlineKeyboardButton(switch_inline_query_current_chat=query,
                                 text='◀️Назад')
-    rez3 = InlineKeyboardButton(callback_data='delet',
+    rez3 = InlineKeyboardButton(callback_data=2,
                                 text='➖ Удалить')
-    rez4 = InlineKeyboardButton(callback_data='shopping cart',
+    rez4 = InlineKeyboardButton(callback_data=3,
                                 text='🛒')
-    keyboard = [rez1, rez2, rez3, rez4]
-    reply = InlineKeyboardMarkup([keyboard])
+
+    reply = InlineKeyboardMarkup([[rez1, rez3], [rez2, rez4]])
     return reply
 
 
@@ -89,7 +89,7 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     input_message_content=InputTextMessageContent(
                         message_text='Вес:{} гр.\n'
                                      'Цена:{}\n'
-                                     '<a href="{}">ТЕсьт</a>'.format(dish[1], dish[2], dish[3]),
+                                     '<a href="{}">{}</a>'.format(dish[1], dish[2], dish[3], dish[0]),
                         disable_web_page_preview=False,
                         parse_mode='HTML'
                         ),
