@@ -34,13 +34,15 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
 
     for category in categories:
         keyboard.append(
-            InlineKeyboardButton(
+           [(InlineKeyboardButton(
                 text=category,
                 switch_inline_query_current_chat=' #/{}/{}'.format(resident, category)
-            )
+            ))]
         )
-
-    reply = InlineKeyboardMarkup([keyboard])
+    rez2 = [InlineKeyboardButton(switch_inline_query_current_chat='',
+                                text='◀️Назад')]
+    keyboard.append(rez2)
+    reply = InlineKeyboardMarkup(keyboard)
     return reply
 
 
@@ -69,7 +71,12 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     id=str(uuid4()),
                     title=market['resident_name'],
                     description=market['description'],
-                    input_message_content=InputTextMessageContent('---------------------------------------------- '),
+                    input_message_content=InputTextMessageContent(
+                        message_text='<b>{}</b>\n'
+                                     '<a href="{}">.</a>'.format(market['resident_name'], market['img_url']),
+                        parse_mode='HTML',
+                        disable_web_page_preview=False
+                    ),
                     thumb_url=market['img_url'],
                     thumb_width=50,
                     thumb_height=50,
