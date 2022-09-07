@@ -54,7 +54,7 @@ def status_step_up(order_id):
     objInstance = ObjectId(order_id)
     order = orders.find_one({"_id": objInstance})
     if order['status'] == 'finished':
-        return 'This is new order!'
+        return 'This order allready finished!'
     else:
         new_status = status_list[status_list.index(order['status']) + 1]
 

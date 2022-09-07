@@ -5,7 +5,7 @@ from telegram import (InlineQueryResultArticle,
                       Update,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton,
-                      InlineQueryResultPhoto)
+                      CallbackQuery)
 from telegram.ext import ContextTypes
 from briket_DB.residents import read_all
 from parcer.parcer_sheet import get_market_categories, get_dishs
@@ -46,15 +46,14 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
     return reply
 
 
-def dish_card_keyboard(query: str):
-    keyboard = []
-    rez1 = InlineKeyboardButton(callback_data=1,
+def dish_card_keyboard(query: str, resident: str, dish: str) -> InlineKeyboardMarkup:
+    rez1 = InlineKeyboardButton(callback_data='add,{},{}'.format(resident, dish),
                                 text='➕ Добавить в корзину')
     rez2 = InlineKeyboardButton(switch_inline_query_current_chat=query,
                                 text='◀️Назад')
-    rez3 = InlineKeyboardButton(callback_data=2,
+    rez3 = InlineKeyboardButton(callback_data='minus,{},{}'.format(resident, dish),
                                 text='➖ Удалить')
-    rez4 = InlineKeyboardButton(callback_data=3,
+    rez4 = InlineKeyboardButton(callback_data='cart',
                                 text='🛒')
 
     reply = InlineKeyboardMarkup([[rez1, rez3], [rez2, rez4]])
@@ -73,7 +72,8 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     description=market['description'],
                     input_message_content=InputTextMessageContent(
                         message_text='<b>{}</b>\n'
-                                     '<a href="{}">.</a>'.format(market['resident_name'], market['img_url']),
+                                     '{}\n'
+                                     '<a href="{}">.</a>'.format(market['resident_name'], market['description'], market['img_url']),
                         parse_mode='HTML',
                         disable_web_page_preview=False
                     ),
@@ -100,7 +100,7 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                         disable_web_page_preview=False,
                         parse_mode='HTML'
                         ),
-                    reply_markup=dish_card_keyboard(query),
+                    reply_markup=dish_card_keyboard(query, data[1], dish[0]),
                     thumb_url=dish[3],
                     thumb_height=50,
                     thumb_width=50
