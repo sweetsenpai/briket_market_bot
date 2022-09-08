@@ -22,5 +22,5 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Callback data: {}".format(cb_data)
     )
     if cb_data[0] == 'add':
-        add_dish(user_id=query.from_user.id, resident=cb_data[1], dish=cb_data[2])
+        add_dish(user_id=query.from_user.id, resident=cb_data[1], dish=cb_data[2], price=cb_data[3])
     await query.answer()

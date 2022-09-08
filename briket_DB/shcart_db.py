@@ -11,34 +11,28 @@ sum: int
 sh_cart = mongodb.sh_cart
 
 
-def add_dish(user_id: int, resident: str, dish: str) -> None:
+def add_dish(user_id: int, resident: str, dish: str, price: str) -> None:
     user_cart = sh_cart.find_one({"user_id": user_id})
-
     if user_cart is None:
-        dish_info = get_one_dish(resident, dish)[0]
         sh_cart.insert_one({
             'user_id': user_id,
             'order_items': {
                 resident: {
-                    dish_info[0]: {
-                        'price': dish_info[2],
+                    dish: {
+                        'price': price,
                         'quantity': 1}
                 }}
         })
-    elif user_cart['order_items'][resident][dish] is not None:
+    elif dish in user_cart['order_items'][resident]:
         sh_cart.find_one_and_update(filter=user_cart,
                                     update={'$inc': {"order_items.{}.{}.quantity".format(resident, dish): 1}})
     elif user_cart['order_items'][resident] is not None:
-        dish_info = get_one_dish(resident, dish)[0]
         sh_cart.find_one_and_update(filter=user_cart,
-                                    update={'$set': {"order_items.{}".format(resident): {
-                                                             dish_info[0]: {
-                                                                 'price': dish_info[2],
-                                                                 'quantity': 1
-                                                             }
-                                                         }}})
+                                    update={'$set': {"order_items.{}.{}".format(resident, dish): {
+                                        'price': price, 'quantity': 1}}})
+
     return
 
 
 
-add_dish(1, 'KFC', 'Чикенбургер')
+

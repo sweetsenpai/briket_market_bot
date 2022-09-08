@@ -46,8 +46,8 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
     return reply
 
 
-def dish_card_keyboard(query: str, resident: str, dish: str) -> InlineKeyboardMarkup:
-    rez1 = InlineKeyboardButton(callback_data='add,{},{}'.format(resident, dish),
+def dish_card_keyboard(query: str, resident: str, dish: str, price) -> InlineKeyboardMarkup:
+    rez1 = InlineKeyboardButton(callback_data='add,{},{},{}'.format(resident, dish, price),
                                 text='➕ Добавить в корзину')
     rez2 = InlineKeyboardButton(switch_inline_query_current_chat=query,
                                 text='◀️Назад')
@@ -100,7 +100,7 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                         disable_web_page_preview=False,
                         parse_mode='HTML'
                         ),
-                    reply_markup=dish_card_keyboard(query, data[1], dish[0]),
+                    reply_markup=dish_card_keyboard(query, data[1], dish[0], dish[2]),
                     thumb_url=dish[3],
                     thumb_height=50,
                     thumb_width=50
