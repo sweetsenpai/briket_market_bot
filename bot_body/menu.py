@@ -36,7 +36,7 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
         keyboard.append(
            [(InlineKeyboardButton(
                 text=category,
-                switch_inline_query_current_chat=' #/{}/{}'.format(resident, category)
+                switch_inline_query_current_chat='#/{}/{}'.format(resident, category)
             ))]
         )
     rez2 = [InlineKeyboardButton(switch_inline_query_current_chat='',

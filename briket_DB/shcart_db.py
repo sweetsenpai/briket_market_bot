@@ -34,5 +34,11 @@ def add_dish(user_id: int, resident: str, dish: str, price: str) -> None:
     return
 
 
-
-
+def remove_dish(user_id: int, resident: str, dish: str) -> None:
+    user_cart = sh_cart.find_one({"user_id": user_id})
+    if user_cart['order_items'][resident][dish]['quantity'] > 1:
+        sh_cart.find_one_and_update(filter=user_cart,
+                                    update={'$inc': {"order_items.{}.{}.quantity".format(resident, dish): -1}})
+    elif user_cart['order_items'][resident][dish]['quantity'] <= 1:
+        sh_cart.find_one_and_update(filter=user_cart, update={'$unset': {dish: ''}})
+    return
