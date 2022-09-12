@@ -1,11 +1,10 @@
 import logging
 from briket_DB.shcart_db import add_dish, remove_dish, show_cart
+from briket_DB.order_db import push_order, send_order_residents
 from telegram import (Update,
                       InlineKeyboardMarkup,
-                      InlineKeyboardButton,
-                      Message)
-from telegram.ext import ContextTypes, Application
-from briket_DB.passwords import bot_key
+                      InlineKeyboardButton)
+from telegram.ext import ContextTypes
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -39,7 +38,5 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text(text=show_cart(query.from_user.id),
                                       reply_markup=cart_inline())
     elif cb_data[0] == 'delivery':
-        await context.bot.sendMessage(
-            chat_id=58829330,
-            text='Памагитя!!!!!!!!!!!'
-        )
+        await push_order(user_id=query.from_user.id, context=context)
+

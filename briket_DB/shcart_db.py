@@ -22,13 +22,13 @@ def add_dish(user_id: int, resident: str, dish: str, price: str) -> None:
             if user_cart['order_items'][resident][dish] is not None:
                 sh_cart.find_one_and_update(filter=user_cart,
                                             update={'$inc': {"order_items.{}.{}.quantity".format(resident, dish): 1}})
-                total(user_id)
+                sh_cart.find_one_and_update(filter={"user_id": user_id}, update={'$set': {"total": total(user_id)}})
                 return
         except KeyError:
             sh_cart.find_one_and_update(filter=user_cart,
                                         update={'$set': {"order_items.{}.{}".format(resident, dish): {
                                             'price': price, 'quantity': 1}}})
-            total(user_id)
+            sh_cart.find_one_and_update(filter={"user_id": user_id}, update={'$set': {"total": total(user_id)}})
             return
 
 
@@ -38,12 +38,12 @@ def remove_dish(user_id: int, resident: str, dish: str) -> None:
     if user_cart['order_items'][resident][dish]['quantity'] > 1:
         sh_cart.find_one_and_update(filter=user_cart,
                                     update={'$inc': {"order_items.{}.{}.quantity".format(resident, dish): -1}})
-        total(user_id)
+        sh_cart.find_one_and_update(filter={"user_id": user_id}, update={'$set': {"total": total(user_id)}})
         return
 
     elif user_cart['order_items'][resident][dish]['quantity'] == 1:
         sh_cart.find_one_and_update(filter=user_cart, update={'$unset': {"order_items.{}.{}".format(resident, dish): ''}})
-        total(user_id)
+        sh_cart.find_one_and_update(filter={"user_id": user_id}, update={'$set': {"total": total(user_id)}})
         return
 
 
@@ -66,8 +66,8 @@ def total(user_id: int):
     for resident in user_cart.keys():
         for dish in user_cart[resident].keys():
             total_sum += user_cart[resident][dish]['quantity'] * int(user_cart[resident][dish]['price'])
-    sh_cart.find_one_and_update(filter={"user_id": user_id}, update={'$set': {"total": total}})
-    return
+
+    return total_sum
 
 
 

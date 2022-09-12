@@ -65,3 +65,17 @@ def delete(resident_id):
             404,
             "Resident not found by id {}".format(resident_id)
         )
+
+
+def get_chat_id(resident_name: str):
+    resident = Resident.query.filter(Resident.resident_name == resident_name).one_or_none()
+    if resident is not None:
+        resident_schema = ResidentSchema()
+        return resident_schema.dump(resident)['chat_id']
+    else:
+        abort(
+            404,
+            "Resident not found by name {}".format(resident_name)
+        )
+
+
