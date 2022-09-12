@@ -13,7 +13,8 @@ def add_dish(user_id: int, resident: str, dish: str, price: str) -> None:
                     dish: {
                         'price': price,
                         'quantity': 1}
-                }}
+                }},
+            'total': price
         })
         return
     else:
@@ -21,11 +22,13 @@ def add_dish(user_id: int, resident: str, dish: str, price: str) -> None:
             if user_cart['order_items'][resident][dish] is not None:
                 sh_cart.find_one_and_update(filter=user_cart,
                                             update={'$inc': {"order_items.{}.{}.quantity".format(resident, dish): 1}})
+                total(user_id)
                 return
         except KeyError:
             sh_cart.find_one_and_update(filter=user_cart,
                                         update={'$set': {"order_items.{}.{}".format(resident, dish): {
                                             'price': price, 'quantity': 1}}})
+            total(user_id)
             return
 
 
@@ -35,25 +38,37 @@ def remove_dish(user_id: int, resident: str, dish: str) -> None:
     if user_cart['order_items'][resident][dish]['quantity'] > 1:
         sh_cart.find_one_and_update(filter=user_cart,
                                     update={'$inc': {"order_items.{}.{}.quantity".format(resident, dish): -1}})
+        total(user_id)
         return
 
     elif user_cart['order_items'][resident][dish]['quantity'] == 1:
         sh_cart.find_one_and_update(filter=user_cart, update={'$unset': {"order_items.{}.{}".format(resident, dish): ''}})
+        total(user_id)
         return
 
 
 def show_cart(user_id: int):
-    user_cart = sh_cart.find_one({"user_id": user_id})['order_items']
-    if user_cart is None: return 'Вы ещё ничего не добавили в вашу корзину'
+    user_cart = sh_cart.find_one({"user_id": user_id})
+    order = user_cart['order_items']
+
+    if order is None: return 'Вы ещё ничего не добавили в вашу корзину'
     cart = ''
-    total = 0
-    for resident in user_cart.keys():
-        for dish in user_cart[resident].keys():
-            cart += '{}: {} * {}\n'.format(dish, user_cart[resident][dish]['quantity'],user_cart[resident][dish]['price'])
-            total += user_cart[resident][dish]['quantity'] * int(user_cart[resident][dish]['price'])
-    cart += 'Итого: {}р.'.format(total)
+    for resident in order.keys():
+        for dish in order[resident].keys():
+            cart += '{}: {} * {}\n'.format(dish, order[resident][dish]['quantity'], order[resident][dish]['price'])
+    cart += 'Итого: {}р.'.format(user_cart['total'])
     return cart
 
 
-print(show_cart(352354383))
+def total(user_id: int):
+    user_cart = sh_cart.find_one({"user_id": user_id})['order_items']
+    total_sum = 0
+    for resident in user_cart.keys():
+        for dish in user_cart[resident].keys():
+            total_sum += user_cart[resident][dish]['quantity'] * int(user_cart[resident][dish]['price'])
+    sh_cart.find_one_and_update(filter={"user_id": user_id}, update={'$set': {"total": total}})
+    return
+
+
+
 

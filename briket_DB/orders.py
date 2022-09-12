@@ -3,31 +3,6 @@ from datetime import datetime
 from pymongo.collection import ObjectId
 from pymongo import ReturnDocument
 
-"""
-orders schema:
-_id: int
-user_id: int
-date: char 
-order_items: dict[resident: name, category:name, dish:name, quantity: int, price: int]
-sum: int
-status: new/prepare/delivery/finished/canceled
-commentary: str/None
-"""
-orders = mongodb.orders
-test_order = [{'resident': 'KFC', 'category': 'бургеры', 'dish': 'чикенбургер','quantity': 3, 'price': 100},
-             {'resident': 'KFC', 'category': 'картошка', 'dish': 'по-деревенски','quantity': 5, 'price': 50},
-             {'resident': 'KFC', 'category': 'напитки', 'dish': 'Cool-Cola','quantity':2 , 'price': 70}]
-
-test_order2 = [{'resident': 'Вкус очка', 'category': 'бургеры', 'dish': 'БигМак','quantity': 10, 'price': 500},
-             {'resident': 'Вкус очка', 'category': 'картошка', 'dish': 'картофель фри','quantity': 15, 'price': 30},
-             {'resident': 'Вкус очка', 'category': 'напитки', 'dish': 'Тархун','quantity':9 , 'price': 75}]
-
-test_order3 = [{'resident': 'Бургер Кинг', 'category': 'бургеры', 'dish': 'Стейкхаус','quantity': 1, 'price': 490},
-             {'resident': 'Бургер Кинг', 'category': 'картошка', 'dish': 'картофель фри','quantity': 15, 'price': 73},
-             {'resident': 'Бургер Кинг', 'category': 'напитки', 'dish': 'Bud','quantity':9 , 'price': 89}]
-
-status_list = ['new', 'waiting for confirmation', 'prepare','delivery', 'finished']
-
 def cancel_order(order_id: int, reason: str):
     objInstance = ObjectId(order_id)
     order = orders.find_one({"_id": objInstance})

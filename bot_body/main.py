@@ -14,7 +14,6 @@ from shopping_cart import call_back_handler
 
 def main() -> None:
     application = Application.builder().token(bot_key).build()
-
     reg_user = ConversationHandler(
         entry_points=[CommandHandler("start", rg.start)],
         states={
