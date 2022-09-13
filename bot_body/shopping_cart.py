@@ -1,6 +1,7 @@
 import logging
 from briket_DB.shcart_db import add_dish, remove_dish, show_cart
-from briket_DB.order_db import push_order, send_order_residents
+from briket_DB.order_db import push_order
+from menu import dish_card_keyboard
 from telegram import (Update,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton)
@@ -12,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 
 def cart_inline():
-    take_away = InlineKeyboardButton(text='Заберу сам', callback_data='take_away')
-    delivery = InlineKeyboardButton(text='Доставка', callback_data='delivery')
+    take_away = InlineKeyboardButton(text='Заберу сам', callback_data='Самовывоз')
+    delivery = InlineKeyboardButton(text='Доставка', callback_data='Доставка')
     comment = InlineKeyboardButton(text='Комментарий к заказу', callback_data='order_comment')
     red_order = InlineKeyboardButton(text='Редактор Заказа', callback_data='red_order')
     cancel_order = InlineKeyboardButton(text='Отменить заказ', callback_data='cancel_order')
@@ -30,13 +31,20 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     if cb_data[0] == 'add':
         add_dish(user_id=query.from_user.id, resident=cb_data[1], dish=cb_data[2], price=cb_data[3])
+        print(query.from_user.id)
+        await update.callback_query.edit_message_reply_markup(
+            reply_markup=dish_card_keyboard(user_id=query.from_user.id, resident=cb_data[1], dish=cb_data[2], price=cb_data[3]))
         await query.answer()
     elif cb_data[0] == 'minus':
         remove_dish(user_id=query.from_user.id, resident=cb_data[1], dish=cb_data[2])
+        await update.callback_query.edit_message_reply_markup(
+            reply_markup=dish_card_keyboard(user_id=query.from_user.id, resident=cb_data[1], dish=cb_data[2],
+                                            price=cb_data[3]))
         await query.answer()
     elif cb_data[0] == 'cart':
         await query.edit_message_text(text=show_cart(query.from_user.id),
                                       reply_markup=cart_inline())
-    elif cb_data[0] == 'delivery':
-        await push_order(user_id=query.from_user.id, context=context)
+    elif cb_data[0] == 'Доставка' or cb_data[0] == 'Самовывоз':
+        await query.answer()
+        await push_order(user_id=query.from_user.id, context=context, receipt_type=cb_data[0])
 
