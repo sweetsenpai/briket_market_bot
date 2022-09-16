@@ -98,3 +98,10 @@ def delete(customer_id):
         )
 
 
+def find_user_by_id(user_id):
+    customer = Customer.query.filter(Customer.chat_id == user_id).one_or_none()
+    if customer is not None:
+        customer_schema = CustomerSchema()
+        return customer_schema.dump(customer)
+    else:
+        return None

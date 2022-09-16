@@ -1,6 +1,7 @@
 from briket_DB.config import mongodb
 from datetime import datetime
 from briket_DB.residents import get_chat_id
+from briket_DB.customers import find_user_by_id
 from telegram.ext import ContextTypes
 from telegram import (constants,
                       InlineKeyboardMarkup,
@@ -47,5 +48,17 @@ async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYP
     return
 
 
+async def accept_order(order_num: int, context: ContextTypes.DEFAULT_TYPE):
+    order = orders_db.find_one({"order_num": order_num})
 
 
+
+async def client_info(order_num: int, context: ContextTypes.DEFAULT_TYPE, msg_chat: int):
+    order = orders_db.find_one({"order_num": order_num})
+    user_id = order['user_id']
+    user_name = (await context.bot.getChat(chat_id=user_id)).username
+    phone = find_user_by_id(user_id)['phone']
+    await context.bot.sendMessage(chat_id=msg_chat,
+                                  text='Написать клиенту: @{}\n'
+                                       'Позвонить клиенту: +{}'.format(user_name, phone))
+    return

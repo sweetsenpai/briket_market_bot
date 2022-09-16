@@ -1,6 +1,6 @@
 import logging
 from briket_DB.shcart_db import add_dish, remove_dish, show_cart
-from briket_DB.order_db import push_order
+from briket_DB.order_db import push_order, client_info
 from menu import dish_card_keyboard
 from telegram import (Update,
                       InlineKeyboardMarkup,
@@ -44,7 +44,18 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cb_data[0] == 'cart':
         await query.edit_message_text(text=show_cart(query.from_user.id),
                                       reply_markup=cart_inline())
+        await query.answer()
     elif cb_data[0] == 'Доставка' or cb_data[0] == 'Самовывоз':
         await query.answer()
         await push_order(user_id=query.from_user.id, context=context, receipt_type=cb_data[0])
-
+    elif cb_data[0] == 'accept':
+        await query.answer()
+    elif cb_data[0] == 'decline_order':
+        await query.answer()
+    elif cb_data[0] == 'support':
+        await query.answer()
+    elif cb_data[0] == 'client':
+        await query.answer()
+        await client_info(int(cb_data[1]), context=context, msg_chat=update.callback_query.from_user.id)
+    elif cb_data[0] == 'redaction_order':
+        await query.answer()

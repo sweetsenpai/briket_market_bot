@@ -24,7 +24,7 @@ def add_dish(user_id: int, resident: str, dish: str, price: str) -> None:
                                             update={'$inc': {"order_items.{}.{}.quantity".format(resident, dish): 1}})
                 sh_cart.find_one_and_update(filter={"user_id": user_id}, update={'$set': {"total": total(user_id)}})
                 return
-        except KeyError:
+        except KeyError or TypeError:
             sh_cart.find_one_and_update(filter=user_cart,
                                         update={'$set': {"order_items.{}.{}".format(resident, dish): {
                                             'price': price, 'quantity': 1}}})
@@ -46,7 +46,7 @@ def remove_dish(user_id: int, resident: str, dish: str) -> None:
             sh_cart.find_one_and_update(filter=user_cart, update={'$unset': {"order_items.{}.{}".format(resident, dish): ''}})
             sh_cart.find_one_and_update(filter={"user_id": user_id}, update={'$set': {"total": total(user_id)}})
             return
-    except KeyError: return
+    except KeyError or TypeError: return
 
 
 def show_cart(user_id: int):
@@ -67,15 +67,17 @@ def total(user_id: int):
     total_sum = 0
     for resident in user_cart.keys():
         for dish in user_cart[resident].keys():
-            total_sum += user_cart[resident][dish]['quantity'] * int(user_cart[resident][dish]['price'])
+            total_sum += user_cart[resident][dish]['quantity'] * float(user_cart[resident][dish]['price'])
 
     return total_sum
 
 
-def get_dish_quantity(user_id: int, rezident, dish: str) -> str:
+def get_dish_quantity(user_id: int, resident, dish: str) -> str:
     user_cart = sh_cart.find_one({"user_id": user_id})
     try:
-        return ''.join(['[', str(user_cart['order_items'][rezident][dish]['quantity']), ']'])
+        return ''.join(['[', str(user_cart['order_items'][resident][dish]['quantity']), ']'])
     except KeyError:
+        return '[0]'
+    except TypeError:
         return '[0]'
 

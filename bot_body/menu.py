@@ -51,7 +51,7 @@ def dish_card_keyboard(resident: str, dish: str, price, user_id: int, query='') 
     rez1 = InlineKeyboardButton(callback_data=','.join(['add',
                                                         resident, dish, str(price)]),
                                 text='{} ➕ Добавить в корзину'.format(
-                                    get_dish_quantity(user_id=user_id, rezident=resident, dish=dish)
+                                    get_dish_quantity(user_id=user_id, resident=resident, dish=dish)
                                 ))
     rez2 = InlineKeyboardButton(switch_inline_query_current_chat=query,
                                 text='◀️Назад')
