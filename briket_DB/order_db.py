@@ -26,7 +26,7 @@ async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_t
 
 def resident_inline_keyboard(order_num: int, resident: str) -> InlineKeyboardMarkup:
     order_num = str(order_num)
-    accept = InlineKeyboardButton(text='Принять✅', callback_data=','.join(['accept', order_num, resident]))
+    accept = InlineKeyboardButton(text='✅', callback_data=','.join(['accept', order_num, resident]))
     decline = InlineKeyboardButton(text='Отменить❌', callback_data=','.join(['decline_order', order_num, resident]))
     support = InlineKeyboardButton(text='Поддержка👨‍🔧', callback_data=','.join(['support', order_num, resident]))
     client = InlineKeyboardButton(text='Клиент📒', callback_data=','.join(['client', order_num, resident]))
