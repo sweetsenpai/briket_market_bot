@@ -40,8 +40,8 @@ async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYP
     for resident in full_order['order_items']:
         resident_order = 'Заказ №{}\nТип: {}\nСтатус: {}\n'.format(full_order['order_num'],
                                                                            full_order['delivery_type'], full_order['status'])
-        for dish in full_order['order_items'][resident]:
-            resident_order += '{}: {}\n'.format(dish, full_order['order_items'][resident][dish]['quantity'])
+        for count, dish in enumerate(full_order['order_items'][resident]):
+            resident_order += '{}. {}: {}\n'.format(count + 1, dish, full_order['order_items'][resident][dish]['quantity'])
         await context.bot.sendMessage(text=resident_order,
                                       chat_id=get_chat_id(resident),
                                       reply_markup=resident_inline_keyboard(order_num, resident))
@@ -74,11 +74,19 @@ async def tech_support(context: ContextTypes.DEFAULT_TYPE, msg_chat: int):
 async def order_status_up(order_num: int, update: Update):
     status = tuple(('Новый', 'Готовиться', 'Готов'))
     order = orders_db.find_one({"order_num": order_num})
-    orders_db.find_one_and_update(filter=order, update={'$set': {"status": status[status.index(order['status']) + 1]}})
-    for resident in order['order_items']:
-        resident_order = 'Заказ №{}\nТип: {}\nСтатус: {}\n'.format(order['order_num'],
-                                                                           order['delivery_type'], order['status'])
-        await update.callback_query.edit_message_text(text=resident_order,
-                                                      reply_markup=resident_inline_keyboard(order_num=order_num,
+    try:
+        new_status = status[status.index(order['status']) + 1]
+        orders_db.find_one_and_update(filter=order, update={'$set': {"status": new_status}})
+        for resident in order['order_items']:
+            resident_order = 'Заказ №{}\nТип: {}\nСтатус: {}\n'.format(order['order_num'],
+                                                                               order['delivery_type'], new_status)
+            for count, dish in enumerate(order['order_items'][resident]):
+                resident_order += '{}. {}: {}\n'.format(count + 1, dish,
+                                                        order['order_items'][resident][dish]['quantity'])
+            await update.callback_query.edit_message_text(text=resident_order,
+                                                          reply_markup=resident_inline_keyboard(order_num=order_num,
                                                                                             resident=resident))
+    except IndexError:
+        return
+
 
