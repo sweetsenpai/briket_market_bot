@@ -3,6 +3,7 @@ from datetime import datetime
 from briket_DB.residents import get_chat_id
 from briket_DB.customers import find_user_by_id
 from telegram.ext import ContextTypes
+from briket_DB.shcart_db import show_cart
 from telegram import (Update,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton)
@@ -10,7 +11,7 @@ orders_db = mongodb.orders
 sh_cart = mongodb.sh_cart
 
 
-async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_type: str):
+async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_type: str, update: Update):
     cart = sh_cart.find_one({"user_id": user_id})
     time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     del cart['_id']
@@ -20,8 +21,15 @@ async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_t
     for resident in cart['order_items']:
         cart['order_items'][resident]['status'] = 'Новый'
     orders_db.insert_one(cart)
-    sh_cart.delete_one({"user_id": user_id})
     await send_order_residents(cart['order_num'], context)
+    msg = 'Номер вашего заказа №{}\n' \
+          '{}\n\n' \
+          'Вы получите оповещение, когда ваш заказ будет готов к выдаче!'.format(cart['order_num'],
+                                                                                show_cart(user_id=user_id))
+    await update.callback_query.edit_message_text(
+        text=msg
+    )
+    sh_cart.delete_one({"user_id": user_id})
     return
 
 
@@ -31,9 +39,9 @@ def resident_inline_keyboard(order_num: int, resident: str, btn_text='✅', cbd=
     decline = InlineKeyboardButton(text='Отменить❌', callback_data=','.join(['decline_order', order_num, resident]))
     support = InlineKeyboardButton(text='Поддержка👨‍🔧', callback_data=','.join(['support', order_num, resident]))
     client = InlineKeyboardButton(text='Клиент📒', callback_data=','.join(['client', order_num, resident]))
-    red = InlineKeyboardButton(text='Редактировать заказ⚙', callback_data=','.join(['redaction_order', order_num,
-                                                                                    resident]))
-    rez = InlineKeyboardMarkup([[accept, decline], [support, client], [red]])
+#   red = InlineKeyboardButton(text='Редактировать заказ⚙', callback_data=','.join(['redaction_order',
+    #   order_num, resident]))
+    rez = InlineKeyboardMarkup([[accept, decline], [support, client]])
     return rez
 
 

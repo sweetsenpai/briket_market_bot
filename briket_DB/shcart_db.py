@@ -1,5 +1,6 @@
 from briket_DB.config import mongodb
-
+from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
+from parcer.parcer_sheet import get_one_dish
 sh_cart = mongodb.sh_cart
 
 
@@ -52,8 +53,6 @@ def remove_dish(user_id: int, resident: str, dish: str) -> None:
 def show_cart(user_id: int):
     user_cart = sh_cart.find_one({"user_id": user_id})
     order = user_cart['order_items']
-
-    if order is None: return 'Вы ещё ничего не добавили в вашу корзину'
     cart = ''
     for resident in order.keys():
         for dish in order[resident].keys():
@@ -81,3 +80,54 @@ def get_dish_quantity(user_id: int, resident, dish: str) -> str:
     except TypeError:
         return '[0]'
 
+
+async def empty_shcart(user_id: int, update: Update):
+    sh_cart.delete_one({"user_id": user_id})
+    await update.callback_query.edit_message_text(text='Ваша корзина очищена!',
+                                                  reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(
+                                                      text='Вернутся к выбору',
+                                                      switch_inline_query_current_chat=''
+                                                  )]]))
+
+
+async def red_order(user_id: int, update: Update):
+    cart = sh_cart.find_one({"user_id": user_id})['order_items']
+    cart_dishes = []
+    for resident in cart:
+        for dish in cart[resident]:
+            cart_dishes.append(
+                [(InlineKeyboardButton(
+                    text=dish,
+                    callback_data=','.join(['show_red_dish', resident, dish])
+                ))]
+            )
+    cart_dishes.append(
+        [(InlineKeyboardButton(text='◀️Назад', callback_data='cart'))]
+    )
+    await update.callback_query.edit_message_text(
+        text='Выберете позицию которую хотите изменить:',
+        reply_markup=InlineKeyboardMarkup(cart_dishes)
+    )
+
+
+async def show_red_dish(resident: str, dish: str, user_id: int,  update: Update):
+    dish_data = get_one_dish(resident, dish)[0]
+    msg = '{}\n' \
+          'Вес: {}\n' \
+          'Цена: {} р.\n' \
+          '<a href="{}">.</a>'.format(dish_data[0], dish_data[1], dish_data[2], dish_data[3])
+    rez1 = InlineKeyboardButton(callback_data=','.join(['add',
+                                                        resident, dish, str(dish_data[2])]),
+                                text='{} ➕ Добавить в корзину'.format(
+                                    get_dish_quantity(user_id=user_id, resident=resident, dish=dish)
+                                ))
+    rez2 = InlineKeyboardButton(callback_data='redaction_order',
+                                text='◀️Назад')
+    rez3 = InlineKeyboardButton(callback_data=','.join(['minus', resident, dish, str(dish_data[2])]),
+                                text='➖ Удалить')
+    keyboard = InlineKeyboardMarkup([[rez1, rez3], [rez2]])
+    await update.callback_query.edit_message_text(
+        text=msg,
+        reply_markup=keyboard,
+        disable_web_page_preview=False,
+        parse_mode='HTML')
