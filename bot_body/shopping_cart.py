@@ -1,7 +1,7 @@
 import logging
 from bot_body.menu import dish_card_keyboard
 from briket_DB.shcart_db import add_dish, remove_dish, show_cart
-from briket_DB.order_db import push_order, client_info, tech_support, accept_order
+from briket_DB.order_db import push_order, client_info, tech_support, accept_order, decline_order, finish_order
 from telegram import (Update,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton)
@@ -19,7 +19,7 @@ def cart_inline():
     red_order = InlineKeyboardButton(text='Редактор Заказа', callback_data='red_order')
     cancel_order = InlineKeyboardButton(text='Отменить заказ', callback_data='cancel_order')
     back = InlineKeyboardButton(text='◀️Назад', switch_inline_query_current_chat='')
-    res = InlineKeyboardMarkup([[take_away, delivery], [comment], [red_order, cancel_order], [back]])
+    res = InlineKeyboardMarkup([[take_away], [comment], [red_order, cancel_order], [back]])
     return res
 
 
@@ -52,12 +52,16 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await accept_order(order_num=int(cb_data[1]), update=update, resident=cb_data[2])
         await query.answer()
     elif cb_data[0] == 'decline_order':
+        await decline_order(order_num=int(cb_data[1]), update=update, resident=cb_data[2])
         await query.answer()
     elif cb_data[0] == 'support':
         await tech_support(context=context, msg_chat=update.callback_query.from_user.id)
         await query.answer()
     elif cb_data[0] == 'client':
         await client_info(order_num=int(cb_data[1]), context=context, msg_chat=update.callback_query.from_user.id)
+        await query.answer()
+    elif cb_data[0] == 'finish_order':
+        await finish_order(order_num=int(cb_data[1]), update=update, resident=cb_data[2], context=context)
         await query.answer()
     elif cb_data[0] == 'redaction_order':
         await query.answer()

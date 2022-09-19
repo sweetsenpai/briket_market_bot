@@ -76,7 +76,7 @@ async def skip_location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     user = update.message.from_user
     logger.info("User %s did not send a location.", user.first_name)
     await update.message.reply_text(
-        "You seem a bit paranoid! At last, tell me something about yourself."
+        "Как хочешь("
     )
 
     return INFO
