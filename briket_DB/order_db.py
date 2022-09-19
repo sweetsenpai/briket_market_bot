@@ -15,18 +15,19 @@ async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_t
     time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     del cart['_id']
     cart['time'] = time
-    cart['status'] = 'Новый'
     cart['order_num'] = datetime.now().microsecond
     cart['delivery_type'] = receipt_type
+    for resident in cart['order_items']:
+        cart['order_items'][resident]['status'] = 'Новый'
     orders_db.insert_one(cart)
 #    sh_cart.delete_one({"user_id": user_id})
     await send_order_residents(cart['order_num'], context)
     return
 
 
-def resident_inline_keyboard(order_num: int, resident: str) -> InlineKeyboardMarkup:
+def resident_inline_keyboard(order_num: int, resident: str, btn_text='✅', cbd='accept') -> InlineKeyboardMarkup:
     order_num = str(order_num)
-    accept = InlineKeyboardButton(text='✅', callback_data=','.join(['accept', order_num, resident]))
+    accept = InlineKeyboardButton(text=btn_text, callback_data=','.join([cbd, order_num, resident]))
     decline = InlineKeyboardButton(text='Отменить❌', callback_data=','.join(['decline_order', order_num, resident]))
     support = InlineKeyboardButton(text='Поддержка👨‍🔧', callback_data=','.join(['support', order_num, resident]))
     client = InlineKeyboardButton(text='Клиент📒', callback_data=','.join(['client', order_num, resident]))
@@ -38,18 +39,33 @@ def resident_inline_keyboard(order_num: int, resident: str) -> InlineKeyboardMar
 async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYPE):
     full_order = orders_db.find_one({"order_num": order_num})
     for resident in full_order['order_items']:
-        resident_order = 'Заказ №{}\nТип: {}\nСтатус: {}\n'.format(full_order['order_num'],
-                                                                           full_order['delivery_type'], full_order['status'])
+        resident_order = 'Заказ №{}\nТип: {}\nСтатус: ' ' Новый📨\n'.format(full_order['order_num'],
+                                                                   full_order['delivery_type'])
         for count, dish in enumerate(full_order['order_items'][resident]):
-            resident_order += '{}. {}: {}\n'.format(count + 1, dish, full_order['order_items'][resident][dish]['quantity'])
+            try:
+                resident_order += '{}. {}: {} шт. \n'.format(count + 1, dish, full_order['order_items'][resident][dish]['quantity'])
+            except TypeError: pass
         await context.bot.sendMessage(text=resident_order,
                                       chat_id=get_chat_id(resident),
-                                      reply_markup=resident_inline_keyboard(order_num, resident))
+                                      reply_markup=resident_inline_keyboard(order_num, resident=resident))
     return
 
 
-async def accept_order(order_num: int, context: ContextTypes.DEFAULT_TYPE):
-    order = orders_db.find_one({"order_num": order_num})
+async def accept_order(order_num: int, update: Update, resident: str):
+    full_order = orders_db.find_one({"order_num": order_num})
+    orders_db.find_one_and_update(filter=full_order,
+                                  update={'$set': {"order_items.{}.status".format(resident): 'Готовиться'}})
+
+    messeg = 'Заказ №{}\nТип: {}\nСтатус:  Готовиться👨‍🍳\n'.format(full_order['order_num'],
+                                                                   full_order['delivery_type'])
+    for count, dish in enumerate(full_order['order_items'][resident]):
+        try:
+            messeg += '{}. {}: {} шт. \n'.format(count + 1, dish, full_order['order_items'][resident][dish]['quantity'])
+        except TypeError: pass
+    await update.callback_query.edit_message_text(text=messeg)
+    await update.callback_query.edit_message_reply_markup(reply_markup=resident_inline_keyboard(
+        order_num=order_num,resident=resident, btn_text='Готов🏆', cbd='finish_order'
+    ))
 
 
 async def client_info(order_num: int, context: ContextTypes.DEFAULT_TYPE, msg_chat: int):
@@ -69,24 +85,5 @@ async def tech_support(context: ContextTypes.DEFAULT_TYPE, msg_chat: int):
         text='Написать в тех.подждержку: @Sweet_Senpai'
     )
     return
-
-
-async def order_status_up(order_num: int, update: Update):
-    status = tuple(('Новый', 'Готовиться', 'Готов'))
-    order = orders_db.find_one({"order_num": order_num})
-    try:
-        new_status = status[status.index(order['status']) + 1]
-        orders_db.find_one_and_update(filter=order, update={'$set': {"status": new_status}})
-        for resident in order['order_items']:
-            resident_order = 'Заказ №{}\nТип: {}\nСтатус: {}\n'.format(order['order_num'],
-                                                                               order['delivery_type'], new_status)
-            for count, dish in enumerate(order['order_items'][resident]):
-                resident_order += '{}. {}: {}\n'.format(count + 1, dish,
-                                                        order['order_items'][resident][dish]['quantity'])
-            await update.callback_query.edit_message_text(text=resident_order,
-                                                          reply_markup=resident_inline_keyboard(order_num=order_num,
-                                                                                            resident=resident))
-    except IndexError:
-        return
 
 
