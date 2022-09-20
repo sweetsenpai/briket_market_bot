@@ -100,7 +100,7 @@ def main() -> None:
         listen="0.0.0.0",
         port=PORT,
         url_path=bot_key,
-        webhook_url="https://<appname>.herokuapp.com/" + bot_key
+        webhook_url="https://brikettestbot.herokuapp.com" + bot_key
     )
 
 
