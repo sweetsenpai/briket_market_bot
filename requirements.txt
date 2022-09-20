@@ -59,4 +59,4 @@ tzlocal==4.2
 urllib3==1.26.11
 uuid==1.30
 Werkzeug==2.2.1
-nest_asyncio-1.5.5
+nest_asyncio==1.5.5
