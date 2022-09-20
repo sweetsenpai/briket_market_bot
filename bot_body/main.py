@@ -15,9 +15,12 @@ import admin_registration as ar
 import admin_commands as ac
 from briket_DB.db_builder import *
 import os
+PORT = int(os.environ.get('PORT', 5000))
+
 
 def main() -> None:
     application = Application.builder().token(bot_key).build()
+
     reg_user = ConversationHandler(
         entry_points=[CommandHandler("start", rg.start)],
         states={
@@ -79,6 +82,7 @@ def main() -> None:
             ac.PHONE_RS_DEL: [MessageHandler(filters.TEXT, ac.del_resident_end)]
         },
         fallbacks=[CommandHandler('stop', ac.cancel_conv)])
+
     ad_info = CommandHandler('admin_info', ac.admin_info)
     res_info = CommandHandler('resident_info', ac.resident_info)
     application.add_handler(ad_info)
@@ -93,15 +97,8 @@ def main() -> None:
     application.add_handler(InlineQueryHandler(menu.inline_query))
     application.add_handler(reg_user)
     application.add_handler(CallbackQueryHandler(call_back_handler))
+    application.run_polling()
 
-    PORT = int(os.environ.get('PORT', '8443'))
-    # add handlers
-    application.run_webhook(
-        listen="0.0.0.0",
-        port=PORT,
-        url_path=bot_key,
-        webhook_url="https://brikettestbot.herokuapp.com" + bot_key
-    )
 
 
 if __name__ == '__main__':
