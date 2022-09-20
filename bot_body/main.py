@@ -17,7 +17,9 @@ from briket_DB.db_builder import *
 import os
 import asyncio
 PORT = int(os.environ.get('PORT', '8443'))
-
+import nest_asyncio
+nest_asyncio.apply()
+__import__('IPython').embed()
 
 async def main() -> None:
     application = Application.builder().token(bot_key).build()
@@ -98,7 +100,7 @@ async def main() -> None:
     application.add_handler(InlineQueryHandler(menu.inline_query))
     application.add_handler(reg_user)
     application.add_handler(CallbackQueryHandler(call_back_handler))
-    application.bot.setWebhook(url=f'https://brikettestbot.herokuapp.com/{bot_key}', )
+    await application.bot.setWebhook(url=f'https://brikettestbot.herokuapp.com/{bot_key}', )
     application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/')
 
 
