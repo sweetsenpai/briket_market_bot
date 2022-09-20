@@ -19,7 +19,7 @@ import asyncio
 PORT = int(os.environ.get('PORT', '8443'))
 import nest_asyncio
 nest_asyncio.apply()
-__import__('IPython').embed()
+
 
 async def main() -> None:
     application = Application.builder().token(bot_key).build()
