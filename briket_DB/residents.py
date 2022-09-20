@@ -79,3 +79,50 @@ def get_chat_id(resident_name: str):
         )
 
 
+def find_phone(resident_id, phone):
+    resident = Resident.query.filter(Resident.resident_phone == phone).one_or_none()
+    if resident is not None:
+        resident.chat_id = resident_id
+        return 200
+    else:
+        return None
+
+
+def insert_location(resident_id, location):
+    resident = Resident.query.filter(Resident.chat_id == resident_id).one_or_none()
+    if resident is not None:
+        resident.resident_addres = location
+        db.session.commit()
+        return 200
+
+
+def insert_name(resident_id, name):
+    resident = Resident.query.filter(Resident.chat_id == resident_id).one_or_none()
+    if resident is not None:
+        resident.resident_name = name
+        db.session.commit()
+        return 200
+
+
+def insert_email(resident_id, email):
+    resident = Resident.query.filter(Resident.chat_id == resident_id).one_or_none()
+    if resident is not None:
+        resident.resident_email = email
+        db.session.commit()
+        return 200
+
+
+def insert_description(resident_id, description):
+    resident = Resident.query.filter(Resident.chat_id == resident_id).one_or_none()
+    if resident is not None:
+        resident.description = description
+        db.session.commit()
+        return 200
+
+
+def insert_img(resident_id, img):
+    resident = Resident.query.filter(Resident.chat_id == resident_id).one_or_none()
+    if resident is not None:
+        resident.img_url = img
+        db.session.commit()
+        return 200

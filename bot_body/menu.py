@@ -4,8 +4,7 @@ from telegram import (InlineQueryResultArticle,
                       InputTextMessageContent,
                       Update,
                       InlineKeyboardMarkup,
-                      InlineKeyboardButton,
-                      CallbackQuery)
+                      InlineKeyboardButton, PhotoSize)
 from telegram.ext import ContextTypes
 from briket_DB.residents import read_all
 from parcer.parcer_sheet import get_market_categories, get_dishs
@@ -77,11 +76,12 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     input_message_content=InputTextMessageContent(
                         message_text='<b>{}</b>\n'
                                      '{}\n'
-                                     '<a href="{}">.</a>'.format(market['resident_name'], market['description'], market['img_url']),
+                                     '<a href="{}"><b>{}</b></a>'.format(market['resident_name'], market['description'], market['img_url'],
+                                                                         market['resident_name']),
                         parse_mode='HTML',
                         disable_web_page_preview=False
                     ),
-                    thumb_url=market['img_url'],
+                    thumb=market['img_url'],
                     thumb_width=50,
                     thumb_height=50,
                     reply_markup=inline_generator(market['resident_name'])

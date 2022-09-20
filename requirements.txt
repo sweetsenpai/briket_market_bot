@@ -37,3 +37,4 @@ python-dotenv~=0.20.0
 pymongo>=4.2.0
 python-telegram-bot>= 13.13
 uuid>=1.30
+cloudinary>=1.29.0
