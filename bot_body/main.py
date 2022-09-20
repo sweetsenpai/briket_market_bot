@@ -18,6 +18,7 @@ import os
 import asyncio
 PORT = int(os.environ.get('PORT', '8443'))
 
+
 async def main() -> None:
     application = Application.builder().token(bot_key).build()
 
@@ -102,5 +103,5 @@ async def main() -> None:
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    asyncio.current_task(main())
 
