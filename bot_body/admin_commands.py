@@ -67,9 +67,9 @@ async def add_new_resident_end(update: Update, context: ContextTypes.DEFAULT_TYP
         "description": '',
         "img_url": str('')}
     create(resident_new)
-    await update.message.reply_text(text='Номер нового резидента({}) успешно добавлен, '
-                                         'теперь резидент может пройти регистрацию.'
-                                         'Для прогождения регистрации необходимо написать в чат /registration'.format(
+    await update.message.reply_text(text='Номер нового резидента({}) успешно добавлен!\n '
+                                         'Теперь резидент может пройти регистрацию.\n'
+                                         'Для прогождения регистрации необходимо написать в чат:\n /registration'.format(
         phone))
     return ConversationHandler.END
 
@@ -93,3 +93,32 @@ async def del_resident_end(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def cancel_conv(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(text='Действие прервано!')
     return ConversationHandler.END
+
+
+async def admin_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(''
+                                    'Для добавления нового администратора воспользуйся коммандой:/add_new_admin \n'
+                                    'Для удаления администратора воспользуйся коммандой:/del_admin\n'
+                                    'Для добавления нового резидента воспользуйся коммандой:/add_new_resident\n'
+                                    'Для удаления резидента воспользуйся коммандой:/del_resident\n'
+                                    'Для простсмотра инструкции резидентов воспользуйся коммандой:/resident_info\n')
+    return
+
+
+async def resident_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        'Для добавления новых блюд или меню воспользуйся этой ссылкой:\n '
+        'https://docs.google.com/spreadsheets/d/1p2sWvJQwo6oDxKP--PpJFiT_bhdGy9MjS4AulYCdHRo/edit?usp=sharing\n'
+        'Если у вашего ресторана ещё нет своей странички меню, то добавьте её нажав на + в левом нижнем углу экрана.\n'
+        'Дайте навзание новому листу так же, как вы указывали при регистрации в боте, соблюдая все регистры.\n'
+        'После этого скопируете первые две строики из листа с названием "Пример".\n'
+        'Теперь можно добавлять блюда по аналогии с шапкой таблицы.\n'
+    )
+    await update.message.reply_text(text=''
+                                         'Если у вашего ресторана уже есть страничка с меню,\n'
+                                         ' то прсто добавьте новое блюдо по аналогии.\n')
+    await update.message.reply_text(text=''
+                                         'ВАЖНО!!!!!\n'
+                                         'При добавлении не целых чисел, указывайте дробную часть через точку "."\n'
+                                         'В противном случае число будет отображаться не корректно.')
+    return

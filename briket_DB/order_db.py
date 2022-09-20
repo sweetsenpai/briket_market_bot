@@ -103,11 +103,13 @@ async def finish_order(order_num: int, update: Update, resident: str, context: C
         orders_db.find_one_and_update(filter=full_order,
                                       update={'$set': {'Сompleted': True}})
         for admins in admin.find():
-            await context.bot.sendMessage(
-                chat_id=admins['chat_id'],
-                text='Заказ №{}\n'
-                 'Готов к выдаче!🎉🎉🎉'.format(full_order['order_num'])
-            )
+            try:
+                await context.bot.sendMessage(
+                    chat_id=admins['chat_id'],
+                    text='Заказ №{}\n'
+                     'Готов к выдаче!🎉🎉🎉'.format(full_order['order_num'])
+                )
+            except KeyError: pass
     messeg = 'Заказ №{}\nТип: {}\nСтатус:  Готов🏆\n'.format(full_order['order_num'],
                                                                     full_order['delivery_type'])
 

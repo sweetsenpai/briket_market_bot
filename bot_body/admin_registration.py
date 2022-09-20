@@ -55,7 +55,7 @@ async def admin_final(update: Update, context: ContextTypes.DEFAULT_TYPE):
         update={'$set': {'email': email}}
     )
     await update.message.reply_text(text='Регистрация завершена.\n'
-                                         'Чтобы ознакомиться с интрукцией нажми сюда -> /admin_instraction')
+                                         'Чтобы ознакомиться с интрукцией нажми сюда -> /admin_info')
     return ConversationHandler.END
 
 
