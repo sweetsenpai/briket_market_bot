@@ -79,7 +79,14 @@ def get_chat_id(resident_name: str):
         )
 
 
-def find_phone(resident_id, phone):
+def delet_on_phone(phone):
+    resident = Resident.query.filter(Resident.resident_phone == phone).one_or_none()
+    db.session.delete(resident)
+    db.session.commit()
+    return
+
+
+def find_phone(resident_id=0, phone=0):
     resident = Resident.query.filter(Resident.resident_phone == phone).one_or_none()
     if resident is not None:
         resident.chat_id = resident_id

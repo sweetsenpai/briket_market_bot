@@ -86,7 +86,9 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.from_user
     logger.info("info of %s: %s", user.first_name, update.message.text)
     await update.message.reply_text("Спасибо")
-
+    await update.message.reply_text(
+        "Рад был познакомиться! Нажми /menu", reply_markup=ReplyKeyboardRemove()
+    )
     return ConversationHandler.END
 
 
@@ -94,8 +96,5 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Cancels and ends the conversation."""
     user = update.message.from_user
     logger.info("User %s canceled the conversation.", user.first_name)
-    await update.message.reply_text(
-        "Рад был познакомиться! Нажми /menu", reply_markup=ReplyKeyboardRemove()
-    )
 
     return ConversationHandler.END

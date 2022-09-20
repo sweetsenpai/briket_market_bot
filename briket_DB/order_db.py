@@ -9,6 +9,7 @@ from telegram import (Update,
                       InlineKeyboardButton)
 orders_db = mongodb.orders
 sh_cart = mongodb.sh_cart
+admin = mongodb.admin
 
 
 async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_type: str, update: Update):
@@ -58,6 +59,11 @@ async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYP
         await context.bot.sendMessage(text=resident_order,
                                       chat_id=get_chat_id(resident),
                                       reply_markup=resident_inline_keyboard(order_num, resident=resident))
+        for admins in admin.find():
+            try:
+                await context.bot.sendMessage(text=resident_order,
+                                              chat_id=admins['chat_id'])
+            except KeyError: pass
     return
 
 
@@ -91,13 +97,20 @@ async def finish_order(order_num: int, update: Update, resident: str, context: C
     if chek_order == len(order_statuses):
         await context.bot.sendMessage(
             chat_id=full_order['user_id'],
-            text='Ваш зказ №{}\n'
+            text='Ваш заказ №{}\n'
                  'Готов к выдаче!🎉🎉🎉'.format(full_order['order_num'])
         )
         orders_db.find_one_and_update(filter=full_order,
                                       update={'$set': {'Сompleted': True}})
+        for admins in admin.find():
+            await context.bot.sendMessage(
+                chat_id=admins['chat_id'],
+                text='Заказ №{}\n'
+                 'Готов к выдаче!🎉🎉🎉'.format(full_order['order_num'])
+            )
     messeg = 'Заказ №{}\nТип: {}\nСтатус:  Готов🏆\n'.format(full_order['order_num'],
                                                                     full_order['delivery_type'])
+
     for count, dish in enumerate(full_order['order_items'][resident]):
         try:
             messeg += '{}. {}: {} шт. \n'.format(count + 1, dish, full_order['order_items'][resident][dish]['quantity'])

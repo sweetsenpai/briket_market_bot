@@ -11,7 +11,8 @@ import registration as rg
 import menu
 from shopping_cart import call_back_handler
 import resident_registration as res_reg
-from briket_DB.db_builder import *
+import admin_registration as ar
+import admin_commands as ac
 
 
 def main() -> None:
@@ -40,6 +41,48 @@ def main() -> None:
         },
         fallbacks=[CommandHandler('cancel_reg', res_reg.resident_end)]
     )
+
+    reg_admin = ConversationHandler(
+        entry_points=[CommandHandler('reg_admin_start', ar.reg_admin_start)],
+        states={
+            ar.PHONE: [MessageHandler(filters.CONTACT, ar.admin_email)],
+            ar.EMAIL: [MessageHandler(filters.TEXT, ar.admin_final)]
+        },
+        fallbacks=[CommandHandler('admin_exit', ar.admin_exit)]
+    )
+
+    ad_new_ad = ConversationHandler(
+        entry_points=[CommandHandler('add_new_admin', ac.add_new_admin_start)],
+        states={
+            ac.PHONE_AD_ADD: [MessageHandler(filters.TEXT, ac.add_new_resident_end)]
+        },
+        fallbacks=[CommandHandler('stop', ac.cancel_conv)])
+
+    del_admin = ConversationHandler(
+        entry_points=[CommandHandler('del_admin', ac.dele_admin_start)],
+        states={
+            ac.PHONE_AD_DEL: [MessageHandler(filters.TEXT, ac.del_resident_end)]
+        },
+        fallbacks=[CommandHandler('stop', ac.cancel_conv)])
+
+    ad_new_resident = ConversationHandler(
+        entry_points=[CommandHandler('add_new_resident', ac.add_new_resident_start)],
+        states={
+            ac.PHONE_RS_ADD: [MessageHandler(filters.TEXT, ac.add_new_resident_end)],
+        },
+        fallbacks=[CommandHandler('stop', ac.cancel_conv)])
+
+    del_admin = ConversationHandler(
+        entry_points=[CommandHandler('del_resident', ac.del_resident_start)],
+        states={
+            ac.PHONE_RS_DEL: [MessageHandler(filters.TEXT, ac.del_resident_end)]
+        },
+        fallbacks=[CommandHandler('stop', ac.cancel_conv)])
+    application.add_handler(ad_new_ad)
+    application.add_handler(del_admin)
+    application.add_handler(ad_new_resident)
+    application.add_handler(del_admin)
+    application.add_handler(reg_admin)
     application.add_handler(reg_resident)
     application.add_handler(CommandHandler('menu', menu.menu))
     application.add_handler(InlineQueryHandler(menu.inline_query))
