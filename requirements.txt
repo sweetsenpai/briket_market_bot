@@ -35,6 +35,6 @@ marshmallow~=3.17.0
 gspread~=5.4.0
 python-dotenv~=0.20.0
 pymongo>=4.2.0
--U python-telegram-bot --pre
+pip install python-telegram-bot -U --pre
 uuid>=1.30
 cloudinary>=1.29.0
