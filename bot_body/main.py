@@ -103,5 +103,5 @@ async def main() -> None:
 
 
 if __name__ == '__main__':
-    asyncio.current_task(main())
+    asyncio.create_task(main())
 
