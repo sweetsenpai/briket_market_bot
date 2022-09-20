@@ -11,6 +11,7 @@ import registration as rg
 import menu
 from shopping_cart import call_back_handler
 import resident_registration as res_reg
+from briket_DB.db_builder import *
 
 
 def main() -> None:
