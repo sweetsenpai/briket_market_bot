@@ -6,7 +6,7 @@ from telegram.ext import (
     MessageHandler,
     filters,
     InlineQueryHandler,
-    CallbackQueryHandler, Updater)
+    CallbackQueryHandler)
 import registration as rg
 import menu
 from shopping_cart import call_back_handler
