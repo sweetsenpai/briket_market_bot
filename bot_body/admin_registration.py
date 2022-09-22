@@ -22,7 +22,7 @@ async def reg_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     share_button = KeyboardButton(text='Поделиться номером телефона', request_contact=True)
     key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
                                     keyboard=[[share_button]],
-                                    resize_keyboard=True)
+                                    resize_keyboard=False)
     await update.message.reply_text(text='Необходимо проверить, внес ли кто-нибудь вас в базу администраторов',
                                     reply_markup=key_board)
     return PHONE

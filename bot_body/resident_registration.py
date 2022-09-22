@@ -27,7 +27,7 @@ async def registration(update: Update, context: ContextTypes.DEFAULT_TYPE):
     share_button = KeyboardButton(text='Поделиться номером телефона', request_contact=True)
     key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
                                     keyboard=[[share_button]],
-                                    resize_keyboard=True)
+                                    resize_keyboard=False)
     await update.message.reply_text(text='Для начала регистрации необходимо прислать ваш номер телефона',
                                     reply_markup=key_board)
     return PHONE
@@ -49,7 +49,7 @@ async def phon_res(update: Update, context: ContextTypes.DEFAULT_TYPE):
         share_button = KeyboardButton(text='Добавить адрес', request_location=True)
         key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
                                         keyboard=[[share_button]],
-                                        resize_keyboard=True)
+                                        resize_keyboard=False)
         await update.message.reply_text('Отлично, ваш номер телефона уже добавлен администратором.',
                                         reply_markup=key_board)
         return ADDRES

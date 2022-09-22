@@ -21,7 +21,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
                                     keyboard=[[share_button]],
-                                    resize_keyboard=True)
+                                    resize_keyboard=False)
 
     if find_id(chat_id) is not None:
         await update.message.reply_text('Рад видеть тебя снова! Нажми /menu')
@@ -46,7 +46,7 @@ async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     share_button = KeyboardButton(text='Share my location', request_location=True)
     key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
                                     keyboard=[[share_button]],
-                                    resize_keyboard=True)
+                                    resize_keyboard=False)
 
     await update.message.reply_text('Сяп, теперь пришли мне свой адрес или нажми /skip',
                                     reply_markup=key_board)

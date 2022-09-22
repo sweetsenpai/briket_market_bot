@@ -4,6 +4,7 @@ connection_mongodb_url = 'mongodb://uegebiykxs4d9h7knx67:SRYGvgVNCi84YUJL6DXL@n1
 local = 'mongodb://localhost:27017/briket_db'
 
 bot_key = '5421421337:AAFueVVv4d7eJyfe13Avm5AlO8zBColaZks'
+test_bot_key = '5651067652:AAGgnKkd-4gc_4uowCKVsfQFLxteQKeeEZA'
 
 credentials = {
   "type": "service_account",
