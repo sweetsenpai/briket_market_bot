@@ -72,8 +72,11 @@ def main() -> None:
         },
         fallbacks=[CommandHandler('stop', ac.cancel_conv)])
 
+    report = CommandHandler('report', ac.report)
     ad_info = CommandHandler('admin_info', ac.admin_info)
     res_info = CommandHandler('resident_info', ac.resident_info)
+
+    application.add_handler(report)
     application.add_handler(ad_info)
     application.add_handler(res_info)
     application.add_handler(ad_new_ad)

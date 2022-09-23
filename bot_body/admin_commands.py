@@ -8,7 +8,8 @@ from telegram.ext import (
     ConversationHandler)
 from briket_DB.config import mongodb
 import logging
-from briket_DB.residents import create, find_phone, delet_on_phone, read_all
+from briket_DB.residents import create, read_all
+from briket_DB.order_db import create_report
 admin = mongodb.admin
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -88,7 +89,6 @@ async def dele_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 
-
 async def add_new_resident_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(text='Для добавления нового резидента в базу пришли его номер телефона в формате:'
                                          '7XXXXXXXXXX')
@@ -148,3 +148,12 @@ async def resident_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                          'При добавлении не целых чисел, указывайте дробную часть через точку "."\n'
                                          'В противном случае число будет отображаться не корректно.')
     return
+
+
+async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    admin_id = update.message.from_user.id
+    if mongodb.admin.find_one({'chat_id': admin_id}) is None:
+        await update.message.reply_text(text='Вы не являетесь администратором!')
+        return
+    else:
+        await update.message.reply_text(text=create_report())

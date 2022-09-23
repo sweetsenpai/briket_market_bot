@@ -14,9 +14,8 @@ admin = mongodb.admin
 
 async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_type: str, update: Update):
     cart = sh_cart.find_one({"user_id": user_id})
-    time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     del cart['_id']
-    cart['time'] = time
+    cart['time'] = datetime.now()
     cart['order_num'] = datetime.now().microsecond
     cart['delivery_type'] = receipt_type
     for resident in cart['order_items']:
@@ -147,4 +146,15 @@ async def tech_support(context: ContextTypes.DEFAULT_TYPE, msg_chat: int):
         text='Написать в тех.подждержку: @Sweet_Senpai'
     )
     return
+
+
+def create_report():
+    msg = datetime.now().strftime("%Y-%m-%d")
+    for order in orders_db.find({}):
+        if order['time'].month == datetime.now().month:
+            msg += '\nЗаказ №{}\n' \
+                   'Сумма: {}\n' \
+                   '---------------'.format(order['order_num'], order['total'])
+    return msg
+
 

@@ -135,5 +135,3 @@ def insert_img(resident_id, img):
         return 200
 
 
-for resident in read_all():
-    print(resident['resident_name'])
