@@ -1,4 +1,4 @@
-from briket_DB.passwords import test_bot_key
+from briket_DB.passwords import test_bot_key, bot_key
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -15,7 +15,7 @@ import admin_registration as ar
 import admin_commands as ac
 import os
 from briket_DB.db_builder import *
-#PORT = int(os.environ.get('PORT', '8443'))
+PORT = int(os.environ.get('PORT', '8443'))
 
 
 def main() -> None:
@@ -89,7 +89,8 @@ def main() -> None:
     application.add_handler(InlineQueryHandler(menu.inline_query))
     application.add_handler(reg_user)
     application.add_handler(CallbackQueryHandler(call_back_handler))
-    application.run_polling()
+    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
+                            listen="0.0.0.0")
 
 
 if __name__ == '__main__':
