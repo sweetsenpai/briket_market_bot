@@ -133,3 +133,7 @@ def insert_img(resident_id, img):
         resident.img_url = img
         db.session.commit()
         return 200
+
+
+for resident in read_all():
+    print(resident['resident_name'])

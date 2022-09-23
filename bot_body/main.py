@@ -14,7 +14,7 @@ import resident_registration as res_reg
 import admin_registration as ar
 import admin_commands as ac
 import os
-#from briket_DB.db_builder import *
+from briket_DB.db_builder import *
 #PORT = int(os.environ.get('PORT', '8443'))
 
 
@@ -62,12 +62,8 @@ def main() -> None:
         },
         fallbacks=[CommandHandler('stop', ac.cancel_conv)])
 
-    del_admin = ConversationHandler(
-        entry_points=[CommandHandler('del_admin', ac.dele_admin_start)],
-        states={
-            ac.PHONE_AD_DEL: [MessageHandler(filters.TEXT, ac.del_resident_end)]
-        },
-        fallbacks=[CommandHandler('stop', ac.cancel_conv)])
+    del_admin = CommandHandler('del_admin', ac.dele_admin)
+    del_resident = CommandHandler('del_resident', ac.del_resident)
 
     ad_new_resident = ConversationHandler(
         entry_points=[CommandHandler('add_new_resident', ac.add_new_resident_start)],
@@ -76,19 +72,12 @@ def main() -> None:
         },
         fallbacks=[CommandHandler('stop', ac.cancel_conv)])
 
-    del_admin = ConversationHandler(
-        entry_points=[CommandHandler('del_resident', ac.del_resident_start)],
-        states={
-            ac.PHONE_RS_DEL: [MessageHandler(filters.TEXT, ac.del_resident_end)]
-        },
-        fallbacks=[CommandHandler('stop', ac.cancel_conv)])
-
     ad_info = CommandHandler('admin_info', ac.admin_info)
     res_info = CommandHandler('resident_info', ac.resident_info)
     application.add_handler(ad_info)
     application.add_handler(res_info)
     application.add_handler(ad_new_ad)
-    application.add_handler(del_admin)
+    application.add_handler(del_resident)
     application.add_handler(ad_new_resident)
     application.add_handler(del_admin)
     application.add_handler(reg_admin)

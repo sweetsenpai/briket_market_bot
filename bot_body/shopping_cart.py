@@ -1,11 +1,20 @@
 import logging
+from briket_DB.residents import delet_on_phone
+from briket_DB.config import mongodb
 from bot_body.menu import dish_card_keyboard
-from briket_DB.shcart_db import add_dish, remove_dish, show_cart, empty_shcart, red_order, show_red_dish
-from briket_DB.order_db import push_order, client_info, tech_support, accept_order, decline_order, finish_order
+from briket_DB.shcart_db import (add_dish, remove_dish,
+                                 show_cart, empty_shcart,
+                                 red_order, show_red_dish)
+
+from briket_DB.order_db import (push_order, client_info,
+                                tech_support, accept_order,
+                                decline_order, finish_order)
 from telegram import (Update,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton)
+
 from telegram.ext import ContextTypes
+
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -71,4 +80,10 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cb_data[0] == 'finish_order':
         await finish_order(order_num=int(cb_data[1]), update=update, resident=cb_data[2], context=context)
         await query.answer()
+    elif cb_data[0] == 'del_resident':
+        delet_on_phone(cb_data[1])
+        await update.callback_query.edit_message_text(text='Резидент успешно удален!')
+    elif cb_data[0] == 'del_admin':
+        mongodb.admin.delete_one({"phone": cb_data[1]})
+        await update.callback_query.edit_message_text(text='Администратор успешно удален!')
 
