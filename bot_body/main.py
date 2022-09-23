@@ -58,7 +58,7 @@ def main() -> None:
     ad_new_ad = ConversationHandler(
         entry_points=[CommandHandler('add_new_admin', ac.add_new_admin_start)],
         states={
-            ac.PHONE_AD_ADD: [MessageHandler(filters.TEXT, ac.add_new_resident_end)]
+            ac.PHONE_AD_ADD: [MessageHandler(filters.TEXT, ac.add_new_admin_phone)]
         },
         fallbacks=[CommandHandler('stop', ac.cancel_conv)])
 
