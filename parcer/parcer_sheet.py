@@ -60,6 +60,9 @@ def load_img(img_url):
         print('Image Couldn\'t be retrieved')
 
 
+def create_new_table(resident_name: str):
+    table = sa.create(title=resident_name)
+    return
 
 
 

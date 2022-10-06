@@ -8,6 +8,7 @@ from telegram.ext import (
     ConversationHandler)
 from briket_DB.residents import find_phone, insert_img,insert_email,insert_name,insert_location,insert_description
 import logging
+from parcer.parcer_sheet import create_new_table
 import cloudinary
 from cloudinary import uploader
 cloudinary.config(
@@ -75,6 +76,7 @@ async def resident_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
     resident = update.message.from_user
     logger.info("Название заведения: %s: %s", resident.first_name, update.message.text)
     insert_name(resident_id=update.message.from_user.id, name=update.message.text)
+    create_new_table(resident_name=update.message.text)
     await update.message.reply_text('Отправьте ваш email')
     return EMAIL
 
@@ -106,6 +108,7 @@ async def resident_img(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info('Изображение заведения {} :{}'.format(resident.first_name, url))
     await update.message.reply_text('Поздравляем, регистрация завершена.\n'
                                     'Чтобы ознакомиться с инструкцией нажми сюда -> /instraction')
+
     return ConversationHandler.END
 
 
