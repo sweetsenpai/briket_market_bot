@@ -61,8 +61,10 @@ async def resident_addres(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(
         "Location of %s: %f / %f", resident.first_name, resident_location.latitude, resident_location.longitude
     )
+    location = ' '.join([str(resident_location.latitude), str(resident_location.longitude)])
+    print(location)
     insert_location(resident_id=update.message.from_user.id,
-                    location=''.join(str(resident_location)))
+                    location=''.join([str(resident_location.latitude), str(resident_location.longitude)]))
     await update.message.reply_text(
         "А теперь добавим название вашего заведения", reply_markup=ReplyKeyboardRemove()
     )

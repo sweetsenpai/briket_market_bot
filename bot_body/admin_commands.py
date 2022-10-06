@@ -92,7 +92,7 @@ async def dele_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def add_new_resident_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(text='Для добавления нового резидента в базу пришли его номер телефона в формате:'
                                          '7XXXXXXXXXX')
-    return PHONE_AD_ADD
+    return PHONE_RS_ADD
 
 
 async def add_new_resident_end(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -111,9 +111,6 @@ async def add_new_resident_end(update: Update, context: ContextTypes.DEFAULT_TYP
                                          'Для прогождения регистрации необходимо написать в чат:\n /registration'.format(
         phone))
     return ConversationHandler.END
-
-
-
 
 
 async def cancel_conv(update: Update, context: ContextTypes.DEFAULT_TYPE):

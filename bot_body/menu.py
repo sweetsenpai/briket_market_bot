@@ -57,7 +57,7 @@ def dish_card_keyboard(resident: str, dish: str, price, user_id: int, query='') 
     rez3 = InlineKeyboardButton(callback_data=','.join(['minus', resident, dish, str(price)]),
                                 text='➖ Удалить')
     rez4 = InlineKeyboardButton(callback_data='cart',
-                                text='🛒')
+                                text='Корзина')
 
     reply = InlineKeyboardMarkup([[rez1, rez3], [rez2, rez4]])
     return reply
