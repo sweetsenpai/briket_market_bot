@@ -4,7 +4,7 @@ from briket_DB.models import Customer, Resident
 
 RESIDENTS = [{
     "resident_name": 'KFC',
-    "chat_id": 352354385,
+    "chat_id": 352354383,
     "resident_addres": 'EKB',
     "resident_phone": '+78123743122',
     "resident_email": 'kfc@gmail.com',
@@ -13,7 +13,7 @@ RESIDENTS = [{
 },
     {
         "resident_name": 'Вкусно и точка',
-        "chat_id": 352354384,
+        "chat_id": 352354383,
         "resident_addres": 'New-York',
         "resident_phone": '+78123744444',
         "resident_email": 'macdonalds@bk.ru',
@@ -22,7 +22,7 @@ RESIDENTS = [{
     },
     {
         "resident_name": 'Burger King',
-        "chat_id": 352354387,
+        "chat_id": 352354383,
         "resident_addres": 'OMSK',
         "resident_phone": '+71111111',
         "resident_email": 'bk@bk.ru',
