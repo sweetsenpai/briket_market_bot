@@ -98,9 +98,11 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     description='Вес:{} гр.\n'
                                 'Цена:{}'.format(dish[1], dish[2]),
                     input_message_content=InputTextMessageContent(
-                        message_text='Вес:{} гр.\n'
-                                     'Цена:{}\n'
-                                     '<a href="{}">{}</a>'.format(dish[1], dish[2], dish[3], dish[0]),
+                        message_text='Вес: {} гр.\n'
+                                     'Цена: {}\n'
+                                     '<a href="{}">{}</a>'
+                                     '\nБелки: {}\nЖиры: {}\nУглеводы: {}'.format(dish[1], dish[2], dish[3], dish[0],
+                                                                                  dish[5], dish[6],dish[7]),
                         disable_web_page_preview=False,
                         parse_mode='HTML'
                         ),
