@@ -61,7 +61,7 @@ def load_img(img_url):
 
 
 def create_new_table(resident_name: str):
-    table = sa.create(title=resident_name)
+    sheet_main.add_worksheet(title=resident_name, rows="100", cols="9")
     return
 
 
