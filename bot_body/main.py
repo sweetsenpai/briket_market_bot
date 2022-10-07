@@ -19,13 +19,13 @@ PORT = int(os.environ.get('PORT', '8443'))
 
 
 def main() -> None:
-    application = Application.builder().token(bot_key).build()
+    application = Application.builder().token(test_bot_key).build()
 
     reg_user = ConversationHandler(
         entry_points=[CommandHandler("start", rg.start)],
         states={
             rg.PHONE: [MessageHandler(filters.CONTACT, rg.phone)],
-            rg.LOCATION: [MessageHandler(filters.LOCATION, rg.location),
+            rg.LOCATION: [MessageHandler(filters.LOCATION | filters.TEXT, rg.location),
                           CommandHandler("skip", rg.skip_location), ],
             rg.INFO: [MessageHandler(filters.TEXT & ~filters.COMMAND, rg.info)]
         },
@@ -37,7 +37,7 @@ def main() -> None:
         entry_points=[CommandHandler('registration', res_reg.registration)],
         states={
             res_reg.PHONE: [MessageHandler(filters.CONTACT, res_reg.phon_res)],
-            res_reg.ADDRES: [MessageHandler(filters.LOCATION, res_reg.resident_addres)],
+            res_reg.ADDRES: [MessageHandler(filters.LOCATION | filters.TEXT, res_reg.resident_addres)],
             res_reg.NAME: [MessageHandler(filters.TEXT, res_reg.resident_name)],
             res_reg.EMAIL: [MessageHandler(filters.TEXT, res_reg.resident_email)],
             res_reg.DESCRIPTION: [MessageHandler(filters.TEXT, res_reg.resident_description)],
@@ -89,9 +89,9 @@ def main() -> None:
     application.add_handler(InlineQueryHandler(menu.inline_query))
     application.add_handler(reg_user)
     application.add_handler(CallbackQueryHandler(call_back_handler))
-#    application.run_polling()
-    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
-                            listen="0.0.0.0")
+    application.run_polling()
+#    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
+#                           listen="0.0.0.0")
 
 
 if __name__ == '__main__':

@@ -58,14 +58,16 @@ async def phon_res(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def resident_addres(update: Update, context: ContextTypes.DEFAULT_TYPE):
     resident = update.message.from_user
-    resident_location = update.message.location
-    logger.info(
-        "Location of %s: %f / %f", resident.first_name, resident_location.latitude, resident_location.longitude
-    )
-    location = ' '.join([str(resident_location.latitude), str(resident_location.longitude)])
-    print(location)
-    insert_location(resident_id=update.message.from_user.id,
-                    location=''.join([str(resident_location.latitude), str(resident_location.longitude)]))
+    try:
+        resident_location = update.message.location
+        logger.info(
+            "Location of %s: %f / %f", resident.first_name, resident_location.latitude, resident_location.longitude
+        )
+        insert_location(resident_id=update.message.from_user.id,
+                        location=''.join([str(resident_location.latitude), str(resident_location.longitude)]))
+    except:
+        resident_location = update.message.text
+        insert_location(resident_id=resident.id, location=resident_location)
     await update.message.reply_text(
         "А теперь добавим название вашего заведения", reply_markup=ReplyKeyboardRemove()
     )

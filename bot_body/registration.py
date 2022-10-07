@@ -59,15 +59,24 @@ async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.message.from_user
-    user_location = update.message.location
-    logger.info(
-        "Location of %s: %f / %f", user.first_name, user_location.latitude, user_location.longitude
-    )
-    await update.message.reply_text(
-        "А теперь расскажи о себе", reply_markup=ReplyKeyboardRemove()
-    )
-    update_addres(user.id, str([user_location.latitude, user_location.longitude]))
+    try:
+        user = update.message.from_user
+        user_location = update.message.location
+        logger.info(
+            "Location of %s: %f / %f", user.first_name, user_location.latitude, user_location.longitude
+        )
+        await update.message.reply_text(
+            "А теперь расскажи о себе", reply_markup=ReplyKeyboardRemove()
+        )
+        update_addres(user.id, str([user_location.latitude, user_location.longitude]))
+    except:
+        user = update.message.from_user
+        user_location = update.message.text
+        await update.message.reply_text(
+            "А теперь расскажи о себе", reply_markup=ReplyKeyboardRemove()
+        )
+        update_addres(user.id, user_location)
+
     return INFO
 
 
