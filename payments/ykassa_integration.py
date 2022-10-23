@@ -1,17 +1,28 @@
-# shopId 948782
-# test_0GfUYI52S7AAEGObdI8PgnlSXqgM3T-jSQtOo0BjNNE
+from telegram import Update
 from yookassa import Configuration, Payment
 from yookassa.domain.models.currency import Currency
 from yookassa.domain.models.receipt import Receipt
 from yookassa.domain.models.receipt_item import ReceiptItem
 from yookassa.domain.common.confirmation_type import ConfirmationType
 from yookassa.domain.request.payment_request_builder import PaymentRequestBuilder
+from time import sleep
 Configuration.account_id = '948782'
 Configuration.secret_key = 'test_0GfUYI52S7AAEGObdI8PgnlSXqgM3T-jSQtOo0BjNNE'
-from briket_DB.shcart_db import sh_cart
 
 
-def create_payment(order, order_num:int):
+async def chek_payment(payement_id: str, update: Update):
+    timer = 60
+    while timer > 0:
+        if Payment.find_one(payment_id=payement_id).status =='succeeded':
+            await update.callback_query.edit_message_text(text='Ваш заказ успешно оплачен!')
+            return True
+        sleep(15)
+        timer -= 15
+    await update.callback_query.edit_message_text(text='Ссылка для оплаты устарела, оформите заказ снова.')
+    return False
+
+
+async def create_payment(order, order_num: int, update: Update ):
     receipt = Receipt()
     receipt.customer = {"phone": "", "email": "test@mail.ru"}
     receipt.tax_system_code = 1
@@ -39,10 +50,11 @@ def create_payment(order, order_num:int):
         .set_receipt(receipt)
     request = builder.build()
     res = Payment.create(request)
-    text = 'Ваш заказ можно оплатить по этой ссылке:\n{}'.format(res.confirmation.confirmation_url)
-    return res
-
-
+    payment_url = 'Ваш заказ можно оплатить по этой ссылке:\n{}\n Ссылка будет действительна в течении 30 минут.'.format(res.confirmation.confirmation_url)
+    await update.callback_query.edit_message_text(text=payment_url)
+    if await chek_payment(payement_id=res.id, update=update) is True:
+        return True
+    return False
 
 
 

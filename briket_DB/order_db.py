@@ -7,6 +7,7 @@ from briket_DB.shcart_db import show_cart
 from telegram import (Update,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton)
+from payments.ykassa_integration import create_payment, chek_payment
 orders_db = mongodb.orders
 sh_cart = mongodb.sh_cart
 admin = mongodb.admin
@@ -20,15 +21,15 @@ async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_t
     cart['delivery_type'] = receipt_type
     for resident in cart['order_items']:
         cart['order_items'][resident]['status'] = 'Новый'
+    if await create_payment(order=sh_cart.find_one({"user_id": user_id}), order_num=cart['order_num'], update=update) is False:
+        return
     orders_db.insert_one(cart)
     await send_order_residents(cart['order_num'], context)
     msg = 'Номер вашего заказа №{}\n' \
           '{}\n\n' \
           'Вы получите оповещение, когда ваш заказ будет готов к выдаче!'.format(cart['order_num'],
                                                                                 show_cart(user_id=user_id))
-    await update.callback_query.edit_message_text(
-        text=msg
-    )
+    await update.callback_query.edit_message_text(text=msg)
     sh_cart.delete_one({"user_id": user_id})
     return
 
