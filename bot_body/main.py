@@ -72,7 +72,6 @@ def main() -> None:
             ac.PHONE_RS_ADD: [MessageHandler(filters.TEXT, ac.add_new_resident_end)],
         },
         fallbacks=[CommandHandler('stop', ac.cancel_conv)])
-
     report = MessageHandler(filters.Regex('Отчет'), ac.report)
     ad_info = MessageHandler(filters.Regex('FAQ админ.'), ac.admin_info)
     res_info = MessageHandler(filters.Regex('FAQ рез.'), ac.resident_info)

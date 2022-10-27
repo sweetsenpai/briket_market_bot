@@ -20,7 +20,7 @@ PHONE_AD_ADD, PHONE_RS_ADD = range(2)
 
 
 async def add_new_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(text=get_text_api('Gsm3Vnt'))
+    await update.message.reply_text(text=get_text_api('qS1QfgZp'))
     return PHONE_AD_ADD
 
 
