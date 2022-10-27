@@ -20,7 +20,7 @@ PHONE_AD_ADD, PHONE_RS_ADD = range(2)
 
 
 async def add_new_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(text=get_text_api('qS1QfgZp'))
+    await update.message.reply_text(text=get_text_api('0Gsm3Vnt'))
     return PHONE_AD_ADD
 
 
@@ -28,7 +28,7 @@ async def add_new_admin_phone(update: Update, context: ContextTypes.DEFAULT_TYPE
     phone = update.message.text
     admin.insert_one({'phone': phone})
     await update.message.reply_text(text='Номер нового администратора({}) успешно добавлен, '
-                                         'теперь админ может пройти регистрацию.'
+                                         'теперь новый админ может пройти регистрацию.'
                                          'Для прогождения регистрации необходимо написать в чат /reg_admin_start'.format(phone))
     return ConversationHandler.END
 
