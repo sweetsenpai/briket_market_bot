@@ -3,9 +3,8 @@ from briket_DB.customers import find_id, create, update_addres
 from telegram import ReplyKeyboardRemove, Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import (
     ContextTypes,
-    ConversationHandler,
-
-)
+    ConversationHandler)
+from text_integration.pastebin_integration import get_text_api
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -24,11 +23,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                     resize_keyboard=False)
 
     if find_id(chat_id) is not None:
-        await update.message.reply_text('Рад видеть тебя снова! Нажми /menu')
+        await update.message.reply_text(get_text_api('KBermmJp'))
 
     elif find_id(chat_id) is None:
-        await update.message.reply_text('Давай знакомиться!, '
-                                        'пришли мне свой номер телефона',
+        await update.message.reply_text(text=get_text_api('a6EZbbzk'),
                                         reply_markup=key_board)
 
         return PHONE
@@ -48,7 +46,7 @@ async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                     keyboard=[[share_button]],
                                     resize_keyboard=False)
 
-    await update.message.reply_text('Сяп, теперь пришли мне свой адрес или нажми /skip',
+    await update.message.reply_text(text=get_text_api('MBMfCNhN'),
                                     reply_markup=key_board)
     customer = {'chat_id': user.id,
                 'phone': str(user_contact),
@@ -66,14 +64,14 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Location of %s: %f / %f", user.first_name, user_location.latitude, user_location.longitude
         )
         await update.message.reply_text(
-            "А теперь расскажи о себе", reply_markup=ReplyKeyboardRemove()
+            text=get_text_api('aANQhGQP'), reply_markup=ReplyKeyboardRemove()
         )
         update_addres(user.id, str([user_location.latitude, user_location.longitude]))
     except:
         user = update.message.from_user
         user_location = update.message.text
         await update.message.reply_text(
-            "А теперь расскажи о себе", reply_markup=ReplyKeyboardRemove()
+            "И последний шаг, как тебя зовут?", reply_markup=ReplyKeyboardRemove()
         )
         update_addres(user.id, user_location)
 
@@ -81,7 +79,6 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def skip_location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    """Skips the location and asks for info about the user."""
     user = update.message.from_user
     logger.info("User %s did not send a location.", user.first_name)
     await update.message.reply_text(
@@ -96,7 +93,7 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info("info of %s: %s", user.first_name, update.message.text)
     await update.message.reply_text("Спасибо")
     await update.message.reply_text(
-        "Рад был познакомиться! Нажми /menu", reply_markup=ReplyKeyboardRemove()
+        text=get_text_api('jTrJc5RZ'), reply_markup=ReplyKeyboardRemove()
     )
     return ConversationHandler.END
 
@@ -107,3 +104,8 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     logger.info("User %s canceled the conversation.", user.first_name)
 
     return ConversationHandler.END
+
+
+async def custommer_faq(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(text=get_text_api('8cyyM90u'))
+    return

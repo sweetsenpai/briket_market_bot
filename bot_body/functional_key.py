@@ -5,6 +5,7 @@ from telegram.ext import (
     MessageHandler,
     filters, ContextTypes)
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
+from text_integration.pastebin_integration import get_text_api
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -23,7 +24,7 @@ async def admin_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
              KeyboardButton(text='Удалить админ.')],
             [KeyboardButton(text='Добавить резидента'),
              KeyboardButton(text='Удалить резидента')],
-            [KeyboardButton(text='Инструкция админ.'),
+            [KeyboardButton(text='FAQ админ.'),
              KeyboardButton(text='Инструкция рез.')],
             [KeyboardButton(text='Отчет'),
              KeyboardButton(text='Новый админ. вход')]
@@ -48,7 +49,7 @@ async def customer_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def resident_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
     res_func = ReplyKeyboardMarkup(
         [
-            [KeyboardButton(text='Инструкция рез.')],
+            [KeyboardButton(text='FAQ рез.')],
             [KeyboardButton(text='Отчет')],
             [KeyboardButton(text='Новый резидент вход')]
         ], resize_keyboard=True, one_time_keyboard=False)

@@ -11,6 +11,7 @@ import logging
 from parcer.parcer_sheet import create_new_table
 import cloudinary
 from cloudinary import uploader
+from text_integration.pastebin_integration import get_text_api
 cloudinary.config(
   cloud_name="dwexszkh4",
   api_key="677565459774618",
@@ -29,7 +30,7 @@ async def registration(update: Update, context: ContextTypes.DEFAULT_TYPE):
     key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
                                     keyboard=[[share_button]],
                                     resize_keyboard=False)
-    await update.message.reply_text(text='Для начала регистрации необходимо прислать ваш номер телефона',
+    await update.message.reply_text(text=get_text_api('rRFYBgZt'),
                                     reply_markup=key_board)
     return PHONE
 
@@ -121,3 +122,4 @@ async def resident_end(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text='Регистрация прервана!'
     )
     return ConversationHandler.END
+

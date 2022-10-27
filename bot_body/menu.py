@@ -9,7 +9,7 @@ from telegram.ext import ContextTypes
 from briket_DB.residents import read_all
 from parcer.parcer_sheet import get_market_categories, get_dishs
 from briket_DB.shcart_db import get_dish_quantity
-
+from text_integration.pastebin_integration import get_text_api
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -22,7 +22,7 @@ async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                       switch_inline_query_current_chat='')]]
     reply = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text(
-        text='Скорее нажимай на кнопку «Хочу есть» и выбирай блюда от резидентов фуд-корта «Брикет Маркет»!',
+        text=get_text_api('EJ7xbdY6'),
         reply_markup=reply)
     return
 

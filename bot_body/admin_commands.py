@@ -10,6 +10,7 @@ from briket_DB.config import mongodb
 import logging
 from briket_DB.residents import create, read_all
 from briket_DB.order_db import create_report
+from text_integration.pastebin_integration import get_text_api
 admin = mongodb.admin
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -19,8 +20,7 @@ PHONE_AD_ADD, PHONE_RS_ADD = range(2)
 
 
 async def add_new_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(text='Для добавления нового админа в базу пришли его номер телефона в формате:'
-                                         '7XXXXXXXXXX')
+    await update.message.reply_text(text=get_text_api('Gsm3Vnt'))
     return PHONE_AD_ADD
 
 
@@ -51,7 +51,7 @@ async def del_resident(update: Update, context: ContextTypes.DEFAULT_TYPE):
     admin_id = update.message.from_user.id
 
     if mongodb.admin.find_one({'chat_id': admin_id}) is None:
-        await update.message.reply_text(text='Вы не являетесь администратором!')
+        await update.message.reply_text(text=get_text_api('trhpLPsm'))
         return
     else:
         await update.message.reply_text(
@@ -79,7 +79,7 @@ async def dele_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     admin_id = update.message.from_user.id
 
     if mongodb.admin.find_one({'chat_id': admin_id}) is None:
-        await update.message.reply_text(text='Вы не являетесь администратором!')
+        await update.message.reply_text(text=get_text_api('trhpLPsm'))
         return
     else:
         await update.message.reply_text(
@@ -90,8 +90,7 @@ async def dele_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def add_new_resident_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(text='Для добавления нового резидента в базу пришли его номер телефона в формате:'
-                                         '7XXXXXXXXXX')
+    await update.message.reply_text(text=get_text_api('Cxht7gaQ'))
     return PHONE_RS_ADD
 
 
@@ -108,7 +107,7 @@ async def add_new_resident_end(update: Update, context: ContextTypes.DEFAULT_TYP
     create(resident_new)
     await update.message.reply_text(text='Номер нового резидента({}) успешно добавлен!\n '
                                          'Теперь резидент может пройти регистрацию.\n'
-                                         'Для прогождения регистрации необходимо написать в чат:\n /registration'.format(
+                                         'Для прохождения регистрации необходимо написать в чат:\n /registration'.format(
         phone))
     return ConversationHandler.END
 
@@ -119,38 +118,19 @@ async def cancel_conv(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def admin_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(''
-                                    'Для добавления нового администратора воспользуйся коммандой:/add_new_admin \n'
-                                    'Для удаления администратора воспользуйся коммандой:/del_admin\n'
-                                    'Для добавления нового резидента воспользуйся коммандой:/add_new_resident\n'
-                                    'Для удаления резидента воспользуйся коммандой:/del_resident\n'
-                                    'Для простсмотра инструкции резидентов воспользуйся коммандой:/resident_info\n')
+    await update.message.reply_text(text=get_text_api('Fy9ejgAv'))
     return
 
 
 async def resident_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        'Для добавления новых блюд или меню воспользуйся этой ссылкой:\n '
-        'https://docs.google.com/spreadsheets/d/1p2sWvJQwo6oDxKP--PpJFiT_bhdGy9MjS4AulYCdHRo/edit?usp=sharing\n'
-        'Если у вашего ресторана ещё нет своей странички меню, то добавьте её нажав на + в левом нижнем углу экрана.\n'
-        'Дайте навзание новому листу так же, как вы указывали при регистрации в боте, соблюдая все регистры.\n'
-        'После этого скопируете первые две строики из листа с названием "Пример".\n'
-        'Теперь можно добавлять блюда по аналогии с шапкой таблицы.\n'
-    )
-    await update.message.reply_text(text=''
-                                         'Если у вашего ресторана уже есть страничка с меню,\n'
-                                         ' то прсто добавьте новое блюдо по аналогии.\n')
-    await update.message.reply_text(text=''
-                                         'ВАЖНО!!!!!\n'
-                                         'При добавлении не целых чисел, указывайте дробную часть через точку "."\n'
-                                         'В противном случае число будет отображаться не корректно.')
+    await update.message.reply_text(text=get_text_api('ph3Z6zLK'))
     return
 
 
 async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
     admin_id = update.message.from_user.id
     if mongodb.admin.find_one({'chat_id': admin_id}) is None:
-        await update.message.reply_text(text='Вы не являетесь администратором!')
+        await update.message.reply_text(text=get_text_api('trhpLPsm'))
         return
     else:
         await update.message.reply_text(text=create_report())

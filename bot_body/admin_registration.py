@@ -8,6 +8,7 @@ from telegram.ext import (
     ConversationHandler)
 from briket_DB.config import mongodb
 import logging
+from text_integration.pastebin_integration import get_text_api
 
 admin = mongodb.admin
 
@@ -23,7 +24,7 @@ async def reg_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
                                     keyboard=[[share_button]],
                                     resize_keyboard=False)
-    await update.message.reply_text(text='Необходимо проверить, внес ли кто-нибудь вас в базу администраторов',
+    await update.message.reply_text(text=get_text_api('qS1QfgZp'),
                                     reply_markup=key_board)
     return PHONE
 
@@ -32,7 +33,7 @@ async def admin_email(update: Update, context: ContextTypes.DEFAULT_TYPE):
     phone = update.message.contact.phone_number
     resident = admin.find_one({"phone": phone})
     if resident is None:
-        await update.message.reply_text('Ксожалению мы не нашли вашего номера в нашей базе')
+        await update.message.reply_text(get_text_api('nzMSZkNW'))
 
     elif resident is not None:
         admin.delete_one({"phone": phone})
@@ -42,9 +43,7 @@ async def admin_email(update: Update, context: ContextTypes.DEFAULT_TYPE):
             'email': ''
         }
         admin.insert_one(new_admin)
-        await update.message.reply_text(text='Отлично, вы прошли проверку!\n'
-                                             'Теперь пришлите ваш email, '
-                                             'в дальнейшем на него будет приходит отчет о продажах через бота.')
+        await update.message.reply_text(text=get_text_api('qLdiffKd'))
         return EMAIL
 
 
@@ -54,8 +53,7 @@ async def admin_final(update: Update, context: ContextTypes.DEFAULT_TYPE):
         filter={"chat_id": update.message.from_user.id},
         update={'$set': {'email': email}}
     )
-    await update.message.reply_text(text='Регистрация завершена.\n'
-                                         'Чтобы ознакомиться с интрукцией нажми сюда -> /admin_info')
+    await update.message.reply_text(text=get_text_api('U8APyUcK'))
     return ConversationHandler.END
 
 

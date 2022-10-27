@@ -28,7 +28,7 @@ def cart_inline():
     red_order = InlineKeyboardButton(text='Редактор Заказа', callback_data='red_order')
     cancel_order = InlineKeyboardButton(text='Очистить корзину', callback_data='empty_cart')
     back = InlineKeyboardButton(text='◀️Назад', switch_inline_query_current_chat='')
-    res = InlineKeyboardMarkup([[take_away], [red_order, cancel_order], [back]])
+    res = InlineKeyboardMarkup([[take_away, delivery], [red_order, cancel_order], [back]])
     return res
 
 
@@ -43,47 +43,60 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.callback_query.edit_message_reply_markup(
             reply_markup=dish_card_keyboard(user_id=query.from_user.id, resident=cb_data[1], dish=cb_data[2], price=cb_data[3]))
         await query.answer()
+        return
     elif cb_data[0] == 'minus':
         remove_dish(user_id=query.from_user.id, resident=cb_data[1], dish=cb_data[2])
         await update.callback_query.edit_message_reply_markup(
             reply_markup=dish_card_keyboard(user_id=query.from_user.id, resident=cb_data[1], dish=cb_data[2],
                                             price=cb_data[3]))
         await query.answer()
+        return
     elif cb_data[0] == 'cart':
         await query.edit_message_text(text=show_cart(user_id=query.from_user.id),
                                       reply_markup=cart_inline())
         await query.answer()
+        return
     elif cb_data[0] == 'red_order':
         await red_order(user_id=query.from_user.id, update=update)
         await query.answer()
+        return
     elif cb_data[0] == 'show_red_dish':
         await show_red_dish(resident=cb_data[1], dish=cb_data[2], user_id=query.from_user.id,update=update)
         await query.answer()
+        return
     elif cb_data[0] == 'empty_cart':
         await empty_shcart(user_id=query.from_user.id, update=update)
         await query.answer()
+        return
     elif cb_data[0] == 'Доставка' or cb_data[0] == 'Самовывоз':
         await query.answer()
         await push_order(user_id=query.from_user.id, context=context, receipt_type=cb_data[0], update=update)
+        return
     elif cb_data[0] == 'accept':
         await accept_order(order_num=int(cb_data[1]), update=update, resident=cb_data[2])
         await query.answer()
+        return
     elif cb_data[0] == 'decline_order':
         await decline_order(order_num=int(cb_data[1]), update=update, resident=cb_data[2])
         await query.answer()
     elif cb_data[0] == 'support':
         await tech_support(context=context, msg_chat=update.callback_query.from_user.id)
         await query.answer()
+        return
     elif cb_data[0] == 'client':
         await client_info(order_num=int(cb_data[1]), context=context, msg_chat=update.callback_query.from_user.id)
         await query.answer()
+        return
     elif cb_data[0] == 'finish_order':
         await finish_order(order_num=int(cb_data[1]), update=update, resident=cb_data[2], context=context)
         await query.answer()
+        return
     elif cb_data[0] == 'del_resident':
         delet_on_phone(cb_data[1])
         await update.callback_query.edit_message_text(text='Резидент успешно удален!')
+        return
     elif cb_data[0] == 'del_admin':
         mongodb.admin.delete_one({"phone": cb_data[1]})
         await update.callback_query.edit_message_text(text='Администратор успешно удален!')
+        return
 

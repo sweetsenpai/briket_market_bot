@@ -20,7 +20,7 @@ PORT = int(os.environ.get('PORT', '8443'))
 
 
 def main() -> None:
-    application = Application.builder().token(test_bot_key).build()
+    application = Application.builder().token(bot_key).build()
 
     reg_user = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Регистрация'), rg.start)],
@@ -74,9 +74,10 @@ def main() -> None:
         fallbacks=[CommandHandler('stop', ac.cancel_conv)])
 
     report = MessageHandler(filters.Regex('Отчет'), ac.report)
-    ad_info = MessageHandler(filters.Regex('Инструкция админ.'), ac.admin_info)
-    res_info = MessageHandler(filters.Regex('Инструкция рез.'), ac.resident_info)
-
+    ad_info = MessageHandler(filters.Regex('FAQ админ.'), ac.admin_info)
+    res_info = MessageHandler(filters.Regex('FAQ рез.'), ac.resident_info)
+    cust_info = MessageHandler(filters.Regex('FAQ'), rg.custommer_faq)
+    application.add_handler(CommandHandler('admin_info', ac.admin_info))
     application.add_handler(CommandHandler('start', start))
     application.add_handler(report)
     application.add_handler(ad_info)
@@ -87,6 +88,7 @@ def main() -> None:
     application.add_handler(del_admin)
     application.add_handler(reg_admin)
     application.add_handler(reg_resident)
+    application.add_handler(cust_info)
     application.add_handler(CommandHandler('menu', menu.menu))
     application.add_handler(MessageHandler(filters.Regex('Меню'), menu.menu))
     application.add_handler(InlineQueryHandler(menu.inline_query))
@@ -96,8 +98,8 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('Клиент'), customer_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Резидент'), resident_keyboard))
     application.run_polling()
-#    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
-#                           listen="0.0.0.0")
+    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
+                           listen="0.0.0.0")
 
 
 if __name__ == '__main__':
