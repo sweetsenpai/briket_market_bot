@@ -25,7 +25,7 @@ async def admin_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [KeyboardButton(text='Добавить резидента'),
              KeyboardButton(text='Удалить резидента')],
             [KeyboardButton(text='FAQ админ.'),
-             KeyboardButton(text='Инструкция рез.')],
+             KeyboardButton(text='FAQ рез.')],
             [KeyboardButton(text='Отчет'),
              KeyboardButton(text='Новый админ. вход')]
         ], resize_keyboard=True, one_time_keyboard=False)
