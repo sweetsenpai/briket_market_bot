@@ -36,7 +36,7 @@ def main() -> None:
 
     reg_resident = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Новый резидент вход'), res_reg.registration),
-                      CommandHandler('/reg_admin_start', res_reg.registration)],
+                      CommandHandler('reg_admin_start', res_reg.registration)],
         states={
             res_reg.PHONE: [MessageHandler(filters.CONTACT, res_reg.phon_res)],
             res_reg.ADDRES: [MessageHandler(filters.LOCATION | filters.TEXT, res_reg.resident_addres)],
@@ -78,7 +78,6 @@ def main() -> None:
     res_info = MessageHandler(filters.Regex('FAQ рез.'), ac.resident_info)
     cust_info = MessageHandler(filters.Regex('FAQ'), rg.custommer_faq)
     application.add_handler(CommandHandler('admin_info', ac.admin_info))
-    application.add_handler()
     application.add_handler(CommandHandler('start', start))
     application.add_handler(report)
     application.add_handler(ad_info)
