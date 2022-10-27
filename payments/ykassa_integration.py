@@ -6,8 +6,9 @@ from yookassa.domain.models.receipt_item import ReceiptItem
 from yookassa.domain.common.confirmation_type import ConfirmationType
 from yookassa.domain.request.payment_request_builder import PaymentRequestBuilder
 from time import sleep
+from briket_DB.passwords import yookassa_key
 Configuration.account_id = '948782'
-Configuration.secret_key = 'test_0GfUYI52S7AAEGObdI8PgnlSXqgM3T-jSQtOo0BjNNE'
+Configuration.secret_key = yookassa_key
 
 
 async def chek_payment(payement_id: str, update: Update):

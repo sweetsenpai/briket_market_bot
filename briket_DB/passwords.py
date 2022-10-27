@@ -18,4 +18,7 @@ credentials = {
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sweet-sempai%40briket-market.iam.gserviceaccount.com"
 }
+pastebin_key = 'db3z5MMfruGlP861SzdogQJsCBXTYZxb'
+yookassa_key = 'test_0GfUYI52S7AAEGObdI8PgnlSXqgM3T-jSQtOo0BjNNE'
+
 
