@@ -12,7 +12,7 @@ def add_dish(user_id: int, resident: str, dish: str, price: str) -> None:
             'order_items': {
                 resident: {
                     dish: {
-                        'price': price,
+                        'price': round(float(price), 2),
                         'quantity': 1}
                 }},
             'total': price
@@ -28,7 +28,7 @@ def add_dish(user_id: int, resident: str, dish: str, price: str) -> None:
         except KeyError or TypeError:
             sh_cart.find_one_and_update(filter=user_cart,
                                         update={'$set': {"order_items.{}.{}".format(resident, dish): {
-                                            'price': price, 'quantity': 1}}})
+                                            'price': round(float(price), 2), 'quantity': 1}}})
             sh_cart.find_one_and_update(filter={"user_id": user_id}, update={'$set': {"total": total(user_id)}})
             return
 
@@ -68,7 +68,7 @@ def total(user_id: int):
         for dish in user_cart[resident].keys():
             total_sum += user_cart[resident][dish]['quantity'] * float(user_cart[resident][dish]['price'])
 
-    return total_sum
+    return round(total_sum, 2)
 
 
 def get_dish_quantity(user_id: int, resident, dish: str) -> str:

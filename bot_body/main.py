@@ -8,6 +8,7 @@ from telegram.ext import (
     InlineQueryHandler,
     CallbackQueryHandler)
 import registration as rg
+import promo_conversation as promo
 import menu
 from shopping_cart import call_back_handler
 import resident_registration as res_reg
@@ -20,7 +21,7 @@ PORT = int(os.environ.get('PORT', '8443'))
 
 
 def main() -> None:
-    application = Application.builder().token(bot_key).build()
+    application = Application.builder().token(test_bot_key).build()
 
     reg_user = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Регистрация'), rg.start)],
@@ -31,7 +32,7 @@ def main() -> None:
             rg.INFO: [MessageHandler(filters.TEXT & ~filters.COMMAND, rg.info)]
         },
         fallbacks=[CommandHandler("cancel", rg.cancel)],
-
+        conversation_timeout=60
     )
 
     reg_resident = ConversationHandler(
@@ -45,7 +46,8 @@ def main() -> None:
             res_reg.DESCRIPTION: [MessageHandler(filters.TEXT, res_reg.resident_description)],
             res_reg.IMG: [MessageHandler(filters.PHOTO, res_reg.resident_img)]
         },
-        fallbacks=[CommandHandler('cancel_reg', res_reg.resident_end)]
+        fallbacks=[CommandHandler('cancel_reg', res_reg.resident_end)],
+        conversation_timeout=60
     )
 
     reg_admin = ConversationHandler(
@@ -54,7 +56,8 @@ def main() -> None:
             ar.PHONE: [MessageHandler(filters.CONTACT, ar.admin_email)],
             ar.EMAIL: [MessageHandler(filters.TEXT, ar.admin_final)]
         },
-        fallbacks=[CommandHandler('admin_exit', ar.admin_exit)]
+        fallbacks=[CommandHandler('admin_exit', ar.admin_exit)],
+        conversation_timeout=60
     )
 
     ad_new_ad = ConversationHandler(
@@ -62,7 +65,7 @@ def main() -> None:
         states={
             ac.PHONE_AD_ADD: [MessageHandler(filters.TEXT, ac.add_new_admin_phone)]
         },
-        fallbacks=[CommandHandler('stop', ac.cancel_conv)])
+        fallbacks=[CommandHandler('stop', ac.cancel_conv)],conversation_timeout=60)
 
     del_admin = MessageHandler(filters.Regex('Удалить админ.'), ac.dele_admin)
     del_resident = MessageHandler(filters.Regex('Удалить резидента'), ac.del_resident)
@@ -72,13 +75,23 @@ def main() -> None:
         states={
             ac.PHONE_RS_ADD: [MessageHandler(filters.TEXT, ac.add_new_resident_end)],
         },
-        fallbacks=[CommandHandler('stop', ac.cancel_conv)])
+        fallbacks=[CommandHandler('stop', ac.cancel_conv)], conversation_timeout=60)
+
+    promo_conv = ConversationHandler(
+        entry_points=[MessageHandler(filters.Regex('Активировать промокод'), promo.promo_start)],
+        states={
+            promo.PROMO: [MessageHandler(filters.TEXT, promo.promo_end)],
+        },
+        fallbacks=[CommandHandler('skip', promo.skip)], conversation_timeout=60)
     report = MessageHandler(filters.Regex('Отчет'), ac.report)
     ad_info = MessageHandler(filters.Regex('FAQ админ.'), ac.admin_info)
     res_info = MessageHandler(filters.Regex('FAQ рез.'), ac.resident_info)
     cust_info = MessageHandler(filters.Regex('FAQ'), rg.custommer_faq)
     application.add_handler(CommandHandler('admin_info', ac.admin_info))
     application.add_handler(CommandHandler('start', start))
+    application.add_handler(CommandHandler('instraction', ac.resident_info))
+    application.add_handler(MessageHandler(filters.Regex('Аккаунт'), rg.custommer_account))
+    application.add_handler(promo_conv)
     application.add_handler(report)
     application.add_handler(ad_info)
     application.add_handler(res_info)
@@ -97,10 +110,10 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('Администратор'), admin_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Клиент'), customer_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Резидент'), resident_keyboard))
-#    application.run_polling()
-    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
-                           listen="0.0.0.0")
-######1234
+    application.run_polling()
+#    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
+#                           listen="0.0.0.0")
+
 
 if __name__ == '__main__':
     main()

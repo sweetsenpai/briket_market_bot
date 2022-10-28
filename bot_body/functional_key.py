@@ -40,7 +40,8 @@ async def customer_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [KeyboardButton(text='Меню')],
             [KeyboardButton(text='FAQ')],
             [KeyboardButton(text='Аккаунт')],
-            [KeyboardButton(text='Корзина')]
+            [KeyboardButton(text='Корзина'),
+             KeyboardButton(text='Активировать промокод')]
         ], resize_keyboard=True, one_time_keyboard=False)
     await update.message.reply_text(text='Выбири действия в меню ниже', reply_markup=cust_func)
     return

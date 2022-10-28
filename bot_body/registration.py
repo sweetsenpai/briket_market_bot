@@ -1,5 +1,6 @@
 import logging
-from briket_DB.customers import find_id, create, update_addres
+from briket_DB.promotions import chek_personal_code
+from briket_DB.customers import find_id, create, update_addres, read_one
 from telegram import ReplyKeyboardRemove, Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import (
     ContextTypes,
@@ -108,4 +109,18 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def custommer_faq(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(text=get_text_api('8cyyM90u'))
+    return
+
+
+async def custommer_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.message.chat_id
+    user = find_id(user_id)
+    if user is None:
+        await update.message.reply_text(text='Пожалуйста, пройдите регистрацию \n'
+                                             'чтобы получить персональный промокод на скидку.')
+        return
+    acc_info = 'Телефон: {}\n' \
+           'Адрес: {}\n' \
+           'Персональный промокд на скиду: {}\n'.format(user['phone'], user['addres'],chek_personal_code(user_id))
+    await update.message.reply_text(text=acc_info)
     return

@@ -28,7 +28,8 @@ def cart_inline():
     red_order = InlineKeyboardButton(text='Редактор Заказа', callback_data='red_order')
     cancel_order = InlineKeyboardButton(text='Очистить корзину', callback_data='empty_cart')
     back = InlineKeyboardButton(text='◀️Назад', switch_inline_query_current_chat='')
-    res = InlineKeyboardMarkup([[take_away, delivery], [red_order, cancel_order], [back]])
+    promo = InlineKeyboardButton(text='Активировать промокод', callback_data='promo')
+    res = InlineKeyboardMarkup([[take_away, delivery], [red_order, cancel_order], [back], [promo]])
     return res
 
 
