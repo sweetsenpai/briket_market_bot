@@ -29,7 +29,7 @@ def chek_personal_code(user_id):
     return pr_code['code']
 
 
-def start_sale(text: str, ammount=0, promo_code='', procent=0, one_time=False, start_price=0):
+def start_sale(text='', ammount=0, promo_code='', procent=0, one_time=False, start_price=0):
     sale = {
         'code': promo_code,
         'description': text,
@@ -37,7 +37,7 @@ def start_sale(text: str, ammount=0, promo_code='', procent=0, one_time=False, s
         'procent': procent,
         'one_time': one_time,
         'start_price': start_price,
-        'uses': ['']
+        'uses': [''],
     }
     sales_db.insert_one(sale)
     return

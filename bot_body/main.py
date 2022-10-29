@@ -14,6 +14,11 @@ from shopping_cart import call_back_handler
 import resident_registration as res_reg
 import admin_registration as ar
 import admin_commands as ac
+from admin_promo import (add_promo_start, add_promo_onetime,
+                         add_promo_start_price,
+                         add_promo_procent,add_promo_text,
+                         add_promo_end, cancel_command,
+                         CODE,TEXT,START_PRICE,ONE_TIME,PROCENT)
 from functional_key import admin_keyboard, resident_keyboard, customer_keyboard, start
 import os
 from briket_DB.db_builder import *
@@ -83,6 +88,17 @@ def main() -> None:
             promo.PROMO: [MessageHandler(filters.TEXT, promo.promo_end)],
         },
         fallbacks=[CommandHandler('skip', promo.skip)], conversation_timeout=60)
+
+    promo_creation = ConversationHandler(
+        entry_points=[MessageHandler(filters.Regex('Промокод'), add_promo_start)],
+        states={
+            CODE: [MessageHandler(filters.TEXT, add_promo_text)],
+            TEXT: [MessageHandler(filters.TEXT, add_promo_onetime)],
+            ONE_TIME: [MessageHandler(filters.TEXT, add_promo_start_price)],
+            START_PRICE: [MessageHandler(filters.TEXT, add_promo_procent)],
+            PROCENT: [MessageHandler(filters.TEXT, add_promo_end)]
+        }, fallbacks=[CommandHandler('cancel', cancel_command)], conversation_timeout=120)
+
     report = MessageHandler(filters.Regex('Отчет'), ac.report)
     ad_info = MessageHandler(filters.Regex('FAQ админ.'), ac.admin_info)
     res_info = MessageHandler(filters.Regex('FAQ рез.'), ac.resident_info)
@@ -102,6 +118,7 @@ def main() -> None:
     application.add_handler(reg_admin)
     application.add_handler(reg_resident)
     application.add_handler(cust_info)
+    application.add_handler(promo_creation)
     application.add_handler(CommandHandler('menu', menu.menu))
     application.add_handler(MessageHandler(filters.Regex('Меню'), menu.menu))
     application.add_handler(InlineQueryHandler(menu.inline_query))

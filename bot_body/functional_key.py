@@ -27,7 +27,8 @@ async def admin_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [KeyboardButton(text='FAQ админ.'),
              KeyboardButton(text='FAQ рез.')],
             [KeyboardButton(text='Отчет'),
-             KeyboardButton(text='Новый админ. вход')]
+             KeyboardButton(text='Новый админ. вход')],
+            [KeyboardButton(text='Промокод')]
         ], resize_keyboard=True, one_time_keyboard=False)
     await update.message.reply_text(text='Выбири действия в меню ниже', reply_markup=ad_functions)
     return
