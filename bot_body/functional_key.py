@@ -1,11 +1,5 @@
-from briket_DB.passwords import test_bot_key, bot_key
-from telegram.ext import (
-    Application,
-    CommandHandler,
-    MessageHandler,
-    filters, ContextTypes)
+from telegram.ext import (ContextTypes)
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
-from text_integration.pastebin_integration import get_text_api
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -28,7 +22,7 @@ async def admin_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
              KeyboardButton(text='FAQ рез.')],
             [KeyboardButton(text='Отчет'),
              KeyboardButton(text='Новый админ. вход')],
-            [KeyboardButton(text='Промокод')]
+            [KeyboardButton(text='Промокоды'), KeyboardButton(text='Создать рассылку')]
         ], resize_keyboard=True, one_time_keyboard=False)
     await update.message.reply_text(text='Выбири действия в меню ниже', reply_markup=ad_functions)
     return
@@ -56,4 +50,14 @@ async def resident_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [KeyboardButton(text='Новый резидент вход')]
         ], resize_keyboard=True, one_time_keyboard=False)
     await update.message.reply_text(text='Выбири действия в меню ниже', reply_markup=res_func)
+    return
+
+
+async def promo_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    res_func = ReplyKeyboardMarkup(
+        [
+            [KeyboardButton(text='Создать промокод')],
+            [KeyboardButton(text='Активные промокоды')]
+        ], resize_keyboard=True, one_time_keyboard=False)
+    await update.message.reply_text(text='Выбири один из вариантов меню:', reply_markup=res_func)
     return

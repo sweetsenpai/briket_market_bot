@@ -105,4 +105,16 @@ def apply_promo(user_id: int):
     return
 
 
+def stop_promo(code_word: str):
+    sales_db.delete_one({'code': code_word})
+    return 'Промокод успешно удален.'
+
+
+def output_promotions(promotion):
+    if promotion['ammount'] == 0:
+        text = '{} - {}%'.format(promotion['code'], promotion['procent'])
+        return text
+    text = '{} - {}р.'.format(promotion['code'], promotion['ammount'])
+    return text
+
 

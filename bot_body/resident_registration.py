@@ -41,8 +41,7 @@ async def phon_res(update: Update, context: ContextTypes.DEFAULT_TYPE):
     phone = find_phone(resident_id=update.message.from_user.id, phone=resident_contact)
     if phone is None:
         await update.message.reply_text(
-            text='Ваш номер телефона не найден в нашей базе, пожалуйста попросите администратора добавить ваш номер.'
-        )
+            text=get_text_api('5P5GnnZJ'))
         return
     elif phone is not None:
         logger.info(
@@ -52,7 +51,7 @@ async def phon_res(update: Update, context: ContextTypes.DEFAULT_TYPE):
         key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
                                         keyboard=[[share_button]],
                                         resize_keyboard=False)
-        await update.message.reply_text('Отлично, ваш номер телефона уже добавлен администратором.',
+        await update.message.reply_text(text=get_text_api('qe2ivh2N'),
                                         reply_markup=key_board)
         return ADDRES
 
@@ -70,7 +69,7 @@ async def resident_addres(update: Update, context: ContextTypes.DEFAULT_TYPE):
         resident_location = update.message.text
         insert_location(resident_id=resident.id, location=resident_location)
     await update.message.reply_text(
-        "А теперь добавим название вашего заведения", reply_markup=ReplyKeyboardRemove()
+        get_text_api('LrmNMLiH'), reply_markup=ReplyKeyboardRemove()
     )
     return NAME
 
@@ -80,7 +79,7 @@ async def resident_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info("Название заведения: %s: %s", resident.first_name, update.message.text)
     insert_name(resident_id=update.message.from_user.id, name=update.message.text)
     create_new_table(resident_name=update.message.text)
-    await update.message.reply_text('Отправьте ваш email')
+    await update.message.reply_text(get_text_api('cJA44azM'))
     return EMAIL
 
 
@@ -88,7 +87,7 @@ async def resident_email(update: Update, context: ContextTypes.DEFAULT_TYPE):
     resident = update.message.from_user
     insert_email(resident_id=update.message.from_user.id, email=update.message.text)
     logger.info("email заведения: %s: %s", resident.first_name, update.message.text)
-    await update.message.reply_text(text='Отправьте описание вашего заведение которое будут видеть гости')
+    await update.message.reply_text(text=get_text_api('31PHCAUT'))
     return DESCRIPTION
 
 
@@ -97,8 +96,7 @@ async def resident_description(update: Update, context: ContextTypes.DEFAULT_TYP
     insert_description(resident_id=update.message.from_user.id, description=update.message.text)
     logger.info("Описание заведения: %s: %s", resident.first_name, update.message.text)
     await update.message.reply_text(
-        text='Остался последний шаг, отправте картинку которая будет отображаться в боте,'
-             'лучше всего если изображение будет квадратным')
+        text=get_text_api('nkQFS6ZG'))
     return IMG
 
 
@@ -109,8 +107,7 @@ async def resident_img(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = cloudinary.uploader.upload(await obj.download())['url']
     insert_img(resident_id=update.message.from_user.id, img=url)
     logger.info('Изображение заведения {} :{}'.format(resident.first_name, url))
-    await update.message.reply_text('Поздравляем, регистрация завершена.\n'
-                                    'Чтобы ознакомиться с инструкцией нажми сюда -> /instraction')
+    await update.message.reply_text(text=get_text_api('Am9gdnpc'))
 
     return ConversationHandler.END
 

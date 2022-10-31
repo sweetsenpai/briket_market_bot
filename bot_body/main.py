@@ -1,4 +1,5 @@
 from briket_DB.passwords import test_bot_key, bot_key
+
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -6,7 +7,7 @@ from telegram.ext import (
     MessageHandler,
     filters,
     InlineQueryHandler,
-    CallbackQueryHandler)
+    CallbackQueryHandler, AIORateLimiter)
 import registration as rg
 import promo_conversation as promo
 import menu
@@ -14,19 +15,19 @@ from shopping_cart import call_back_handler
 import resident_registration as res_reg
 import admin_registration as ar
 import admin_commands as ac
+from destribytion import start_distribution, get_text_destribution, cov_end, TEXT_DIST
 from admin_promo import (add_promo_start, add_promo_onetime,
                          add_promo_start_price,
-                         add_promo_procent,add_promo_text,
+                         add_promo_procent, add_promo_text,
                          add_promo_end, cancel_command,
-                         CODE,TEXT,START_PRICE,ONE_TIME,PROCENT)
-from functional_key import admin_keyboard, resident_keyboard, customer_keyboard, start
+                         CODE, TEXT, START_PRICE, ONE_TIME, PROCENT)
+from functional_key import admin_keyboard, resident_keyboard, customer_keyboard, start, promo_keyboard
 import os
-from briket_DB.db_builder import *
 PORT = int(os.environ.get('PORT', '8443'))
 
 
 def main() -> None:
-    application = Application.builder().token(test_bot_key).build()
+    application = Application.builder().token(test_bot_key).rate_limiter(AIORateLimiter()).build()
 
     reg_user = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Регистрация'), rg.start)],
@@ -70,7 +71,7 @@ def main() -> None:
         states={
             ac.PHONE_AD_ADD: [MessageHandler(filters.TEXT, ac.add_new_admin_phone)]
         },
-        fallbacks=[CommandHandler('stop', ac.cancel_conv)],conversation_timeout=60)
+        fallbacks=[CommandHandler('stop', ac.cancel_conv)], conversation_timeout=60)
 
     del_admin = MessageHandler(filters.Regex('Удалить админ.'), ac.dele_admin)
     del_resident = MessageHandler(filters.Regex('Удалить резидента'), ac.del_resident)
@@ -90,7 +91,7 @@ def main() -> None:
         fallbacks=[CommandHandler('skip', promo.skip)], conversation_timeout=60)
 
     promo_creation = ConversationHandler(
-        entry_points=[MessageHandler(filters.Regex('Промокод'), add_promo_start)],
+        entry_points=[MessageHandler(filters.Regex('Создать промокод'), add_promo_start)],
         states={
             CODE: [MessageHandler(filters.TEXT, add_promo_text)],
             TEXT: [MessageHandler(filters.TEXT, add_promo_onetime)],
@@ -98,6 +99,11 @@ def main() -> None:
             START_PRICE: [MessageHandler(filters.TEXT, add_promo_procent)],
             PROCENT: [MessageHandler(filters.TEXT, add_promo_end)]
         }, fallbacks=[CommandHandler('cancel', cancel_command)], conversation_timeout=120)
+
+    dest_conv = ConversationHandler(
+        entry_points=[MessageHandler(filters.Regex('Создать рассылку'), get_text_destribution)],
+        states={TEXT_DIST: [MessageHandler(filters.TEXT, start_distribution)]},
+        fallbacks=[CommandHandler('cancel', cov_end)])
 
     report = MessageHandler(filters.Regex('Отчет'), ac.report)
     ad_info = MessageHandler(filters.Regex('FAQ админ.'), ac.admin_info)
@@ -107,7 +113,11 @@ def main() -> None:
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('instraction', ac.resident_info))
     application.add_handler(MessageHandler(filters.Regex('Аккаунт'), rg.custommer_account))
+    application.add_handler(MessageHandler(filters.Regex('Промокоды'), promo_keyboard))
+    application.add_handler(MessageHandler(filters.Regex('Активные промокоды'), promo.delete_promotion))
+    application.add_handler(dest_conv)
     application.add_handler(promo_conv)
+    application.add_handler(dest_conv)
     application.add_handler(report)
     application.add_handler(ad_info)
     application.add_handler(res_info)

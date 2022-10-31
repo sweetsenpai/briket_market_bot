@@ -14,7 +14,8 @@ from telegram import (Update,
                       InlineKeyboardButton)
 
 from telegram.ext import ContextTypes
-
+from text_integration.pastebin_integration import get_text_api
+from briket_DB.promotions import stop_promo
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -22,14 +23,13 @@ logger = logging.getLogger(__name__)
 
 
 def cart_inline():
-    take_away = InlineKeyboardButton(text='Заберу сам', callback_data='Самовывоз')
-    delivery = InlineKeyboardButton(text='Доставка', callback_data='Доставка')
-    comment = InlineKeyboardButton(text='Комментарий к заказу', callback_data='order_comment')
-    red_order = InlineKeyboardButton(text='Редактор Заказа', callback_data='red_order')
-    cancel_order = InlineKeyboardButton(text='Очистить корзину', callback_data='empty_cart')
-    back = InlineKeyboardButton(text='◀️Назад', switch_inline_query_current_chat='')
-    promo = InlineKeyboardButton(text='Активировать промокод', callback_data='promo')
-    res = InlineKeyboardMarkup([[take_away, delivery], [red_order, cancel_order], [back], [promo]])
+    take_away = InlineKeyboardButton(text=get_text_api('BLVvyDzD'), callback_data='Самовывоз')
+    delivery = InlineKeyboardButton(text=get_text_api('DCYAwnR0'), callback_data='Доставка')
+    comment = InlineKeyboardButton(text=get_text_api('iPRkbZQE'), callback_data='order_comment')
+    redact_order = InlineKeyboardButton(text=get_text_api('XDHGv5uZ'), callback_data='red_order')
+    cancel_order = InlineKeyboardButton(text=get_text_api('MguE3Kt7'), callback_data='empty_cart')
+    back = InlineKeyboardButton(text=get_text_api('4Sj7fP4j'), switch_inline_query_current_chat='')
+    res = InlineKeyboardMarkup([[take_away, delivery], [redact_order, cancel_order], [back]])
     return res
 
 
@@ -100,4 +100,9 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         mongodb.admin.delete_one({"phone": cb_data[1]})
         await update.callback_query.edit_message_text(text='Администратор успешно удален!')
         return
+    elif cb_data[0] == 'del_promo':
+        stop_promo(cb_data[1])
+        await update.callback_query.edit_message_text(text='Акция успешно преостановлена!')
+        return
+
 
