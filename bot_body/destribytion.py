@@ -23,7 +23,6 @@ async def start_distribution(update: Update, context: ContextTypes.DEFAULT_TYPE)
     for customer in read_all():
         try:
             await context.bot.sendMessage(chat_id=customer['chat_id'], text=text_distribution)
-            sleep(10)
         except telegram.error.BadRequest:
             pass
     return ConversationHandler.END

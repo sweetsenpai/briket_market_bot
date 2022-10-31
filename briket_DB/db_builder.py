@@ -19,15 +19,6 @@ RESIDENTS = [{
         "resident_email": 'macdonalds@bk.ru',
         "description": 'Раньше было лучше',
         "img_url": str('https://upload.wikimedia.org/wikipedia/commons/c/cc/%D0%92%D0%BA%D1%83%D1%81%D0%BD%D0%BE_%E2%80%94_%D0%B8_%D1%82%D0%BE%D1%87%D0%BA%D0%B0.jpg')
-    },
-    {
-        "resident_name": 'Burger King',
-        "chat_id": 352354383,
-        "resident_addres": 'OMSK',
-        "resident_phone": '+71111111',
-        "resident_email": 'bk@bk.ru',
-        "description": 'Отличное место',
-        "img_url": str('https://play-lh.googleusercontent.com/PDSuJ9JjikJ2kNqMoKFEOJ6NpX7_SNXJuW7ixBRiqR_ptEBjjYn5JFm3W4DO7zHMQ5M')
     }
 ]
 
@@ -36,7 +27,7 @@ CUSTOMER = [
     {'chat_id': 2, 'phone': '+79232556679', 'addres': 'MSK', 'disc_status': False}
 ]
 
-if os.path.exists('briket.db'):
+if os.path.exists('briket.db') is False:
     pass
 else:
     db.create_all()
