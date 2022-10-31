@@ -31,16 +31,15 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
 
     categories = get_market_categories(resident)
     keyboard = []
-
-    for category in categories:
-        try:
-            keyboard.append(
-               [(InlineKeyboardButton(
-                    text=category,
-                    switch_inline_query_current_chat='#/{}/{}'.format(resident, category)
-                ))]
-            )
-        except TypeError:pass
+    try:
+        for category in categories:
+                keyboard.append(
+                   [(InlineKeyboardButton(
+                        text=category,
+                        switch_inline_query_current_chat='#/{}/{}'.format(resident, category)
+                    ))]
+                )
+    except TypeError: pass
     rez2 = [InlineKeyboardButton(switch_inline_query_current_chat='',
                                 text='◀️Назад')]
     keyboard.append(rez2)
