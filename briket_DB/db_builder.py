@@ -27,7 +27,7 @@ CUSTOMER = [
     {'chat_id': 2, 'phone': '+79232556679', 'addres': 'MSK', 'disc_status': False}
 ]
 
-if os.path.exists('briket.db') is False:
+if os.path.exists('briket.db'):
     pass
 else:
     db.create_all()

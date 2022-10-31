@@ -21,14 +21,15 @@ async def start_distribution(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     text_distribution = update.message.text
     await update.message.reply_text(text=get_text_api('n3M4zWjt'))
+
     context.application.create_task(
         asyncio.gather(
             *(
-                context.bot.send_message(
-                    chat_id=customer['chat_id'], text=text_distribution, rate_limit_args={'priority': -1}
-                )
+                    context.bot.send_message(
+                        chat_id=customer['chat_id'], text=text_distribution
+                    )
                 for customer in read_all()
-            )
+            ), return_exceptions=True
         )
     )
     return ConversationHandler.END

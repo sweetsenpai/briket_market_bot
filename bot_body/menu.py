@@ -10,7 +10,7 @@ from briket_DB.residents import read_all
 from parcer.parcer_sheet import get_market_categories, get_dishs
 from briket_DB.shcart_db import get_dish_quantity
 from text_integration.pastebin_integration import get_text_api
-
+import gspread
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -68,24 +68,27 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     if query == "":
         results = []
         for market in read_all():
-            results.append(
-                InlineQueryResultArticle(
-                    id=str(uuid4()),
-                    title=market['resident_name'],
-                    description=market['description'],
-                    input_message_content=InputTextMessageContent(
-                        message_text='<b>{}</b>\n'
-                                     '{}\n'
-                                     '<a href="{}"><b>{}</b></a>'.format(market['resident_name'], market['description'], market['img_url'],
-                                                                         market['resident_name']),
-                        parse_mode='HTML',
-                        disable_web_page_preview=False
-                    ),
-                    thumb=market['img_url'],
-                    thumb_width=50,
-                    thumb_height=50,
-                    reply_markup=inline_generator(market['resident_name'])
-                ))
+            try:
+                results.append(
+                    InlineQueryResultArticle(
+                        id=str(uuid4()),
+                        title=market['resident_name'],
+                        description=market['description'],
+                        input_message_content=InputTextMessageContent(
+                            message_text='<b>{}</b>\n'
+                                         '{}\n'
+                                         '<a href="{}"><b>{}</b></a>'.format(market['resident_name'], market['description'],market['img_url'],
+                                                                             market['resident_name']),
+                            parse_mode='HTML',
+                            disable_web_page_preview=False
+                        ),
+                        thumb=market['img_url'],
+                        thumb_width=50,
+                        thumb_height=50,
+                        reply_markup=inline_generator(market['resident_name'])
+                    ))
+            except gspread.exceptions.WorksheetNotFound or KeyError:
+                pass
         await update.inline_query.answer(results)
     elif '#' in query:
         answer = []

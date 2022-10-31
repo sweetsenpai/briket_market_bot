@@ -22,10 +22,13 @@ def get_markets(sheets=work_sheets):
     return market_list
 
 
-def get_market_categories(work_sheet:str):
-    ws = sheet_main.worksheet(work_sheet)
-    dataframe = pd.DataFrame(ws.get_all_records())
-    return dataframe['Категория'].unique().tolist()
+def get_market_categories(ws: str):
+    try:
+        ws = sheet_main.worksheet(ws)
+        dataframe = pd.DataFrame(ws.get_all_records())
+        return dataframe['Категория'].unique().tolist()
+    except KeyError:
+        return
 
 
 def get_dishs(sheet='KFC', cat='Бургеры'):

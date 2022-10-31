@@ -39,6 +39,8 @@ async def phon_res(update: Update, context: ContextTypes.DEFAULT_TYPE):
     resident = update.message.from_user
     resident_contact = update.message.contact.phone_number
     phone = find_phone(resident_id=update.message.from_user.id, phone=resident_contact)
+    print('------------------------------')
+    print(phone)
     if phone is None:
         await update.message.reply_text(
             text=get_text_api('5P5GnnZJ'))
