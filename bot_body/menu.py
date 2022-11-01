@@ -4,7 +4,7 @@ from telegram import (InlineQueryResultArticle,
                       InputTextMessageContent,
                       Update,
                       InlineKeyboardMarkup,
-                      InlineKeyboardButton, PhotoSize)
+                      InlineKeyboardButton, constants)
 from telegram.ext import ContextTypes
 from briket_DB.residents import read_all
 from parcer.parcer_sheet import get_market_categories, get_dishs
@@ -78,19 +78,18 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                         input_message_content=InputTextMessageContent(
                             message_text='<b>{}</b>\n'
                                          '{}\n'
-                                         '<a href="{}"><b>{}</b></a>'.format(market['resident_name'], market['description'],market['img_url'],
-                                                                             market['resident_name']),
+                                         '<a href="{}">‎</a>'.format(market['resident_name'], market['description'], market['img_url'],),
                             parse_mode='HTML',
                             disable_web_page_preview=False
                         ),
-                        thumb=market['img_url'],
+                        thumb_url=market['img_url'],
                         thumb_width=50,
                         thumb_height=50,
                         reply_markup=inline_generator(market['resident_name'])
                     ))
             except gspread.exceptions.WorksheetNotFound or KeyError:
                 pass
-        await update.inline_query.answer(results)
+        await update.inline_query.answer(results, cache_time=600)
     elif '#' in query:
         answer = []
         data = query.split('/')
@@ -102,13 +101,14 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     description='Вес:{} гр.\n'
                                 'Цена:{}'.format(dish[1], dish[2]),
                     input_message_content=InputTextMessageContent(
-                        message_text='Вес: {} гр.\n'
-                                     'Цена: {}\n'
-                                     '<a href="{}">{}</a>'
-                                     '\nБелки: {}\nЖиры: {}\nУглеводы: {}'.format(dish[1], dish[2], dish[3], dish[0],
-                                                                                  dish[5], dish[6],dish[7]),
+                        message_text='{}\n'
+                                     'Вес: {} гр.\n'
+                                     'Цена: {}'
+                                     '<a href="{}">‎</a>'
+                                     '\nБелки: {}\nЖиры: {}\nУглеводы: {}'.format(dish[7],dish[1], dish[2], dish[3],
+                                                                                  dish[4], dish[5],dish[6]),
                         disable_web_page_preview=False,
-                        parse_mode='HTML'
+                        parse_mode=constants.ParseMode.HTML
                         ),
                     reply_markup=dish_card_keyboard(query=query, resident=data[1], dish=dish[0], price=dish[2], user_id=update.inline_query.from_user.id),
                     thumb_url=dish[3],
@@ -119,6 +119,6 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         await update.inline_query.answer(answer)
 
 
-print(read_all())
+
 
 

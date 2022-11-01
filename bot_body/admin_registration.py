@@ -30,7 +30,8 @@ async def reg_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def admin_email(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    phone = update.message.contact.phone_number
+    phone_raw = update.message.contact.phone_number
+    phone = phone_raw.replace('+', '')
     resident = admin.find_one({"phone": phone})
     if resident is None:
         await update.message.reply_text(get_text_api('nzMSZkNW'))

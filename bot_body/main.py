@@ -38,7 +38,7 @@ def main() -> None:
             rg.INFO: [MessageHandler(filters.TEXT & ~filters.COMMAND, rg.info)]
         },
         fallbacks=[CommandHandler("cancel", rg.cancel)],
-        conversation_timeout=60
+        conversation_timeout=600
     )
 
     reg_resident = ConversationHandler(
@@ -53,17 +53,18 @@ def main() -> None:
             res_reg.IMG: [MessageHandler(filters.PHOTO, res_reg.resident_img)]
         },
         fallbacks=[CommandHandler('cancel_reg', res_reg.resident_end)],
-        conversation_timeout=60
+        conversation_timeout=600
     )
 
     reg_admin = ConversationHandler(
-        entry_points=[MessageHandler(filters.Regex('Новый админ. вход'), ar.reg_admin_start)],
+        entry_points=[MessageHandler(filters.Regex('Новый админ. вход'), ar.reg_admin_start),
+                      CommandHandler('reg_admin_start', ar.reg_admin_start)],
         states={
             ar.PHONE: [MessageHandler(filters.CONTACT, ar.admin_email)],
             ar.EMAIL: [MessageHandler(filters.TEXT, ar.admin_final)]
         },
         fallbacks=[CommandHandler('admin_exit', ar.admin_exit)],
-        conversation_timeout=60
+        conversation_timeout=600
     )
 
     ad_new_ad = ConversationHandler(
@@ -71,7 +72,7 @@ def main() -> None:
         states={
             ac.PHONE_AD_ADD: [MessageHandler(filters.TEXT, ac.add_new_admin_phone)]
         },
-        fallbacks=[CommandHandler('stop', ac.cancel_conv)], conversation_timeout=60)
+        fallbacks=[CommandHandler('stop', ac.cancel_conv)], conversation_timeout=600)
 
     del_admin = MessageHandler(filters.Regex('Удалить админ.'), ac.dele_admin)
     del_resident = MessageHandler(filters.Regex('Удалить резидента'), ac.del_resident)
@@ -81,14 +82,14 @@ def main() -> None:
         states={
             ac.PHONE_RS_ADD: [MessageHandler(filters.TEXT, ac.add_new_resident_end)],
         },
-        fallbacks=[CommandHandler('stop', ac.cancel_conv)], conversation_timeout=60)
+        fallbacks=[CommandHandler('stop', ac.cancel_conv)], conversation_timeout=600)
 
     promo_conv = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Активировать промокод'), promo.promo_start)],
         states={
             promo.PROMO: [MessageHandler(filters.TEXT, promo.promo_end)],
         },
-        fallbacks=[CommandHandler('skip', promo.skip)], conversation_timeout=60)
+        fallbacks=[CommandHandler('skip', promo.skip)], conversation_timeout=600)
 
     promo_creation = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Создать промокод'), add_promo_start)],
@@ -98,7 +99,7 @@ def main() -> None:
             ONE_TIME: [MessageHandler(filters.TEXT, add_promo_start_price)],
             START_PRICE: [MessageHandler(filters.TEXT, add_promo_procent)],
             PROCENT: [MessageHandler(filters.TEXT, add_promo_end)]
-        }, fallbacks=[CommandHandler('cancel', cancel_command)], conversation_timeout=120)
+        }, fallbacks=[CommandHandler('cancel', cancel_command)], conversation_timeout=600)
 
     dest_conv = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Создать рассылку'), get_text_destribution)],
@@ -137,7 +138,7 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('Администратор'), admin_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Клиент'), customer_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Резидент'), resident_keyboard))
-#    application.run_polling(pool_timeout=5)
+#    application.run_polling()
     application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
                            listen="0.0.0.0")
 

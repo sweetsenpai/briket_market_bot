@@ -37,7 +37,7 @@ async def registration(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def phon_res(update: Update, context: ContextTypes.DEFAULT_TYPE):
     resident = update.message.from_user
-    resident_contact = update.message.contact.phone_number
+    resident_contact = update.message.contact.phone_number.replace('+', '')
     phone = find_phone(resident_id=update.message.from_user.id, phone=resident_contact)
     print('------------------------------')
     print(phone)
