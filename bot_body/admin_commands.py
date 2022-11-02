@@ -9,7 +9,7 @@ from telegram.ext import (
 from briket_DB.config import mongodb
 import logging
 from briket_DB.residents import create, read_all
-from briket_DB.order_db import create_report
+from briket_DB.reports.report_main import get_resident_report_day, get_resident_report_month
 from text_integration.pastebin_integration import get_text_api
 admin = mongodb.admin
 logging.basicConfig(
@@ -133,4 +133,17 @@ async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(text=get_text_api('trhpLPsm'))
         return
     else:
-        await update.message.reply_text(text=create_report())
+        day = KeyboardButton(text='За день')
+        mounth = KeyboardButton(text='Месячный')
+        keyboard = ReplyKeyboardMarkup(keyboard=[[day], [mounth]])
+        await update.message.reply_text(text='Выберете вид отчета на клавиатуре:', reply_markup=keyboard)
+
+
+async def day_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    for residen in read_all():
+        await update.message.reply_text(text=get_resident_report_day(residen['resident_name']), parse_mode='HTML')
+
+
+async def mouth_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    for residen in read_all():
+        await update.message.reply_text(text=get_resident_report_month(residen['resident_name']), parse_mode='HTML')

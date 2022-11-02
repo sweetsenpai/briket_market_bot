@@ -111,6 +111,8 @@ def main() -> None:
     res_info = MessageHandler(filters.Regex('FAQ рез.'), ac.resident_info)
     cust_info = MessageHandler(filters.Regex('FAQ'), rg.custommer_faq)
     application.add_handler(CommandHandler('admin_info', ac.admin_info))
+    application.add_handler(MessageHandler(filters.Regex('Месячный'), ac.mouth_report))
+    application.add_handler(MessageHandler(filters.Regex('За день'), ac.day_report))
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('instraction', ac.resident_info))
     application.add_handler(MessageHandler(filters.Regex('Аккаунт'), rg.custommer_account))

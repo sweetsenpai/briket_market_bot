@@ -151,13 +151,6 @@ async def tech_support(context: ContextTypes.DEFAULT_TYPE, msg_chat: int):
     return
 
 
-def create_report():
-    msg = datetime.now().strftime("%Y-%m-%d")
-    for order in orders_db.find({}):
-        if order['time'].month == datetime.now().month:
-            msg += '\nЗаказ №{}\n' \
-                   'Сумма: {}\n' \
-                   '---------------'.format(order['order_num'], order['total'])
-    return msg
+
 
 
