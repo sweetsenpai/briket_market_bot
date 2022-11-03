@@ -1,5 +1,5 @@
 from briket_DB.passwords import test_bot_key, bot_key
-
+from datetime import time
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -7,7 +7,7 @@ from telegram.ext import (
     MessageHandler,
     filters,
     InlineQueryHandler,
-    CallbackQueryHandler, AIORateLimiter)
+    CallbackQueryHandler, AIORateLimiter, Updater, JobQueue, Job)
 import registration as rg
 import promo_conversation as promo
 import menu
@@ -122,6 +122,10 @@ def main() -> None:
     application.add_handler(promo_conv)
     application.add_handler(dest_conv)
     application.add_handler(report)
+    application.job_queue.run_daily(callback=ac.day_report_job, time=time.fromisoformat('20:00:00+03:00'))
+    application.job_queue.run_monthly(callback=ac.mouth_report_job,
+                                      when=time.fromisoformat('18:00:00+03:00'),
+                                      day=-1)
     application.add_handler(ad_info)
     application.add_handler(res_info)
     application.add_handler(ad_new_ad)

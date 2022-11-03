@@ -147,3 +147,17 @@ async def day_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def mouth_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for residen in read_all():
         await update.message.reply_text(text=get_resident_report_month(residen['resident_name']), parse_mode='HTML')
+
+
+async def mouth_report_job(context: ContextTypes.DEFAULT_TYPE):
+    for admins in admin.find({'chat_id': {'$exists': True}}):
+        for residen in read_all():
+            await context.bot.sendMessage(chat_id=admins['chat_id'],
+                                          text=get_resident_report_month(residen['resident_name']), parse_mode='HTML')
+
+
+async def day_report_job(context: ContextTypes.DEFAULT_TYPE):
+    for admins in admin.find({'chat_id': {'$exists': True}}):
+        for residen in read_all():
+            await context.bot.sendMessage(chat_id=admins['chat_id'],
+                                          text=get_resident_report_day(residen['resident_name']), parse_mode='HTML')
