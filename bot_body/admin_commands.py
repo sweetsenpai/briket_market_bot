@@ -63,7 +63,7 @@ async def del_resident(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 def del_admin_keyboard(admin_id: int):
     button_admin = []
-    for admins in mongodb.admin.find({'chat_id': {'$ne': admin_id}}):
+    for admins in mongodb.admin.find():
         button_admin.append(
             [
                 InlineKeyboardButton(

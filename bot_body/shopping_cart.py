@@ -1,6 +1,7 @@
 import logging
 from briket_DB.residents import delet_on_phone
 from briket_DB.config import mongodb
+from briket_DB.reviews.callback_reviews import show_review
 from bot_body.menu import dish_card_keyboard
 from briket_DB.shcart_db import (add_dish, remove_dish,
                                  show_cart, empty_shcart,
@@ -104,5 +105,10 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         stop_promo(cb_data[1])
         await update.callback_query.edit_message_text(text='Акция успешно преостановлена!')
         return
-
+    elif cb_data[0] == 'reviews':
+        await show_review(update=update, resident_name=cb_data[1])
+        return
+    elif cb_data[0] == 'show_rev':
+        await show_review(update=update, resident_name=cb_data[1], page=cb_data[2])
+        return
 

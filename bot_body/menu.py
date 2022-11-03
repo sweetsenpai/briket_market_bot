@@ -40,8 +40,10 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
                     ))]
                 )
     except TypeError: pass
-    rez2 = [InlineKeyboardButton(switch_inline_query_current_chat='',
-                                text='◀️Назад')]
+
+    revie = [InlineKeyboardButton(callback_data=f'reviews,{resident}', text='Отзывы')]
+    rez2 = [InlineKeyboardButton(switch_inline_query_current_chat='', text='◀️Назад')]
+    keyboard.append(revie)
     keyboard.append(rez2)
     reply = InlineKeyboardMarkup(keyboard)
     return reply

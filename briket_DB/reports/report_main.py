@@ -1,5 +1,4 @@
 from briket_DB.order_db import orders_db
-from briket_DB.residents import read_all
 from datetime import datetime
 
 
