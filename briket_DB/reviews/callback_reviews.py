@@ -8,9 +8,9 @@ from briket_DB.reviews.reviews_main import read_revie
 
 
 def review_inline(page, resident):
-    back = InlineKeyboardButton(text='<<', callback_data=f'show_rev,{resident} ,{page-1}')
-    forward = InlineKeyboardButton(text='>>', callback_data=f'show_rev,{resident}, {page+1}')
-    if read_revie(comment_num=page-1, resident_name=resident) is False:
+    back = InlineKeyboardButton(text=' ◀️', callback_data=f'show_rev,{resident}, {page-1}')
+    forward = InlineKeyboardButton(text=' ▶️', callback_data=f'show_rev,{resident}, {page+1}')
+    if read_revie(comment_num=page-1, resident_name=resident) is False or page == 0:
         keyboard = InlineKeyboardMarkup([[forward]])
         return keyboard
     elif read_revie(comment_num=page+1, resident_name=resident) is False:
