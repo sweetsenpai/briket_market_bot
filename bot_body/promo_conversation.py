@@ -1,6 +1,3 @@
-import logging
-from briket_DB.promotions import chek_personal_code
-from briket_DB.customers import find_id, create, update_addres, read_one
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ContextTypes,

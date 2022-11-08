@@ -12,6 +12,7 @@ from parcer.parcer_sheet import create_new_table
 import cloudinary
 from cloudinary import uploader
 from text_integration.pastebin_integration import get_text_api
+from briket_DB.reviews.reviews_main import reviews_db
 cloudinary.config(
   cloud_name="dwexszkh4",
   api_key="677565459774618",
@@ -39,8 +40,7 @@ async def phon_res(update: Update, context: ContextTypes.DEFAULT_TYPE):
     resident = update.message.from_user
     resident_contact = update.message.contact.phone_number.replace('+', '')
     phone = find_phone(resident_id=update.message.from_user.id, phone=resident_contact)
-    print('------------------------------')
-    print(phone)
+
     if phone is None:
         await update.message.reply_text(
             text=get_text_api('5P5GnnZJ'))
@@ -80,6 +80,7 @@ async def resident_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
     resident = update.message.from_user
     logger.info("Название заведения: %s: %s", resident.first_name, update.message.text)
     insert_name(resident_id=update.message.from_user.id, name=update.message.text)
+    reviews_db.insert_one({'resident': resident})
     create_new_table(resident_name=update.message.text)
     await update.message.reply_text(get_text_api('cJA44azM'))
     return EMAIL

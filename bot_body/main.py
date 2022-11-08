@@ -22,6 +22,7 @@ from admin_promo import (add_promo_start, add_promo_onetime,
                          add_promo_end, cancel_command,
                          CODE, TEXT, START_PRICE, ONE_TIME, PROCENT)
 from functional_key import admin_keyboard, resident_keyboard, customer_keyboard, start, promo_keyboard
+import briket_DB.reviews.review_conv as rv
 import os
 PORT = int(os.environ.get('PORT', '8443'))
 
@@ -55,7 +56,6 @@ def main() -> None:
         fallbacks=[CommandHandler('cancel_reg', res_reg.resident_end)],
         conversation_timeout=600
     )
-
     reg_admin = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Новый админ. вход'), ar.reg_admin_start),
                       CommandHandler('reg_admin_start', ar.reg_admin_start)],
@@ -106,14 +106,23 @@ def main() -> None:
         states={TEXT_DIST: [MessageHandler(filters.TEXT, start_distribution)]},
         fallbacks=[CommandHandler('cancel', cov_end)])
 
+    user_rev_con = ConversationHandler(
+        entry_points=[MessageHandler(filters.Regex('Оставить отзыв'), rv.start_rev)],
+        states={
+            rv.TEXT: [MessageHandler(filters.TEXT, rv.text_rev)],
+            rv.LAST: [MessageHandler(filters.TEXT, rv.end_rev)]
+        }, fallbacks=[CommandHandler('cancel', rv.cancel)], conversation_timeout=600)
+
     report = MessageHandler(filters.Regex('Отчет'), ac.report)
     ad_info = MessageHandler(filters.Regex('FAQ админ.'), ac.admin_info)
     res_info = MessageHandler(filters.Regex('FAQ рез.'), ac.resident_info)
     cust_info = MessageHandler(filters.Regex('FAQ'), rg.custommer_faq)
+
     application.add_handler(CommandHandler('admin_info', ac.admin_info))
     application.add_handler(MessageHandler(filters.Regex('Месячный'), ac.mouth_report))
     application.add_handler(MessageHandler(filters.Regex('За день'), ac.day_report))
     application.add_handler(CommandHandler('start', start))
+    application.add_handler(user_rev_con)
     application.add_handler(CommandHandler('instraction', ac.resident_info))
     application.add_handler(MessageHandler(filters.Regex('Аккаунт'), rg.custommer_account))
     application.add_handler(MessageHandler(filters.Regex('Промокоды'), promo_keyboard))
