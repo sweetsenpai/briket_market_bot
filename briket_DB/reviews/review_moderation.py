@@ -15,12 +15,11 @@ def rev_inline(user_id, resident_name):
 
 
 async def admin_new_rev(update: Update, context: ContextTypes.DEFAULT_TYPE, user_id, resident):
-    revie = reviews_db.find_one({'resident': resident})['on_moderation']
-    print(revie)
-    user_name = revie[str(user_id)]['user_name']
-    text = revie[user_id]['text']
+    revie = reviews_db.find_one({'resident': resident})['on_moderation'][f'{user_id}']
+    user_name = revie['user_name']
+    text = revie['text']
     msg = '<b>НОВЫЙ ОТЗЫВ!</b>\n' \
-          'Резидент: {}\n' \
+          'Резидент: <b>{}</b>\n' \
           'Пользователь:{}\n' \
           '{}'.format(resident, user_name, text)
     for ad in admin.find():
@@ -32,3 +31,5 @@ async def admin_new_rev(update: Update, context: ContextTypes.DEFAULT_TYPE, user
             continue
 
     return
+
+
