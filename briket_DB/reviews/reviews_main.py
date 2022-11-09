@@ -24,7 +24,11 @@ def read_revie(comment_num=0, resident_name='KFC'):
     try:
         comment = reviews_db.find_one(filter={'resident': resident_name})['published'][comment_num]
         return comment
-    except IndexError or TypeError:
+    except IndexError:
+        return False
+    except TypeError:
+        return False
+    except KeyError:
         return False
 
 
