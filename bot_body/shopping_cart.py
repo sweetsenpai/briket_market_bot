@@ -3,6 +3,7 @@ from briket_DB.residents import delet_on_phone
 from briket_DB.config import mongodb
 from briket_DB.reviews.callback_reviews import show_review
 from bot_body.menu import dish_card_keyboard
+from briket_DB.reviews.reviews_main import publish_revie, del_review
 from briket_DB.shcart_db import (add_dish, remove_dish,
                                  show_cart, empty_shcart,
                                  red_order, show_red_dish)
@@ -111,4 +112,12 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cb_data[0] == 'show_rev':
         await show_review(update=update, resident_name=cb_data[1], page=cb_data[2])
         return
+    elif cb_data[0] == 'publish_rev':
+        publish_revie(user_id=cb_data[1], resident_name=cb_data[2])
+        await update.callback_query.edit_message_text(text='Отзыв успешно опубликован.')
+        return
+    elif cb_data[0] == 'delete_rev':
+        del_review(user_id=cb_data[1], resident=cb_data[2])
+        await update.callback_query.edit_message_text(text='Отзыв удален.')
+
 
