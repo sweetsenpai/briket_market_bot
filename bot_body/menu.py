@@ -42,10 +42,8 @@ def inline_generator(resident: str) -> InlineKeyboardMarkup:
     except TypeError: pass
 
     revie = [InlineKeyboardButton(callback_data=f'reviews,{resident}', text='Отзывы')]
-    send_revie = [InlineKeyboardButton(callback_data=f'send_revie,{resident}', text='Оставить отзыв')]
     rez2 = [InlineKeyboardButton(switch_inline_query_current_chat='', text='◀️Назад')]
     keyboard.append(revie)
-    keyboard.append(send_revie)
     keyboard.append(rez2)
     reply = InlineKeyboardMarkup(keyboard)
     return reply
