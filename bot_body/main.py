@@ -28,7 +28,7 @@ PORT = int(os.environ.get('PORT', '8443'))
 
 
 def main() -> None:
-    application = Application.builder().token(test_bot_key).rate_limiter(AIORateLimiter()).build()
+    application = Application.builder().token(bot_key).rate_limiter(AIORateLimiter()).build()
 
     reg_user = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Регистрация'), rg.start)],
