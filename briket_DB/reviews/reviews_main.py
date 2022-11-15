@@ -24,14 +24,17 @@ def read_revie(comment_num=0, resident_name='KFC'):
     try:
         comment = reviews_db.find_one(filter={'resident': resident_name})['published'][comment_num]
         return comment
-    except IndexError or TypeError:
+    except IndexError:
+        return False
+    except TypeError:
+        return False
+    except KeyError:
         return False
 
 
 def update_text(user_id, text):
     reviews_db.find_one_and_update(filter={f'on_moderation.{user_id}.text': '...'},
                                    update={'$set': {f'on_moderation.{user_id}.text': text}})
-
     return
 
 
@@ -39,4 +42,9 @@ def get_resident(user_id, text):
     res = reviews_db.find_one({f'on_moderation.{user_id}.text': text})['resident']
     return res
 
+
+def del_review(user_id, resident):
+    reviews_db.find_one_and_update(filter={'resident': resident},
+                                   update={'$unset': {f'on_moderation.{user_id}':''}})
+    return
 

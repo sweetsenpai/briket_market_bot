@@ -22,6 +22,9 @@ def review_inline(page, resident):
 
 async def show_review(update: Update, resident_name, page=0):
     text = read_revie(resident_name=resident_name, comment_num=int(page))
-    await update.callback_query.edit_message_text(text=text,
-                                                  reply_markup=review_inline(int(page), resident=resident_name))
+    if text is not False:
+        await update.callback_query.edit_message_text(text=text,
+                                                      reply_markup=review_inline(int(page), resident=resident_name))
+        return
+    await update.callback_query.edit_message_text(text='Пока-что тут нет отзывов.')
     return
