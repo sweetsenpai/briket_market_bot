@@ -80,7 +80,8 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                         input_message_content=InputTextMessageContent(
                             message_text='<b>{}</b>\n'
                                          '{}\n'
-                                         '<a href="{}">‎</a>'.format(market['resident_name'], market['description'], market['img_url'],),
+                                         '<a href="{}">‎</a>'.format(market['resident_name'],
+                                                                     market['description'], market['img_url'],),
                             parse_mode='HTML',
                             disable_web_page_preview=False
                         ),
@@ -92,6 +93,7 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             except gspread.exceptions.WorksheetNotFound or KeyError:
                 pass
         await update.inline_query.answer(results, cache_time=600)
+        return
     elif '#' in query:
         answer = []
         data = query.split('/')
@@ -112,13 +114,15 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                         disable_web_page_preview=False,
                         parse_mode=constants.ParseMode.HTML
                         ),
-                    reply_markup=dish_card_keyboard(query=query, resident=data[1], dish=dish[0], price=dish[2], user_id=update.inline_query.from_user.id),
+                    reply_markup=dish_card_keyboard(query=query, resident=data[1], dish=dish[0], price=dish[2],
+                                                    user_id=update.inline_query.from_user.id),
                     thumb_url=dish[3],
                     thumb_height=50,
                     thumb_width=50
                 )
             )
         await update.inline_query.answer(answer)
+        return
 
 
 

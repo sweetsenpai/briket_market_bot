@@ -31,7 +31,7 @@ async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_t
           '{}\n\n' \
           'Вы получите оповещение, когда ваш заказ будет готов к выдаче!'.format(cart['order_num'],
                                                                                 show_cart(user_id=user_id))
-    await update.callback_query.edit_message_text(text=msg)
+    await update.message.reply_text(text=msg)
     sh_cart.delete_one({"user_id": user_id})
     return
 

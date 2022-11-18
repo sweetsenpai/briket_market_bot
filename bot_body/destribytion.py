@@ -1,13 +1,8 @@
-import telegram.error
-from telegram.ext import (
-    CommandHandler,
-    ConversationHandler,
-    MessageHandler,
-    filters, ContextTypes)
+from telegram.ext import (ConversationHandler, ContextTypes)
 from telegram import (Update)
 from briket_DB.customers import read_all
 from text_integration.pastebin_integration import get_text_api
-from time import sleep
+
 import asyncio
 TEXT_DIST = range(1)
 

@@ -99,7 +99,7 @@ def send_delivery_order(user_id, order_num):
                    headers=custom_head, json=delivery_req)
     if call.status_code != 200:
         return False
-    return call.json()
+    return call.json()['id']
 
 
 def driver_info(claim_id):

@@ -18,6 +18,8 @@ from telegram import (Update,
 from telegram.ext import ContextTypes
 from text_integration.pastebin_integration import get_text_api
 from briket_DB.promotions import stop_promo
+from order_ofirm.callback_hend import make_order
+
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -25,13 +27,13 @@ logger = logging.getLogger(__name__)
 
 
 def cart_inline():
-    take_away = InlineKeyboardButton(text=get_text_api('BLVvyDzD'), callback_data='Самовывоз')
-    delivery = InlineKeyboardButton(text=get_text_api('DCYAwnR0'), callback_data='Доставка')
-    comment = InlineKeyboardButton(text=get_text_api('iPRkbZQE'), callback_data='order_comment')
+    # take_away = InlineKeyboardButton(text=get_text_api('BLVvyDzD'), callback_data='Самовывоз')
+    # delivery = InlineKeyboardButton(text=get_text_api('DCYAwnR0'), callback_data='Доставка')
+    conf_order = InlineKeyboardButton(text='Оформить заказа', callback_data='make_order')
     redact_order = InlineKeyboardButton(text=get_text_api('XDHGv5uZ'), callback_data='red_order')
-    cancel_order = InlineKeyboardButton(text=get_text_api('MguE3Kt7'), callback_data='empty_cart')
+    empty_cart = InlineKeyboardButton(text=get_text_api('MguE3Kt7'), callback_data='empty_cart')
     back = InlineKeyboardButton(text=get_text_api('4Sj7fP4j'), switch_inline_query_current_chat='')
-    res = InlineKeyboardMarkup([[take_away, delivery], [redact_order, cancel_order], [back]])
+    res = InlineKeyboardMarkup([[conf_order, redact_order], [back, empty_cart]])
     return res
 
 
@@ -44,7 +46,8 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if cb_data[0] == 'add':
         add_dish(user_id=query.from_user.id, resident=cb_data[1], dish=cb_data[2], price=cb_data[3])
         await update.callback_query.edit_message_reply_markup(
-            reply_markup=dish_card_keyboard(user_id=query.from_user.id, resident=cb_data[1], dish=cb_data[2], price=cb_data[3]))
+            reply_markup=dish_card_keyboard(user_id=query.from_user.id, resident=cb_data[1], dish=cb_data[2],
+                                            price=cb_data[3]))
         await query.answer()
         return
     elif cb_data[0] == 'minus':
@@ -64,17 +67,17 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.answer()
         return
     elif cb_data[0] == 'show_red_dish':
-        await show_red_dish(resident=cb_data[1], dish=cb_data[2], user_id=query.from_user.id,update=update)
+        await show_red_dish(resident=cb_data[1], dish=cb_data[2], user_id=query.from_user.id, update=update)
         await query.answer()
         return
     elif cb_data[0] == 'empty_cart':
         await empty_shcart(user_id=query.from_user.id, update=update)
         await query.answer()
         return
-    elif cb_data[0] == 'Доставка' or cb_data[0] == 'Самовывоз':
-        await query.answer()
-        await push_order(user_id=query.from_user.id, context=context, receipt_type=cb_data[0], update=update)
-        return
+    # elif cb_data[0] == 'Доставка' or cb_data[0] == 'Самовывоз':
+    #     await query.answer()
+    #     await push_order(user_id=query.from_user.id, context=context, receipt_type=cb_data[0], update=update)
+    #     return
     elif cb_data[0] == 'accept':
         await accept_order(order_num=int(cb_data[1]), update=update, resident=cb_data[2])
         await query.answer()
@@ -119,5 +122,8 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cb_data[0] == 'delete_rev':
         del_review(user_id=cb_data[1], resident=cb_data[2])
         await update.callback_query.edit_message_text(text='Отзыв удален.')
-
+        return
+    elif cb_data[0] == 'make_order':
+        await make_order(update, context)
+        return
 

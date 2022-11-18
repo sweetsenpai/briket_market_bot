@@ -7,7 +7,7 @@ def get_resident_report_month(resident_name: str):
     comission = 0
     for order in orders_db.find({'$and': [{f'order_items.{resident_name}': {'$exists': True}},
                                           {f'order_items.{resident_name}.status': 'Готов'}]}):
-        if datetime.date(order['time']).strftime('%Y %m') == datetime(year=2022, month=9, day=15).strftime('%Y %m'):
+        if datetime.date(order['time']).strftime('%Y %m') == datetime.now().strftime('%Y %m'):
             msg += 'Номер заказа:' + str(order['order_num'])+'\n' + order['delivery_type']+'\n'
             sub_sum = sub_total(order_num=order['order_num'], resident_name=resident_name)
             if order['delivery_type'] == 'Самовывоз':
@@ -28,7 +28,8 @@ def get_resident_report_day(resident_name):
     for order in orders_db.find({'$and': [{f'order_items.{resident_name}': {'$exists': True}},
                                           {f'order_items.{resident_name}.status': 'Готов'}]}):
         if datetime.date(order['time']).strftime('%Y %m %d') == datetime.now().strftime('%Y %m %d'):
-            msg += 'Номер заказа:' + str(order['order_num'])+'\n' + order['delivery_type']+'\n' + datetime.date(order['time']).strftime('%Y %m %d')
+            msg += 'Номер заказа:' + str(order['order_num'])+'\n' + order['delivery_type']+'\n' + \
+                   datetime.date(order['time']).strftime('%Y %m %d')
             sub_sum = sub_total(order_num=order['order_num'], resident_name=resident_name)
             if order['delivery_type'] == 'Самовывоз':
                 msg += f'<i>Сумма заказа:{sub_sum}\nКомиссия:{round(sub_sum*0.1)}</i>\n'

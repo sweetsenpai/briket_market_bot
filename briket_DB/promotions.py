@@ -68,6 +68,7 @@ def chek_promo(promo_code, user_id):
 
     if add_promo_cart(promo=promo_code, user_id=user_id) is False:
         return 'Можно использовать только один промокод .'
+
     if promo['one_time'] is True:
         if chek_one_time_promo(promo=promo, user_id=user_id) is False:
             return 'Промокод уже использован', False
@@ -78,8 +79,8 @@ def chek_promo(promo_code, user_id):
     return 'Скидка в {}%. будет применена к вашему заказу.'.format(promo['procent'])
 
 
-def add_promo_cart(promo: str, user_id:int):
-    cart = sh_cart.find_one({'user_id':user_id})
+def add_promo_cart(promo: str, user_id: int):
+    cart = sh_cart.find_one({'user_id': user_id})
     if cart is None:
         sh_cart.insert_one({'user_id': user_id, 'promo_code': promo})
         return True
@@ -99,7 +100,7 @@ def apply_promo(user_id: int):
         return
     if promo['ammount'] == 0:
         total = (cart['total']/100) * (100 - promo['procent'])
-        sh_cart.find_one_and_update(filter=cart, update={'$set': {'total': round(total,2)}})
+        sh_cart.find_one_and_update(filter=cart, update={'$set': {'total': round(total, 2)}})
         return
     sh_cart.find_one_and_update(filter=cart, update={'$set': {'total': round(cart['total'] - promo['ammount'], 2)}})
     return

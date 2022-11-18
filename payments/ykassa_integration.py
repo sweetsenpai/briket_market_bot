@@ -12,9 +12,9 @@ Configuration.secret_key = yookassa_key
 
 
 async def chek_payment(payement_id: str, update: Update):
-    timer = 60
+    timer = 1800
     while timer > 0:
-        if Payment.find_one(payment_id=payement_id).status =='succeeded':
+        if Payment.find_one(payment_id=payement_id).status == 'succeeded':
             await update.callback_query.edit_message_text(text='Ваш заказ успешно оплачен!')
             return True
         sleep(15)
@@ -51,7 +51,8 @@ async def create_payment(order, order_num: int, update: Update ):
         .set_receipt(receipt)
     request = builder.build()
     res = Payment.create(request)
-    payment_url = 'Ваш заказ можно оплатить по этой ссылке:\n{}\n Ссылка будет действительна в течении 30 минут.'.format(res.confirmation.confirmation_url)
+    payment_url = 'Ваш заказ можно оплатить по этой ссылке:\n{}\n Ссылка будет действительна в течении 30 минут.'\
+        .format(res.confirmation.confirmation_url)
     await update.callback_query.edit_message_text(text=payment_url)
     if await chek_payment(payement_id=res.id, update=update) is True:
         return True

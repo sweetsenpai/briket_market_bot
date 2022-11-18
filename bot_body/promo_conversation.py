@@ -1,8 +1,8 @@
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ContextTypes,
     ConversationHandler)
-from text_integration.pastebin_integration import get_text_api
+
 from briket_DB.promotions import chek_promo, sales_db, output_promotions
 PROMO = range(1)
 
@@ -37,3 +37,5 @@ async def delete_promotion(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Выберете акцию которую хотите остановить из  списка ниже',
                                     reply_markup=promo_keyboard)
     return
+
+
