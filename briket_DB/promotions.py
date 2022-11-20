@@ -60,7 +60,7 @@ def chek_start_price(promo, user_id):
 def chek_promo(promo_code, user_id):
     promo = sales_db.find_one({'code': promo_code})
     if promo is None:
-        return 'Промокод не найден. Чтобы попробовать ещё раз нажмите <Активировать промокод>  на клавиатуре', False
+        return 'Промокод не найден. Чтобы попробовать ещё раз нажмите <Да>  на клавиатуре', False
 
     if chek_start_price(promo=promo, user_id=user_id) is False:
         return 'Необходимо заказать ещё на {}р. чтобы активировать промокод.'.format(

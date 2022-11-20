@@ -126,9 +126,9 @@ def delivery_range(delivery_addres):
     call = re.post(url='https://b2b.taxi.yandex.net/b2b/cargo/integration/v1/check-price', headers=custom_head,
                    json=req)
     if call.status_code != 200:
-        return False
+        return False, 'Вы указали неверный адрес'
     if call.json()['distance_meters'] > 3500:
-        return 'Адрес находится за зоной доставки'
+        return False, 'Адрес находится за зоной доставки'
     return True, call.json()['distance_meters']
 
 

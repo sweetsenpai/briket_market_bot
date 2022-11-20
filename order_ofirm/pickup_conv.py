@@ -3,7 +3,8 @@ from telegram.ext import (
     ContextTypes,
     ConversationHandler, MessageHandler, CommandHandler, filters)
 from briket_DB.order_db import push_order
-from briket_DB.promotions import chek_promo, add_promo_cart
+from briket_DB.promotions import chek_promo
+
 
 ONE, TWO = range(2)
 
@@ -14,7 +15,7 @@ async def first_pickup(update: Update, context: ContextTypes.DEFAULT_TYPE):
     key = ReplyKeyboardMarkup(keyboard=[[button1], [button2]])
     await update.message.reply_text(text='Хотите активировать промокод?\n'
                                          'Чтобы остановить оформление заказа нажмите-> /stop', reply_markup=key)
-    return
+    return ONE
 
 
 async def second_pickup(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -24,9 +25,7 @@ async def second_pickup(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return ConversationHandler.END
     elif answer.text == 'Да':
         await update.message.reply_text(text='Введите промокод')
-        return ONE
-    await push_order(user_id=answer.from_user.id, context=context, receipt_type='Самовывоз', update=update)
-    return ConversationHandler.END
+        return TWO
 
 
 async def finish_pickup(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -43,12 +42,13 @@ async def finish_pickup(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(text='Оформление закза прервана')
+    await update.message.reply_text(text='Оформление закза прервано')
     return ConversationHandler.END
 
 pickup_conversation = ConversationHandler(
-    entry_points=[MessageHandler(filters.Regex('Самовывоз'), finish_pickup)],
+    entry_points=[MessageHandler(filters.Regex('Самовывоз'), first_pickup)],
     states={
         ONE: [MessageHandler(filters.TEXT, second_pickup)],
+        TWO: [MessageHandler(filters.TEXT, finish_pickup)]
     },
     fallbacks=[CommandHandler('stop', stop)])

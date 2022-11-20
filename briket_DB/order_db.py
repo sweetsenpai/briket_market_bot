@@ -6,7 +6,7 @@ from telegram.ext import ContextTypes
 from briket_DB.shcart_db import show_cart
 from telegram import (Update,
                       InlineKeyboardMarkup,
-                      InlineKeyboardButton)
+                      InlineKeyboardButton, error)
 from payments.ykassa_integration import create_payment
 from briket_DB.promotions import apply_promo
 orders_db = mongodb.orders
@@ -27,11 +27,12 @@ async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_t
         return
     orders_db.insert_one(cart)
     await send_order_residents(cart['order_num'], context)
+
     msg = 'Номер вашего заказа №{}\n' \
           '{}\n\n' \
           'Вы получите оповещение, когда ваш заказ будет готов к выдаче!'.format(cart['order_num'],
                                                                                 show_cart(user_id=user_id))
-    await update.message.reply_text(text=msg)
+    await context.bot.sendMessage(chat_id=user_id, text=msg)
     sh_cart.delete_one({"user_id": user_id})
     return
 
@@ -65,7 +66,7 @@ async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYP
             try:
                 await context.bot.sendMessage(text=resident_order,
                                               chat_id=admins['chat_id'])
-            except KeyError: pass
+            except : continue
     return
 
 
