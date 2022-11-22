@@ -1,7 +1,6 @@
 import requests as re
 from uuid import uuid4
-from briket_DB.order_db import orders_db
-from briket_DB.customers import read_one
+from briket_DB.customers import find_user_by_id
 from briket_DB.passwords import yandex_key
 
 default_addres = 'Москва, бульв. Новинский, д. 8, стр. 1'
@@ -13,9 +12,8 @@ custom_head = {'Authorization': f'Bearer {yandex_key}', 'Accept-Language': 'ru/r
 # Подтверждение заказа
 
 
-def send_delivery_order(user_id, order_num):
-    order = orders_db.find_one({'order_num': order_num})
-    customer = read_one(user_id)
+def send_delivery_order(order):
+    customer = find_user_by_id(order['user_id'])
     delivery_req = {
         # Требования к доставке
         "client_requirements": {
@@ -56,7 +54,7 @@ def send_delivery_order(user_id, order_num):
                     "currency_sign": "₽",
                     "value": "100.0"
                 },
-                "external_order_id": order_num,
+                "external_order_id": str(order['order_num']),
                 "point_id": 1,
                 "skip_confirmation": False,
                 "type": "source",
@@ -66,10 +64,11 @@ def send_delivery_order(user_id, order_num):
             {
                 "address": {
                     "city": "Москва",
-                    "comment": order['comments'],
+                    "comment": order['delivery']['comment'],
                     "country": "Российская Федерация",
                     "description": "Москва, Россия",
-                    "fullname": f"Москва, {order['addres']}",
+                    "fullname": f"Москва, {order['delivery']['addres']}",
+
                 },
                 # Контакты получателя
                 "contact": {
@@ -82,7 +81,7 @@ def send_delivery_order(user_id, order_num):
                     "currency_sign": "₽",
                     "value": "1.0"
                 },
-                "external_order_id": order_num,
+                "external_order_id": str(order['order_num']),
                 "point_id": 2,
                 "skip_confirmation": False,
                 "type": "destination",
@@ -98,6 +97,7 @@ def send_delivery_order(user_id, order_num):
     call = re.post(url=f'https://b2b.taxi.yandex.net/b2b/cargo/integration/v2/claims/create?request_id={random_call}',
                    headers=custom_head, json=delivery_req)
     if call.status_code != 200:
+        print(call.json())
         return False
     return call.json()['id']
 
@@ -120,13 +120,13 @@ def delivery_range(delivery_addres):
         },
         "route_points": [
             {"fullname": "Москва, бульв. Новинский, д. 8, стр. 1"},
-            {"fullname": delivery_addres}],
+            {"fullname": "Москва,"+delivery_addres}],
         "skip_door_to_door": False
     }
     call = re.post(url='https://b2b.taxi.yandex.net/b2b/cargo/integration/v1/check-price', headers=custom_head,
                    json=req)
     if call.status_code != 200:
-        return False, 'Вы указали неверный адрес'
+        return False, 'Вы указали некорректный адрес'
     if call.json()['distance_meters'] > 3500:
         return False, 'Адрес находится за зоной доставки'
     return True, call.json()['distance_meters']

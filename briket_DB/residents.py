@@ -135,3 +135,14 @@ def insert_img(resident_id, img):
         return 200
 
 
+def read_one_name(resident_name):
+    resident = Resident.query.filter(Resident.resident_name == resident_name).one_or_none()
+    if resident is not None:
+        resident_schema = ResidentSchema()
+        return resident_schema.dump(resident)
+    else:
+        abort(
+            404,
+            "Resident not found for {} ".format(resident_name)
+        )
+

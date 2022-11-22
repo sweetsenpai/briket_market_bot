@@ -25,11 +25,12 @@ from functional_key import admin_keyboard, resident_keyboard, customer_keyboard,
 import briket_DB.reviews.review_conv as rv
 import os
 from order_ofirm.pickup_conv import pickup_conversation
+from order_ofirm.delivery_conv import del_conv
 PORT = int(os.environ.get('PORT', '8443'))
 
 
 def main() -> None:
-    application = Application.builder().token(test_bot_key).rate_limiter(AIORateLimiter()).build()
+    application = Application.builder().token(bot_key).rate_limiter(AIORateLimiter()).build()
 
     reg_user = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Регистрация'), rg.start)],
@@ -136,6 +137,7 @@ def main() -> None:
     application.job_queue.run_monthly(callback=ac.mouth_report_job,
                                       when=time.fromisoformat('18:00:00+03:00'),
                                       day=-1)
+    application.add_handler(del_conv)
     application.add_handler(pickup_conversation)
     application.add_handler(ad_info)
     application.add_handler(res_info)
@@ -155,9 +157,9 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('Администратор'), admin_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Клиент'), customer_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Резидент'), resident_keyboard))
-    application.run_polling()
-#    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
-#                          listen="0.0.0.0")
+#    application.run_polling()
+    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
+                          listen="0.0.0.0")
 
 
 if __name__ == '__main__':

@@ -2,7 +2,8 @@ import logging
 from briket_DB.residents import delet_on_phone
 from briket_DB.config import mongodb
 from briket_DB.reviews.callback_reviews import show_review
-from bot_body.menu import dish_card_keyboard
+from bot_body.menu import dish_card_keyboard, inline_menu_generation, inline_generator
+
 from briket_DB.reviews.reviews_main import publish_revie, del_review
 from briket_DB.shcart_db import (add_dish, remove_dish,
                                  show_cart, empty_shcart,
@@ -126,4 +127,15 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cb_data[0] == 'make_order':
         await make_order(update, context)
         return
+    elif cb_data[0] == 'get_menu':
+        await update.callback_query.edit_message_reply_markup(reply_markup=inline_menu_generation(cb_data[1]))
+        return
 
+    elif cb_data[0] == 'back_inline':
+        await update.callback_query.edit_message_reply_markup(reply_markup=inline_generator(cb_data[1]))
+        return
+    # elif cb_data[0] == 'info':
+    #     rez_data = rez_info(cb_data[1])
+    #     await update.callback_query.edit_message_text(text=rez_data[0])
+    #     await update.callback_query.edit_message_reply_markup(reply_markup=rez_data[1])
+    #     return

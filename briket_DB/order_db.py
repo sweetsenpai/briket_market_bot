@@ -6,9 +6,10 @@ from telegram.ext import ContextTypes
 from briket_DB.shcart_db import show_cart
 from telegram import (Update,
                       InlineKeyboardMarkup,
-                      InlineKeyboardButton, error)
+                      InlineKeyboardButton)
 from payments.ykassa_integration import create_payment
 from briket_DB.promotions import apply_promo
+from delivery.yandex_api import send_delivery_order
 orders_db = mongodb.orders
 sh_cart = mongodb.sh_cart
 admin = mongodb.admin
@@ -25,6 +26,13 @@ async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_t
     apply_promo(user_id=user_id)
     if await create_payment(order=sh_cart.find_one({"user_id": user_id}), order_num=cart['order_num'], update=update) is False:
         return
+    if receipt_type == 'Доставка':
+        cart['delivery']['id'] = send_delivery_order(order=cart)
+        if cart['delivery']['id'] is False:
+            await context.bot.sendMessage(chat_id=user_id, text='Во время оформления доставки произошла ошибка.\n'
+                                                                'Оформление заказа прервано!\n'
+                                                                'Свяжитесь с поддержкой!')
+            return
     orders_db.insert_one(cart)
     await send_order_residents(cart['order_num'], context)
 
