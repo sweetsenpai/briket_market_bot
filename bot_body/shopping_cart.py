@@ -1,25 +1,27 @@
 import logging
-from briket_DB.residents import delet_on_phone
+from briket_DB.sql_main_files.residents import delet_on_phone
 from briket_DB.config import mongodb
 from briket_DB.reviews.callback_reviews import show_review
+from briket_DB.sql_main_files.customers import delete_addres
 from bot_body.menu import dish_card_keyboard, inline_menu_generation, inline_generator
 
 from briket_DB.reviews.reviews_main import publish_revie, del_review
-from briket_DB.shcart_db import (add_dish, remove_dish,
-                                 show_cart, empty_shcart,
-                                 red_order, show_red_dish)
+from briket_DB.shopping.shcart_db import (add_dish, remove_dish,
+                                          show_cart, empty_shcart,
+                                          red_order, show_red_dish)
 
-from briket_DB.order_db import (push_order, client_info,
-                                tech_support, accept_order,
-                                decline_order, finish_order)
+from briket_DB.shopping.order_db import (client_info,
+                                         tech_support, accept_order,
+                                         decline_order, finish_order)
 from telegram import (Update,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton)
 
 from telegram.ext import ContextTypes
 from text_integration.pastebin_integration import get_text_api
-from briket_DB.promotions import stop_promo
+from briket_DB.shopping.promotions import stop_promo
 from order_ofirm.callback_hend import make_order
+from user.addresses import inline_addresses
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -36,6 +38,12 @@ def cart_inline():
     back = InlineKeyboardButton(text=get_text_api('4Sj7fP4j'), switch_inline_query_current_chat='')
     res = InlineKeyboardMarkup([[conf_order, redact_order], [back, empty_cart]])
     return res
+
+
+async def cart_show_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(text=show_cart(update.message.from_user.id),
+                                    reply_markup=cart_inline())
+    return
 
 
 async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -75,10 +83,6 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await empty_shcart(user_id=query.from_user.id, update=update)
         await query.answer()
         return
-    # elif cb_data[0] == 'Доставка' or cb_data[0] == 'Самовывоз':
-    #     await query.answer()
-    #     await push_order(user_id=query.from_user.id, context=context, receipt_type=cb_data[0], update=update)
-    #     return
     elif cb_data[0] == 'accept':
         await accept_order(order_num=int(cb_data[1]), update=update, resident=cb_data[2])
         await query.answer()
@@ -134,8 +138,9 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cb_data[0] == 'back_inline':
         await update.callback_query.edit_message_reply_markup(reply_markup=inline_generator(cb_data[1]))
         return
-    # elif cb_data[0] == 'info':
-    #     rez_data = rez_info(cb_data[1])
-    #     await update.callback_query.edit_message_text(text=rez_data[0])
-    #     await update.callback_query.edit_message_reply_markup(reply_markup=rez_data[1])
-    #     return
+    elif cb_data[0] == 'remove_address':
+        delete_addres(chat_id=update.callback_query.from_user.id, del_addres=cb_data[1])
+        await update.callback_query.edit_message_text('Адрес успешно удален.',
+                                                      reply_markup=inline_addresses(user_id=
+                                                                                    update.callback_query.from_user.id))
+        return

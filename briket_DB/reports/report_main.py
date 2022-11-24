@@ -1,4 +1,4 @@
-from briket_DB.order_db import orders_db
+from briket_DB.shopping.order_db import orders_db
 from datetime import datetime
 
 

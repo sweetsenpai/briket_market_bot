@@ -1,6 +1,6 @@
 import requests as re
 from uuid import uuid4
-from briket_DB.customers import find_user_by_id
+from briket_DB.sql_main_files.customers import find_user_by_id
 from briket_DB.passwords import yandex_key
 
 default_addres = 'Москва, бульв. Новинский, д. 8, стр. 1'

@@ -1,5 +1,4 @@
-from telegram import (ReplyKeyboardRemove,
-                      Update,
+from telegram import (Update,
                       ReplyKeyboardMarkup,
                       KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup)
 
@@ -8,7 +7,7 @@ from telegram.ext import (
     ConversationHandler)
 from briket_DB.config import mongodb
 import logging
-from briket_DB.residents import create, read_all
+from briket_DB.sql_main_files.residents import create, read_all
 from briket_DB.reports.report_main import get_resident_report_day, get_resident_report_month
 from text_integration.pastebin_integration import get_text_api
 admin = mongodb.admin

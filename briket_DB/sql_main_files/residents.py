@@ -1,6 +1,6 @@
 from flask import make_response, abort
 from briket_DB.config import db
-from briket_DB.models import Resident, ResidentSchema
+from briket_DB.sql_main_files.models import Resident, ResidentSchema
 
 
 def read_all():

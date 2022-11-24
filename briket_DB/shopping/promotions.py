@@ -1,7 +1,7 @@
 from briket_DB.config import mongodb
 import random
 import string
-from briket_DB.shcart_db import sh_cart
+from briket_DB.shopping.shcart_db import sh_cart
 sales_db = mongodb.promotions
 
 

@@ -1,5 +1,5 @@
 from briket_DB.reviews.reviews_main import reviews_db
-from briket_DB.order_db import admin
+from briket_DB.shopping.order_db import admin
 from telegram import (
                       Update,
                       InlineKeyboardMarkup,

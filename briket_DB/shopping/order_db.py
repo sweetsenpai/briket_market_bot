@@ -1,14 +1,14 @@
 from briket_DB.config import mongodb
 from datetime import datetime
-from briket_DB.residents import get_chat_id
-from briket_DB.customers import find_user_by_id
+from briket_DB.sql_main_files.residents import get_chat_id
+from briket_DB.sql_main_files.customers import find_user_by_id
 from telegram.ext import ContextTypes
-from briket_DB.shcart_db import show_cart
+from briket_DB.shopping.shcart_db import show_cart
 from telegram import (Update,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton)
 from payments.ykassa_integration import create_payment
-from briket_DB.promotions import apply_promo
+from briket_DB.shopping.promotions import apply_promo
 from delivery.yandex_api import send_delivery_order
 orders_db = mongodb.orders
 sh_cart = mongodb.sh_cart

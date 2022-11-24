@@ -3,7 +3,7 @@ from telegram.ext import (
     ContextTypes,
     ConversationHandler)
 
-from briket_DB.promotions import chek_promo, sales_db, output_promotions
+from briket_DB.shopping.promotions import chek_promo, sales_db, output_promotions
 PROMO = range(1)
 
 

@@ -6,7 +6,7 @@ from telegram import (ReplyKeyboardRemove,
 from telegram.ext import (
     ContextTypes,
     ConversationHandler)
-from briket_DB.residents import find_phone, insert_img,insert_email,insert_name,insert_location,insert_description
+from briket_DB.sql_main_files.residents import find_phone, insert_img,insert_email,insert_name,insert_location,insert_description
 import logging
 from parcer.parcer_sheet import create_new_table
 import cloudinary

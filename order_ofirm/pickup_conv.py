@@ -1,9 +1,9 @@
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import (
     ContextTypes,
     ConversationHandler, MessageHandler, CommandHandler, filters)
-from briket_DB.order_db import push_order
-from briket_DB.promotions import chek_promo
+from briket_DB.shopping.order_db import push_order
+from briket_DB.shopping.promotions import chek_promo
 
 
 ONE, TWO = range(2)

@@ -1,4 +1,4 @@
-from briket_DB.passwords import test_bot_key, bot_key
+from briket_DB.passwords import test_bot_key
 from datetime import time
 from telegram.ext import (
     Application,
@@ -8,35 +8,35 @@ from telegram.ext import (
     filters,
     InlineQueryHandler,
     CallbackQueryHandler, AIORateLimiter)
-import registration as rg
-import promo_conversation as promo
+from bot_body.user import registration as rg
 import menu
+from bot_body.shopping_cart import cart_show_button
 from shopping_cart import call_back_handler
-import resident_registration as res_reg
-import admin_registration as ar
-import admin_commands as ac
-from destribytion import start_distribution, get_text_destribution, cov_end, TEXT_DIST
-from admin_promo import (add_promo_start, add_promo_onetime,
-                         add_promo_start_price,
-                         add_promo_procent, add_promo_text,
-                         add_promo_end, cancel_command,
-                         CODE, TEXT, START_PRICE, ONE_TIME, PROCENT)
+from bot_body.residents import resident_registration as res_reg
+from bot_body.admin import admin_commands as ac, promo_conversation as promo, admin_registration as ar
+from bot_body.admin.destribytion import start_distribution, get_text_destribution, cov_end, TEXT_DIST
+from bot_body.admin.admin_promo import (add_promo_start, add_promo_onetime,
+                                        add_promo_start_price,
+                                        add_promo_procent, add_promo_text,
+                                        add_promo_end, cancel_command,
+                                        CODE, TEXT, START_PRICE, ONE_TIME, PROCENT)
 from functional_key import admin_keyboard, resident_keyboard, customer_keyboard, start, promo_keyboard
 import briket_DB.reviews.review_conv as rv
 import os
 from order_ofirm.pickup_conv import pickup_conversation
 from order_ofirm.delivery_conv import del_conv
+from user.addresses import show_addresses, add_conv
 PORT = int(os.environ.get('PORT', '8443'))
 
 
 def main() -> None:
-    application = Application.builder().token(bot_key).rate_limiter(AIORateLimiter()).build()
+    application = Application.builder().token(test_bot_key).rate_limiter(AIORateLimiter()).build()
 
     reg_user = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Регистрация'), rg.start)],
         states={
             rg.PHONE: [MessageHandler(filters.CONTACT, rg.phone)],
-            rg.LOCATION: [MessageHandler(filters.LOCATION | filters.TEXT, rg.location),
+            rg.LOCATION: [MessageHandler(filters.LOCATION | filters.Regex('[а-яА-ЯёЁ]'), rg.location),
                           CommandHandler("skip", rg.skip_location), ],
             rg.INFO: [MessageHandler(filters.TEXT & ~filters.COMMAND, rg.info)]
         },
@@ -49,7 +49,7 @@ def main() -> None:
                       CommandHandler('registration', res_reg.registration)],
         states={
             res_reg.PHONE: [MessageHandler(filters.CONTACT, res_reg.phon_res)],
-            res_reg.ADDRES: [MessageHandler(filters.LOCATION | filters.TEXT, res_reg.resident_addres)],
+            res_reg.ADDRES: [MessageHandler(filters.LOCATION | filters.Regex('[а-яА-ЯёЁ]'), res_reg.resident_addres)],
             res_reg.NAME: [MessageHandler(filters.TEXT, res_reg.resident_name)],
             res_reg.EMAIL: [MessageHandler(filters.TEXT, res_reg.resident_email)],
             res_reg.DESCRIPTION: [MessageHandler(filters.TEXT, res_reg.resident_description)],
@@ -97,7 +97,7 @@ def main() -> None:
         entry_points=[MessageHandler(filters.Regex('Создать промокод'), add_promo_start)],
         states={
             CODE: [MessageHandler(filters.TEXT, add_promo_text)],
-            TEXT: [MessageHandler(filters.TEXT, add_promo_onetime)],
+            TEXT: [MessageHandler(filters.Regex('[а-яА-ЯёЁ]'), add_promo_onetime)],
             ONE_TIME: [MessageHandler(filters.TEXT, add_promo_start_price)],
             START_PRICE: [MessageHandler(filters.TEXT, add_promo_procent)],
             PROCENT: [MessageHandler(filters.TEXT, add_promo_end)]
@@ -119,12 +119,13 @@ def main() -> None:
     ad_info = MessageHandler(filters.Regex('FAQ админ.'), ac.admin_info)
     res_info = MessageHandler(filters.Regex('FAQ рез.'), ac.resident_info)
     cust_info = MessageHandler(filters.Regex('FAQ'), rg.custommer_faq)
-
+    application.add_handler(MessageHandler(filters.Regex('🛒Корзина🛒'), cart_show_button))
     application.add_handler(CommandHandler('admin_info', ac.admin_info))
     application.add_handler(MessageHandler(filters.Regex('Месячный'), ac.mouth_report))
     application.add_handler(MessageHandler(filters.Regex('За день'), ac.day_report))
     application.add_handler(CommandHandler('start', start))
     application.add_handler(user_rev_con)
+    application.add_handler(MessageHandler(filters.Regex('Мои адреса'), show_addresses))
     application.add_handler(CommandHandler('instraction', ac.resident_info))
     application.add_handler(MessageHandler(filters.Regex('Аккаунт'), rg.custommer_account))
     application.add_handler(MessageHandler(filters.Regex('Промокоды'), promo_keyboard))
@@ -137,6 +138,7 @@ def main() -> None:
     application.job_queue.run_monthly(callback=ac.mouth_report_job,
                                       when=time.fromisoformat('18:00:00+03:00'),
                                       day=-1)
+    application.add_handler(add_conv)
     application.add_handler(del_conv)
     application.add_handler(pickup_conversation)
     application.add_handler(ad_info)
@@ -157,12 +159,12 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('Администратор'), admin_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Клиент'), customer_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Резидент'), resident_keyboard))
-#    application.run_polling()
-    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
-                          listen="0.0.0.0")
+    application.run_polling()
+
+
+#    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
+#                          listen="0.0.0.0")
 
 
 if __name__ == '__main__':
-
     main()
-

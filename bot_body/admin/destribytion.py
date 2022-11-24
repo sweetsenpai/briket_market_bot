@@ -1,6 +1,6 @@
 from telegram.ext import (ConversationHandler, ContextTypes)
 from telegram import (Update)
-from briket_DB.customers import read_all
+from briket_DB.sql_main_files.customers import read_all
 from text_integration.pastebin_integration import get_text_api
 
 import asyncio

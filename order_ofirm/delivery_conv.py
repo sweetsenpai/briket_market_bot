@@ -1,23 +1,36 @@
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton
 from telegram.ext import (
     ContextTypes,
     ConversationHandler, MessageHandler, CommandHandler, filters)
-from briket_DB.order_db import push_order
-from briket_DB.promotions import chek_promo
+from briket_DB.shopping.order_db import push_order
+from briket_DB.shopping.promotions import chek_promo
 from delivery.yandex_api import delivery_range
-from order_ofirm.pickup_conv import stop
-from briket_DB.shcart_db import sh_cart
+from briket_DB.shopping.shcart_db import sh_cart
+from briket_DB.sql_main_files.customers import addres_keyboard
 
 ONE, TWO, THREE, FOUR = range(4)
 
 
+def addres_keyboard_del(user_id):
+    key = []
+    for a in addres_keyboard(user_id):
+        key.append(
+            [KeyboardButton(text=a)]
+        )
+    return ReplyKeyboardMarkup(key)
+
+
 async def first_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(text='Укажите адрес доставки')
+    await update.message.reply_text(text='Укажите адрес доставки',
+                                    reply_markup=addres_keyboard_del(
+                                        update.message.from_user.id
+                                    ))
     return ONE
 
 
 async def second_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
     addres = update.message.text
+    print(addres)
     chek = delivery_range(addres)
     if chek[0] is True:
         sh_cart.find_one_and_update(filter={'user_id': update.message.from_user.id},
@@ -33,7 +46,7 @@ async def second_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif chek[0] is False:
         await update.message.reply_text(text=chek[1])
         await update.message.reply_text(text='Вы можете указать другой адрес доставки '
-                                             'или прервать оформление командой /stop')
+                                             'или прервать оформление командой /cancel')
         return ONE
 
 
@@ -72,13 +85,20 @@ async def finish_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
 
 
+async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "Оформление заказа прервано", reply_markup=ReplyKeyboardRemove()
+    )
+
+    return ConversationHandler.END
+
 del_conv = ConversationHandler(
     entry_points=[MessageHandler(filters.Regex('Доставка'), first_delivery)],
     states={
-        ONE: [MessageHandler(filters.TEXT, second_delivery)],
+        ONE: [MessageHandler(filters.Regex('[а-яА-ЯёЁ]'), second_delivery)],
         TWO: [MessageHandler(filters.TEXT, comments_delivery)],
         THREE: [MessageHandler(filters.TEXT, promo_delivery)],
         FOUR: [MessageHandler(filters.TEXT, finish_delivery)],
     },
-    fallbacks=[CommandHandler('stop', stop)]
+    fallbacks=[CommandHandler('cancel', stop)]
 )

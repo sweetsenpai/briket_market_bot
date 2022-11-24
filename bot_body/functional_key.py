@@ -33,7 +33,8 @@ async def customer_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [
             [KeyboardButton(text='Регистрация')],
             [KeyboardButton(text='Меню'), KeyboardButton(text='Оставить отзыв')],
-            [KeyboardButton(text='FAQ'), KeyboardButton(text='Аккаунт')]
+            [KeyboardButton(text='FAQ'), KeyboardButton(text='Аккаунт')],
+            [KeyboardButton(text='🛒Корзина🛒')]
         ], resize_keyboard=True, one_time_keyboard=False)
     await update.message.reply_text(text='Выбири действия в меню ниже', reply_markup=cust_func)
     return

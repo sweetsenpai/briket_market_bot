@@ -6,9 +6,9 @@ from telegram import (InlineQueryResultArticle,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton, constants)
 from telegram.ext import ContextTypes
-from briket_DB.residents import read_all, read_one_name
+from briket_DB.sql_main_files.residents import read_all
 from parcer.parcer_sheet import get_market_categories, get_dishs
-from briket_DB.shcart_db import get_dish_quantity
+from briket_DB.shopping.shcart_db import get_dish_quantity
 from text_integration.pastebin_integration import get_text_api
 import gspread
 logging.basicConfig(

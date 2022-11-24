@@ -1,6 +1,6 @@
 import logging
-from briket_DB.promotions import chek_personal_code
-from briket_DB.customers import find_id, create, update_addres, read_one
+from briket_DB.shopping.promotions import chek_personal_code
+from briket_DB.sql_main_files.customers import find_id, create, insert_new_addres
 from telegram import ReplyKeyboardRemove, Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import (
     ContextTypes,
@@ -67,14 +67,14 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             text=get_text_api('aANQhGQP'), reply_markup=ReplyKeyboardRemove()
         )
-        update_addres(user.id, str([user_location.latitude, user_location.longitude]))
+        insert_new_addres(user.id, str([user_location.latitude, user_location.longitude]))
     except:
         user = update.message.from_user
         user_location = update.message.text
         await update.message.reply_text(
             "И последний шаг, как тебя зовут?", reply_markup=ReplyKeyboardRemove()
         )
-        update_addres(user.id, user_location)
+        insert_new_addres(user.id, user_location)
 
     return INFO
 
@@ -99,7 +99,7 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
 
 
-async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Cancels and ends the conversation."""
     user = update.message.from_user
     logger.info("User %s canceled the conversation.", user.first_name)
@@ -120,7 +120,6 @@ async def custommer_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                              'чтобы получить персональный промокод на скидку.')
         return
     acc_info = 'Телефон: {}\n' \
-           'Адрес: {}\n' \
-           'Персональный промокд на скиду: {}\n'.format(user['phone'], user['addres'],chek_personal_code(user_id))
-    await update.message.reply_text(text=acc_info)
+           'Персональный промокд на скиду: {}\n'.format(user['phone'],chek_personal_code(user_id))
+    await update.message.reply_text(text=acc_info,reply_markup=ReplyKeyboardMarkup([[KeyboardButton(text='Мои адреса')]]))
     return

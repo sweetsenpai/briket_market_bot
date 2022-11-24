@@ -1,6 +1,6 @@
 import os
 from briket_DB.config import db
-from briket_DB.models import Customer, Resident
+from briket_DB.sql_main_files.models import Customer, Resident
 
 RESIDENTS = [{
     "resident_name": 'KFC',

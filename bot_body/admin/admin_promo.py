@@ -1,14 +1,12 @@
 from telegram.ext import (
-    CommandHandler,
     ConversationHandler,
-    MessageHandler,
-    filters, ContextTypes)
+    ContextTypes)
 from telegram import (
                       Update,
                       ReplyKeyboardMarkup,
                       KeyboardButton)
 import re
-from briket_DB.promotions import start_sale, sales_db
+from briket_DB.shopping.promotions import start_sale, sales_db
 from text_integration.pastebin_integration import get_text_api
 CODE, TEXT, ONE_TIME, START_PRICE, PROCENT = range(5)
 
