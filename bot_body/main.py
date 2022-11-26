@@ -1,4 +1,5 @@
 from briket_DB.passwords import test_bot_key, bot_key
+from server.ngrok_tunel import get_https
 from datetime import time
 from telegram.ext import (
     Application,
@@ -23,10 +24,11 @@ from bot_body.admin.admin_promo import (add_promo_start, add_promo_onetime,
 from functional_key import admin_keyboard, resident_keyboard, customer_keyboard, start, promo_keyboard
 import briket_DB.reviews.review_conv as rv
 import os
+from delivery.yandex_api import driver_number_sender
 from order_ofirm.pickup_conv import pickup_conversation
 from order_ofirm.delivery_conv import del_conv
 from user.addresses import show_addresses, add_conv
-PORT = int(os.environ.get('PORT', '8443'))
+PORT = int(os.environ.get('PORT', '80'))
 
 
 def main() -> None:
@@ -138,6 +140,10 @@ def main() -> None:
     application.job_queue.run_monthly(callback=ac.mouth_report_job,
                                       when=time.fromisoformat('18:00:00+03:00'),
                                       day=-1)
+    application.job_queue.run_repeating(callback=driver_number_sender,
+                                        interval=300,
+                                        first=time.fromisoformat('10:00:00+03:00'),
+                                        last=time.fromisoformat('20:30:00+03:00'))
     application.add_handler(add_conv)
     application.add_handler(del_conv)
     application.add_handler(pickup_conversation)
@@ -160,8 +166,7 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('Клиент'), customer_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Резидент'), resident_keyboard))
 #    application.run_polling()
-
-    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://briket-market-bot.vercel.app/{bot_key}',
+    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'{get_https()}/{bot_key}',
                           listen="0.0.0.0")
 
 

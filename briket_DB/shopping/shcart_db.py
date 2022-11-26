@@ -52,13 +52,16 @@ def remove_dish(user_id: int, resident: str, dish: str) -> None:
 
 def show_cart(user_id: int):
     user_cart = sh_cart.find_one({"user_id": user_id})
-    order = user_cart['order_items']
-    cart = ''
-    for resident in order.keys():
-        for dish in order[resident].keys():
-            cart += '{}: {} * {}\n'.format(dish, order[resident][dish]['quantity'], order[resident][dish]['price'])
-    cart += 'Итого: {}р.'.format(user_cart['total'])
-    return cart
+    try:
+        order = user_cart['order_items']
+        cart = ''
+        for resident in order.keys():
+            for dish in order[resident].keys():
+                cart += '{}: {} * {}\n'.format(dish, order[resident][dish]['quantity'], order[resident][dish]['price'])
+        cart += 'Итого: {}р.'.format(user_cart['total'])
+        return cart
+    except TypeError:
+        return 'Тут ничего нет'
 
 
 def total(user_id: int):

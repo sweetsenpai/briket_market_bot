@@ -17,7 +17,11 @@ admin = mongodb.admin
 
 async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_type: str, update: Update):
     cart = sh_cart.find_one({"user_id": user_id})
-    del cart['_id']
+    try:
+        del cart['_id']
+    except TypeError:
+        await context.bot.sendMessage(chat_id=user_id, text='Нельзя оформить заказ, в корзине ничего нет.')
+        return
     cart['time'] = datetime.now()
     cart['order_num'] = datetime.now().microsecond
     cart['delivery_type'] = receipt_type
@@ -60,8 +64,13 @@ def resident_inline_keyboard(order_num: int, resident: str, btn_text='✅', cbd=
 async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYPE):
     full_order = orders_db.find_one({"order_num": order_num})
     for resident in full_order['order_items']:
-        resident_order = 'Заказ №{}\nТип: {}\nСтатус: ' ' Новый📨\n'.format(full_order['order_num'],
-                                                                            full_order['delivery_type'])
+        try:
+            resident_order = 'Заказ №{}\nТип: {}\nСтатус: ' ' Новый📨\n Адрес:{}\n'.format(full_order['order_num'],
+                                                                                full_order['delivery_type'],
+                                                                                full_order['delivery']['addres'])
+        except KeyError:
+            resident_order = 'Заказ №{}\nТип: {}\nСтатус: ' ' Новый📨\n'.format(full_order['order_num'],
+                                                                                         full_order['delivery_type'])
         for count, dish in enumerate(full_order['order_items'][resident]):
             try:
                 resident_order += '{}. {}: {} шт. \n'.format(count + 1, dish,
@@ -82,9 +91,14 @@ async def accept_order(order_num: int, update: Update, resident: str):
     full_order = orders_db.find_one({"order_num": order_num})
     orders_db.find_one_and_update(filter=full_order,
                                   update={'$set': {"order_items.{}.status".format(resident): 'Готовится'}})
+    try:
+        messeg = 'Заказ №{}\nТип: {}\nСтатус:  Готовится👨‍🍳\nАдрес:{}\n'.format(full_order['order_num'],
+                                                                                  full_order['delivery_type'],
+                                                                                  full_order['delivery']['addres'])
+    except KeyError:
+        messeg = 'Заказ №{}\nТип: {}\nСтатус:  Готовится👨‍🍳\n'.format(full_order['order_num'],
+                                                                                  full_order['delivery_type'])
 
-    messeg = 'Заказ №{}\nТип: {}\nСтатус:  Готовится👨‍🍳\n'.format(full_order['order_num'],
-                                                                   full_order['delivery_type'])
     for count, dish in enumerate(full_order['order_items'][resident]):
         try:
             messeg += '{}. {}: {} шт. \n'.format(count + 1, dish, full_order['order_items'][resident][dish]['quantity'])

@@ -1,8 +1,16 @@
 import requests as re
 from uuid import uuid4
+
+import telegram.error
+
 from briket_DB.sql_main_files.customers import find_user_by_id
 from briket_DB.passwords import yandex_key
-
+from briket_DB.config import mongodb
+from datetime import datetime
+from telegram import Update, constants
+from telegram.ext import ContextTypes
+orders_db = mongodb.orders
+admins = mongodb.admin
 default_addres = 'Москва, бульв. Новинский, д. 8, стр. 1'
 custom_head = {'Authorization': f'Bearer {yandex_key}', 'Accept-Language': 'ru/ru'}
 
@@ -103,11 +111,11 @@ def send_delivery_order(order):
 
 
 def driver_info(claim_id):
-    call = re.post(url='b2b.taxi.yandex.net/b2b/cargo/integration/v2/driver-voiceforwarding', headers=custom_head,
+    call = re.post(url='http://b2b.taxi.yandex.net/b2b/cargo/integration/v2/driver-voiceforwarding', headers=custom_head,
                    json=claim_id)
     if call.status_code != 200:
         return False
-    return call.json()['phone']
+    return '{}\nдоб. номер:{}'.format(call.json()['phone'],call.json()['ext'])
 
 
 def delivery_range(delivery_addres):
@@ -131,4 +139,23 @@ def delivery_range(delivery_addres):
         return False, 'Адрес находится за зоной доставки'
     return True, call.json()['distance_meters']
 
+
+async def driver_number_sender(context: ContextTypes.DEFAULT_TYPE):
+    orders_driver = orders_db.find({'$and': [{'delivery.driver_number': {'$exists': False}},
+                                    {'delivery_type': 'Доставка'}]})
+    for order in orders_driver:
+        if datetime.date(order['time']).strftime('%Y %m %d') == datetime.now().strftime('%Y %m %d'):
+            driver_phone = driver_info(order['delivery']['id'])
+            if driver_phone is not False:
+                orders_db.find_one_and_update(filter={"user_id": order['user_id']},
+                                              update={'$set': {"delivery.driver_number": driver_phone}})
+                for admin in admins.find():
+                    try:
+                        context.bot.sendMessage(text='Заказ №:{}\n'
+                                                     'Назначен курьер!\n'
+                                                     'Контактный номер:{}'.format((order['order_num']), driver_phone),
+                                                chat_id=admin['chat_id'])
+                    except KeyError or telegram.error.BadRequest:
+                        continue
+    return
 
