@@ -98,7 +98,7 @@ def main() -> None:
     application.add_handler(InlineQueryHandler(menu.inline_query))
     application.add_handler(reg_user)
     application.add_handler(CallbackQueryHandler(call_back_handler))
-    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://brikettestbot.herokuapp.com/{bot_key}',
+    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://web-production-7eec.up.railway.app/{bot_key}',
                             listen="0.0.0.0")
 
 
