@@ -161,7 +161,7 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('Резидент'), resident_keyboard))
 #    application.run_polling()
 
-    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'https://web-production-6560.up.railway.app/{bot_key}',
+    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'briket-market-bot.vercel.app/{bot_key}',
                           listen="0.0.0.0")
 
 
