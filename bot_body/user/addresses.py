@@ -10,10 +10,11 @@ ONE = range(1)
 
 
 async def show_addresses(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(text='Для того, чтобы удалить один аз адресов, просто нажмите на него.',
+    await update.message.reply_text(text='Для того, чтобы удалить один из адресов, просто нажмите на него.',
                                         reply_markup=(inline_addresses(update.message.from_user.id)))
     await update.message.reply_text(text='Для того, чтобы добавить новый адрес, нажмите на клавиатуру.',
-                                        reply_markup=ReplyKeyboardMarkup([[KeyboardButton('Добавить новый адрес')]]))
+                                        reply_markup=ReplyKeyboardMarkup([[KeyboardButton('Добавить новый адрес')],
+                                                                          [KeyboardButton('Главное меню')]]))
 
     return
 

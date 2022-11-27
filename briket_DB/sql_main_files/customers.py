@@ -16,10 +16,7 @@ def read_one(customer_id):
         customer_schema = CustomerSchema()
         return customer_schema.dump(customer)
     else:
-        abort(
-            404,
-            "Customer not found for {} ID".format(customer_id)
-        )
+        return False
 
 
 def find_id(chat_id):
@@ -33,10 +30,6 @@ def find_id(chat_id):
 
 def create(customer):
     chat_id = customer.get('chat_id')
-    phone = customer.get('phone')
-    addres = customer.get('addres')
-    disc_status = customer.get('disc_status')
-
     ex_customer = Customer.query.filter(Customer.chat_id == chat_id).one_or_none()
 
     if ex_customer is None:
@@ -67,6 +60,18 @@ def update(customer_id, customer):
         data = schema.dump(update_customer)
         return data, 200
 
+
+def inser_new_name(customer_id, name):
+    update_customer = Customer.query.filter(Customer.customer_id == customer_id).one_or_none()
+    if update_customer is None:
+        abort(
+            404,
+            "Customer not found for id {}".format(customer_id)
+        )
+    else:
+        update_customer.name = name
+        db.session.commit()
+        return 200
 
 
 def delete(customer_id):

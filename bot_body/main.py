@@ -126,6 +126,7 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('Месячный'), ac.mouth_report))
     application.add_handler(MessageHandler(filters.Regex('За день'), ac.day_report))
     application.add_handler(CommandHandler('start', start))
+    application.add_handler(MessageHandler(filters.Regex('Главное меню'), start))
     application.add_handler(user_rev_con)
     application.add_handler(MessageHandler(filters.Regex('Мои адреса'), show_addresses))
     application.add_handler(CommandHandler('instraction', ac.resident_info))

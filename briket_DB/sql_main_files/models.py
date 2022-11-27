@@ -6,6 +6,7 @@ class Customer(db.Model):
     customer_id = db.Column(db.Integer, primary_key=True)
     chat_id = db.Column(db.Integer, index=True)
     phone = db.Column(db.String(32))
+    name = db.Column(db.String(32))
     addres = db.Column(db.String(32))
     disc_status = db.Column(db.Boolean)
 

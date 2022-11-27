@@ -1,12 +1,12 @@
 import logging
 from briket_DB.shopping.promotions import chek_personal_code
-from briket_DB.sql_main_files.customers import find_id, create, insert_new_addres
+from briket_DB.sql_main_files.customers import find_id, create, insert_new_addres, inser_new_name
 from telegram import ReplyKeyboardRemove, Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import (
     ContextTypes,
     ConversationHandler)
 from text_integration.pastebin_integration import get_text_api
-
+from bot_body.user.addresses import show_addresses
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -42,13 +42,7 @@ async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Contact of {}: {}".format(user.first_name, user_contact)
     )
 
-    share_button = KeyboardButton(text='Share my location', request_location=True)
-    key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
-                                    keyboard=[[share_button]],
-                                    resize_keyboard=False)
-
-    await update.message.reply_text(text=get_text_api('MBMfCNhN'),
-                                    reply_markup=key_board)
+    await update.message.reply_text(text=get_text_api('MBMfCNhN'))
     customer = {'chat_id': user.id,
                 'phone': str(user_contact),
                 'addres': str(''),
@@ -90,8 +84,9 @@ async def skip_location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 
 
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.message.from_user
-    logger.info("info of %s: %s", user.first_name, update.message.text)
+    user_name = update.message.text
+    inser_new_name(customer_id=update.message.from_user.id,
+                   name=user_name)
     await update.message.reply_text("Спасибо")
     await update.message.reply_text(
         text=get_text_api('jTrJc5RZ'), reply_markup=ReplyKeyboardRemove()
@@ -119,7 +114,9 @@ async def custommer_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(text='Пожалуйста, пройдите регистрацию \n'
                                              'чтобы получить персональный промокод на скидку.')
         return
-    acc_info = 'Телефон: {}\n' \
-           'Персональный промокд на скиду: {}\n'.format(user['phone'],chek_personal_code(user_id))
-    await update.message.reply_text(text=acc_info,reply_markup=ReplyKeyboardMarkup([[KeyboardButton(text='Мои адреса')]]))
+    acc_info = 'Привет, {}!\n' \
+               'Телефон: {}\n' \
+           'Персональный промокд на скиду: <b>{}</b>\n'.format(user['name'], user['phone'],chek_personal_code(user_id))
+    await update.message.reply_text(text=acc_info, parse_mode='HTML')
+    await show_addresses(update, context)
     return

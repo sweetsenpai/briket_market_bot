@@ -9,6 +9,7 @@ from telegram import (Update,
                       InlineKeyboardButton)
 from payments.ykassa_integration import create_payment
 from briket_DB.shopping.promotions import apply_promo
+from briket_DB.sql_main_files.customers import read_one
 from delivery.yandex_api import send_delivery_order
 orders_db = mongodb.orders
 sh_cart = mongodb.sh_cart
@@ -16,6 +17,9 @@ admin = mongodb.admin
 
 
 async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_type: str, update: Update):
+    if read_one(user_id) is False:
+        await context.bot.sendMessage(chat_id=user_id, text='Для оформления заказа необходимо пройти регистрацию.\n'
+                                                            'Это займет всего пару минут.')
     cart = sh_cart.find_one({"user_id": user_id})
     try:
         del cart['_id']

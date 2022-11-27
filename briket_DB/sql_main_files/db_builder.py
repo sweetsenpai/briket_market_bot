@@ -23,8 +23,7 @@ RESIDENTS = [{
 ]
 
 CUSTOMER = [
-    {'chat_id': 1, 'phone': '+79118468177', 'addres': 'SPB', 'disc_status': True},
-    {'chat_id': 2, 'phone': '+79232556679', 'addres': 'MSK', 'disc_status': False}
+    {'chat_id': 1, 'phone': '+79118468177', 'name': 'Александр', 'addres': 'SPB', 'disc_status': True},
 ]
 
 if os.path.exists('briket.db'):
@@ -47,6 +46,7 @@ else:
     for customer in CUSTOMER:
         c = Customer(chat_id=customer['chat_id'],
                      phone=customer['phone'],
+                     name=customer['name'],
                      addres=customer['addres'],
                      disc_status=customer['disc_status'])
         db.session.add(c)
