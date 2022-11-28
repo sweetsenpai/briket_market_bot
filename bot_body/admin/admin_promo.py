@@ -1,6 +1,8 @@
 from telegram.ext import (
     ConversationHandler,
     ContextTypes)
+import asyncio
+from briket_DB.sql_main_files.customers import read_all
 from telegram import (
                       Update,
                       ReplyKeyboardMarkup,
@@ -8,7 +10,7 @@ from telegram import (
 import re
 from briket_DB.shopping.promotions import start_sale, sales_db
 from text_integration.pastebin_integration import get_text_api
-CODE, TEXT, ONE_TIME, START_PRICE, PROCENT = range(5)
+CODE, TEXT, ONE_TIME, START_PRICE, PROCENT, START_DISTRIBUTION = range(6)
 
 
 async def add_promo_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -18,15 +20,14 @@ async def add_promo_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def add_promo_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     code_word = update.message.text
-    start_sale(promo_code=code_word)
-    sales_db.find_one_and_update(filter={'code': code_word}, update={'$set': {'master': update.message.chat_id}})
+    start_sale(promo_code=code_word, master=update.message.chat_id)
     await update.message.reply_text(text=get_text_api('VgUzQXWc'))
     return TEXT
 
 
 async def add_promo_onetime(update: Update, context: ContextTypes.DEFAULT_TYPE):
     promo_text = update.message.text
-    sales_db.find_one_and_update(filter={'master': update.message.chat_id}, update={'$set': {'text': promo_text}})
+    sales_db.find_one_and_update(filter={'master': update.message.chat_id}, update={'$set': {'description': promo_text}})
     keyboard_onetime = ReplyKeyboardMarkup(keyboard=[[
         KeyboardButton(text='Да'), KeyboardButton(text='Нет')
     ]], one_time_keyboard=True)
@@ -63,9 +64,33 @@ async def add_promo_end(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         sales_db.find_one_and_update(filter={'master': update.message.chat_id},
                                      update={'$set': {'ammount': round(float(pure_d), 2)}})
-    sales_db.find_one_and_update(filter={'master': update.message.chat_id},
-                                 update={'$unset': {'master': ''}})
     await update.message.reply_text(text='Промокод успешно создан!')
+    await update.message.reply_text(text='Начать рассылку?',
+                                    reply_markup=ReplyKeyboardMarkup([[KeyboardButton('Да'), KeyboardButton('Нет')]]))
+    return START_DISTRIBUTION
+
+
+async def promo_distribution(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    answer = update.message.text
+    text_prm = sales_db.find_one(filter={'master': update.message.chat_id})['description']
+    sales_db.find_one_and_update(filter={'master': update.message.chat_id},
+                                 update={'$unset': {'master': ''}})['description']
+    print(text_prm)
+    if answer == 'Да':
+        await update.message.reply_text('Рассылка запущена!')
+        context.application.create_task(
+            asyncio.gather(
+                *(
+                    context.bot.send_message(
+                        chat_id=customer['chat_id'],
+                        text=text_prm
+                    )
+                    for customer in read_all()
+                ), return_exceptions=True
+            )
+        )
+        await update.message.reply_text('Рассылка завершена!')
+    await update.message.reply_text('Создание промокода завершено!')
     return ConversationHandler.END
 
 

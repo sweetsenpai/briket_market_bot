@@ -4,7 +4,7 @@ from briket_DB.config import mongodb
 from briket_DB.reviews.callback_reviews import show_review
 from briket_DB.sql_main_files.customers import delete_addres
 from bot_body.menu import dish_card_keyboard, inline_menu_generation, inline_generator
-
+from briket_DB.shopping.chek_time import order_time_chekker
 from briket_DB.reviews.reviews_main import publish_revie, del_review
 from briket_DB.shopping.shcart_db import (add_dish, remove_dish,
                                           show_cart, empty_shcart,
@@ -129,6 +129,11 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.callback_query.edit_message_text(text='Отзыв удален.')
         return
     elif cb_data[0] == 'make_order':
+        if order_time_chekker() is False:
+            await update.callback_query.answer(text='Заказы принимаются с 10:00 до 20:00',
+                                               show_alert=True
+                                               )
+            return
         await make_order(update, context)
         return
     elif cb_data[0] == 'get_menu':

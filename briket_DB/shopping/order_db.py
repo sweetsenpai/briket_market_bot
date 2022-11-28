@@ -17,9 +17,10 @@ admin = mongodb.admin
 
 
 async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_type: str, update: Update):
-    if read_one(user_id) is False:
+    if read_one(update.message.from_user.id) is False:
         await context.bot.sendMessage(chat_id=user_id, text='Для оформления заказа необходимо пройти регистрацию.\n'
                                                             'Это займет всего пару минут.')
+        return
     cart = sh_cart.find_one({"user_id": user_id})
     try:
         del cart['_id']
@@ -80,6 +81,7 @@ async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYP
                 resident_order += '{}. {}: {} шт. \n'.format(count + 1, dish,
                                                              full_order['order_items'][resident][dish]['quantity'])
             except TypeError: pass
+        resident_order += '\n Клиент: {}'.format(find_user_by_id(full_order['user_id'])['name'])
         await context.bot.sendMessage(text=resident_order,
                                       chat_id=get_chat_id(resident),
                                       reply_markup=resident_inline_keyboard(order_num, resident=resident))
@@ -87,7 +89,7 @@ async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYP
             try:
                 await context.bot.sendMessage(text=resident_order,
                                               chat_id=admins['chat_id'])
-            except : continue
+            except: continue
     return
 
 

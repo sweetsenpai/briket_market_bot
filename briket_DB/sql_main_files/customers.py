@@ -11,7 +11,7 @@ def read_all():
 
 
 def read_one(customer_id):
-    customer = Customer.query.filter(Customer.customer_id == customer_id).one_or_none()
+    customer = Customer.query.filter(Customer.chat_id == customer_id).one_or_none()
     if customer is not None:
         customer_schema = CustomerSchema()
         return customer_schema.dump(customer)
@@ -61,12 +61,12 @@ def update(customer_id, customer):
         return data, 200
 
 
-def inser_new_name(customer_id, name):
-    update_customer = Customer.query.filter(Customer.customer_id == customer_id).one_or_none()
+def inser_new_name(chat_id, name):
+    update_customer = Customer.query.filter(Customer.chat_id == chat_id).one_or_none()
     if update_customer is None:
         abort(
             404,
-            "Customer not found for id {}".format(customer_id)
+            "Customer not found for id {}".format(chat_id)
         )
     else:
         update_customer.name = name
@@ -110,8 +110,7 @@ def insert_new_addres(chat_id: int, addres):
             update_customer.addres = json.dumps(address_list)
             db.session.commit()
             return 200
-        except TypeError:
-
+        except:
             update_customer.addres = json.dumps([addres])
             db.session.commit()
 

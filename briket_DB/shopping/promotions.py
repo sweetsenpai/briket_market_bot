@@ -29,9 +29,10 @@ def chek_personal_code(user_id):
     return pr_code['code']
 
 
-def start_sale(text='', ammount=0, promo_code='', procent=0, one_time=False, start_price=0):
+def start_sale(text='', ammount=0, promo_code='', procent=0, one_time=False, start_price=0,master=0):
     sale = {
         'code': promo_code,
+        'master': master,
         'description': text,
         'ammount': ammount,
         'procent': procent,

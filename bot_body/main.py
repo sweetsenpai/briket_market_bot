@@ -19,8 +19,9 @@ from bot_body.admin.destribytion import start_distribution, get_text_destributio
 from bot_body.admin.admin_promo import (add_promo_start, add_promo_onetime,
                                         add_promo_start_price,
                                         add_promo_procent, add_promo_text,
-                                        add_promo_end, cancel_command,
-                                        CODE, TEXT, START_PRICE, ONE_TIME, PROCENT)
+                                        add_promo_end, promo_distribution,
+                                        cancel_command,
+                                        CODE, TEXT, START_PRICE, ONE_TIME, PROCENT,START_DISTRIBUTION)
 from functional_key import admin_keyboard, resident_keyboard, customer_keyboard, start, promo_keyboard
 import briket_DB.reviews.review_conv as rv
 import os
@@ -102,7 +103,8 @@ def main() -> None:
             TEXT: [MessageHandler(filters.Regex('[а-яА-ЯёЁ]'), add_promo_onetime)],
             ONE_TIME: [MessageHandler(filters.TEXT, add_promo_start_price)],
             START_PRICE: [MessageHandler(filters.TEXT, add_promo_procent)],
-            PROCENT: [MessageHandler(filters.TEXT, add_promo_end)]
+            PROCENT: [MessageHandler(filters.TEXT, add_promo_end)],
+            START_DISTRIBUTION: [MessageHandler(filters.TEXT, promo_distribution)]
         }, fallbacks=[CommandHandler('cancel', cancel_command)], conversation_timeout=600)
 
     dest_conv = ConversationHandler(
@@ -167,7 +169,7 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('Клиент'), customer_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Резидент'), resident_keyboard))
 #    application.run_polling()
-    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'{get_https()}/{bot_key}',
+    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'{get_https()}/{test_bot_key}',
                           listen="0.0.0.0")
 
 

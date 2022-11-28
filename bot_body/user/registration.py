@@ -85,7 +85,7 @@ async def skip_location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 
 async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_name = update.message.text
-    inser_new_name(customer_id=update.message.from_user.id,
+    inser_new_name(chat_id=update.message.from_user.id,
                    name=user_name)
     await update.message.reply_text("Спасибо")
     await update.message.reply_text(

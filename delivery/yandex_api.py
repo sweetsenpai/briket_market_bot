@@ -80,8 +80,7 @@ def send_delivery_order(order):
                 },
                 # Контакты получателя
                 "contact": {
-                    "email": "morty@yandex.ru",
-                    "name": "Кто-я?",
+                    "name": f"{customer['name']}",
                     "phone": f"{customer['phone']}"
                 },
                 "external_order_cost": {
