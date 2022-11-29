@@ -13,6 +13,7 @@ import cloudinary
 from cloudinary import uploader
 from text_integration.pastebin_integration import get_text_api
 from briket_DB.reviews.reviews_main import reviews_db
+import glob, os, os.path
 cloudinary.config(
   cloud_name="dwexszkh4",
   api_key="677565459774618",
@@ -49,12 +50,7 @@ async def phon_res(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.info(
             "Contact of {}: {}".format(resident.first_name, resident_contact)
         )
-        share_button = KeyboardButton(text='Добавить адрес', request_location=True)
-        key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
-                                        keyboard=[[share_button]],
-                                        resize_keyboard=False)
-        await update.message.reply_text(text=get_text_api('qe2ivh2N'),
-                                        reply_markup=key_board)
+        await update.message.reply_text(text=get_text_api('qe2ivh2N'))
         return ADDRES
 
 
@@ -77,8 +73,7 @@ async def resident_addres(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def resident_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    resident = update.message.from_user
-    logger.info("Название заведения: %s: %s", resident.first_name, update.message.text)
+    resident = update.message.text
     insert_name(resident_id=update.message.from_user.id, name=update.message.text)
     reviews_db.insert_one({'resident': resident})
     create_new_table(resident_name=update.message.text)
@@ -107,11 +102,10 @@ async def resident_img(update: Update, context: ContextTypes.DEFAULT_TYPE):
     resident = update.message.from_user
     file = update.message.photo[-1].file_id
     obj = await context.bot.get_file(file)
-    url = cloudinary.uploader.upload(await obj.download())['url']
+    url = cloudinary.uploader.upload(await obj.download_to_drive())['url']
     insert_img(resident_id=update.message.from_user.id, img=url)
     logger.info('Изображение заведения {} :{}'.format(resident.first_name, url))
     await update.message.reply_text(text=get_text_api('Am9gdnpc'))
-
     return ConversationHandler.END
 
 

@@ -120,14 +120,16 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 def inline_menu_generation(resident):
     categories = get_market_categories(resident)
     keyboard = []
-
-    for category in categories:
-        keyboard.append(
-            [(InlineKeyboardButton(
-                text=category,
-                switch_inline_query_current_chat='#/{}/{}'.format(resident, category)
-            ))]
-        )
+    try:
+        for category in categories:
+            keyboard.append(
+                [(InlineKeyboardButton(
+                    text=category,
+                    switch_inline_query_current_chat='#/{}/{}'.format(resident, category)
+                ))]
+            )
+    except TypeError:
+        pass
     back = [InlineKeyboardButton(callback_data=f'back_inline,{resident}', text='◀️Назад')]
     keyboard.append(back)
     reply = InlineKeyboardMarkup(keyboard)

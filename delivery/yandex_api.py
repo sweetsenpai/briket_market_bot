@@ -110,11 +110,14 @@ def send_delivery_order(order):
 
 
 def driver_info(claim_id):
-    call = re.post(url='http://b2b.taxi.yandex.net/b2b/cargo/integration/v2/driver-voiceforwarding', headers=custom_head,
-                   json=claim_id)
-    if call.status_code != 200:
+    try:
+        call = re.post(url='http://b2b.taxi.yandex.net/b2b/cargo/integration/v2/driver-voiceforwarding', headers=custom_head,
+                   json=claim_id, timeout=30)
+        if call.status_code != 200:
+            return False
+        return '{}\nдоб. номер:{}'.format(call.json()['phone'], call.json()['ext'])
+    except re.exceptions.RequestException:
         return False
-    return '{}\nдоб. номер:{}'.format(call.json()['phone'],call.json()['ext'])
 
 
 def delivery_range(delivery_addres):
@@ -135,7 +138,7 @@ def delivery_range(delivery_addres):
     if call.status_code != 200:
         return False, 'Вы указали некорректный адрес'
     if call.json()['distance_meters'] > 3500:
-        return False, 'Адрес находится за зоной доставки'
+        return False, 'Адрес находится вне зоны доставки'
     return True, call.json()['distance_meters']
 
 
