@@ -111,7 +111,7 @@ def send_delivery_order(order):
 
 def driver_info(claim_id):
     try:
-        call = re.post(url='http://b2b.taxi.yandex.net/b2b/cargo/integration/v2/driver-voiceforwarding', headers=custom_head,
+        call = re.post(url='https://b2b.taxi.yandex.net/b2b/cargo/integration/v2/driver-voiceforwarding', headers=custom_head,
                    json=claim_id, timeout=30)
         if call.status_code != 200:
             return False
