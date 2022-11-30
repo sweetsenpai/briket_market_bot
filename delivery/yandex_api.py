@@ -145,7 +145,11 @@ def delivery_range(delivery_addres):
 async def driver_number_sender(context: ContextTypes.DEFAULT_TYPE):
     orders_driver = orders_db.find({'$and': [{'delivery.driver_number': {'$exists': False}},
                                     {'delivery_type': 'Доставка'}]})
+    if orders_driver is None:
+        return
+
     for order in orders_driver:
+        if order['user_id'] == 352354383: return
         if datetime.date(order['time']).strftime('%Y %m %d') == datetime.now().strftime('%Y %m %d'):
             driver_phone = driver_info(order['delivery']['id'])
             if driver_phone is not False:
