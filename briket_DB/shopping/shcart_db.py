@@ -101,7 +101,7 @@ async def red_order(user_id: int, update: Update):
             cart_dishes.append(
                 [(InlineKeyboardButton(
                     text=dish,
-                    callback_data=','.join(['show_red_dish', resident, dish])
+                    callback_data=','.join(['SRD', resident, dish])
                 ))]
             )
     cart_dishes.append(
@@ -124,7 +124,7 @@ async def show_red_dish(resident: str, dish: str, user_id: int,  update: Update)
                                 text='{} ➕ Добавить в корзину'.format(
                                     get_dish_quantity(user_id=user_id, resident=resident, dish=dish)
                                 ))
-    rez2 = InlineKeyboardButton(callback_data='redaction_order',
+    rez2 = InlineKeyboardButton(callback_data='cart',
                                 text='◀️Назад')
     rez3 = InlineKeyboardButton(callback_data=','.join(['minus', resident, dish, str(dish_data[2])]),
                                 text='➖ Удалить')

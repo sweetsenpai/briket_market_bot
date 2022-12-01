@@ -30,9 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 def cart_inline():
-    # take_away = InlineKeyboardButton(text=get_text_api('BLVvyDzD'), callback_data='Самовывоз')
-    # delivery = InlineKeyboardButton(text=get_text_api('DCYAwnR0'), callback_data='Доставка')
-    conf_order = InlineKeyboardButton(text='Оформить заказа', callback_data='make_order')
+    conf_order = InlineKeyboardButton(text='Оформить заказ', callback_data='make_order')
     redact_order = InlineKeyboardButton(text=get_text_api('XDHGv5uZ'), callback_data='red_order')
     empty_cart = InlineKeyboardButton(text=get_text_api('MguE3Kt7'), callback_data='empty_cart')
     back = InlineKeyboardButton(text=get_text_api('4Sj7fP4j'), switch_inline_query_current_chat='')
@@ -75,7 +73,7 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await red_order(user_id=query.from_user.id, update=update)
         await query.answer()
         return
-    elif cb_data[0] == 'show_red_dish':
+    elif cb_data[0] == 'SRD':
         await show_red_dish(resident=cb_data[1], dish=cb_data[2], user_id=query.from_user.id, update=update)
         await query.answer()
         return

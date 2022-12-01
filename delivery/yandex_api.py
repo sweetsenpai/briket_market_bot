@@ -1,4 +1,5 @@
 import requests as re
+
 from uuid import uuid4
 
 import telegram.error
@@ -7,17 +8,12 @@ from briket_DB.sql_main_files.customers import find_user_by_id
 from briket_DB.passwords import yandex_key
 from briket_DB.config import mongodb
 from datetime import datetime
-from telegram import Update, constants
 from telegram.ext import ContextTypes
 orders_db = mongodb.orders
 admins = mongodb.admin
 default_addres = 'Москва, бульв. Новинский, д. 8, стр. 1'
-custom_head = {'Authorization': f'Bearer {yandex_key}', 'Accept-Language': 'ru/ru'}
-
-
-# default_addres
-# contacts
-# Подтверждение заказа
+custom_head = {'Authorization': f'Bearer {yandex_key}', 'Accept-Language': 'ru/ru',
+               'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
 
 def send_delivery_order(order):
@@ -149,9 +145,12 @@ async def driver_number_sender(context: ContextTypes.DEFAULT_TYPE):
         return
 
     for order in orders_driver:
-        if order['user_id'] == 352354383: return
+        print(order)
+        if order['user_id'] == 352354383:
+            return
         if datetime.date(order['time']).strftime('%Y %m %d') == datetime.now().strftime('%Y %m %d'):
             driver_phone = driver_info(order['delivery']['id'])
+            print(driver_phone)
             if driver_phone is not False:
                 orders_db.find_one_and_update(filter={"user_id": order['user_id']},
                                               update={'$set': {"delivery.driver_number": driver_phone}})
