@@ -63,21 +63,26 @@ def chek_promo(promo_code, user_id):
     if promo is None:
         return 'Промокод не найден. Чтобы попробовать ещё раз нажмите <Да>  на клавиатуре', False
 
-    if chek_start_price(promo=promo, user_id=user_id) is False:
-        return 'Необходимо заказать ещё на {}р. чтобы активировать промокод.'.format(
-            chek_start_price(promo=promo, user_id=user_id)[1]), False
-
     if add_promo_cart(promo=promo_code, user_id=user_id) is False:
         return 'Можно использовать только один промокод .'
 
+    if chek_start_price(promo=promo, user_id=user_id) is False:
+        ammount = chek_start_price(promo=promo, user_id=user_id)[1]
+        sh_cart.find_one_and_update(filter={'user_id': user_id},
+                                    update={'$unset': {'promo_code': True}})
+        return 'Необходимо заказать ещё на {}р. чтобы активировать промокод.'.format(
+            ammount), False
+
     if promo['one_time'] is True:
         if chek_one_time_promo(promo=promo, user_id=user_id) is False:
+            sh_cart.find_one_and_update(filter={'user_id': user_id},
+                                        update={'$unset': {'promo_code': True}})
             return 'Промокод уже использован', False
 
     if promo['ammount'] != 0:
-        return 'Скидка в {}р. будет применена к вашему заказу.'.format(promo['ammount'])
+        return 'Скидка в {}р. будет применена к вашему заказу.'.format(promo['ammount']), True
 
-    return 'Скидка в {}%. будет применена к вашему заказу.'.format(promo['procent'])
+    return 'Скидка в {}%. будет применена к вашему заказу.'.format(promo['procent']), True
 
 
 def add_promo_cart(promo: str, user_id: int):
@@ -100,7 +105,7 @@ def apply_promo(user_id: int):
     except KeyError:
         return
     if promo['ammount'] == 0:
-        total = (cart['total']/100) * (100 - promo['procent'])
+        total = (float(cart['total'])/100) * (100 - promo['procent'])
         sh_cart.find_one_and_update(filter=cart, update={'$set': {'total': round(total, 2)}})
         return
     sh_cart.find_one_and_update(filter=cart, update={'$set': {'total': round(cart['total'] - promo['ammount'], 2)}})

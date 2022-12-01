@@ -1,9 +1,7 @@
 import requests as re
 
 from uuid import uuid4
-
 import telegram.error
-
 from briket_DB.sql_main_files.customers import find_user_by_id
 from briket_DB.passwords import yandex_key
 from briket_DB.config import mongodb
@@ -12,8 +10,7 @@ from telegram.ext import ContextTypes
 orders_db = mongodb.orders
 admins = mongodb.admin
 default_addres = 'Москва, бульв. Новинский, д. 8, стр. 1'
-custom_head = {'Authorization': f'Bearer {yandex_key}', 'Accept-Language': 'ru/ru',
-               'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+custom_head = {'Authorization': f'Bearer {yandex_key}', 'Accept-Language': 'ru/ru'}
 
 
 def send_delivery_order(order):
