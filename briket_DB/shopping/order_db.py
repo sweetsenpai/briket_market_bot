@@ -1,3 +1,5 @@
+import asyncio
+
 from briket_DB.config import mongodb
 from datetime import datetime
 from briket_DB.sql_main_files.residents import get_chat_id
