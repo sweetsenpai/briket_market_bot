@@ -1,8 +1,9 @@
 import logging
 from briket_DB.sql_main_files.residents import delet_on_phone
 from briket_DB.config import mongodb
+from briket_DB.shopping.previous_orders import show_po, repeat_order
 from briket_DB.reviews.callback_reviews import show_review
-from briket_DB.sql_main_files.customers import delete_addres
+from briket_DB.sql_main_files.customers import delete_addres, read_one
 from bot_body.menu import dish_card_keyboard, inline_menu_generation, inline_generator
 from briket_DB.shopping.chek_time import order_time_chekker
 from briket_DB.reviews.reviews_main import publish_revie, del_review
@@ -127,6 +128,10 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.callback_query.edit_message_text(text='Отзыв удален.')
         return
     elif cb_data[0] == 'make_order':
+        if read_one(update.callback_query.from_user.id) is False:
+            await update.callback_query.answer(text='Для оформления заказа необходимо пройти регистрацию.\n'
+                                                    'Это займет всего пару минут.', show_alert=True)
+            return
         if order_time_chekker() is False:
             await update.callback_query.answer(text='Заказы принимаются с 10:00 до 20:00',
                                                show_alert=True
@@ -146,4 +151,10 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.callback_query.edit_message_text('Адрес успешно удален.',
                                                       reply_markup=inline_addresses(user_id=
                                                                                     update.callback_query.from_user.id))
+    elif cb_data[0] == 'PO':
+        await show_po(user_id=update.callback_query.from_user.id,
+                      update=update,
+                      page=int(cb_data[1]))
+    elif cb_data[0] == 'repeat':
+        await repeat_order(order_num=int(cb_data[1]), update=update)
         return

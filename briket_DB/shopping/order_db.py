@@ -9,20 +9,14 @@ from briket_DB.shopping.shcart_db import show_cart
 from telegram import (Update,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton)
-from payments.ykassa_integration import create_payment
 from briket_DB.shopping.promotions import apply_promo
-from briket_DB.sql_main_files.customers import read_one
 from delivery.yandex_api import send_delivery_order
 orders_db = mongodb.orders
 sh_cart = mongodb.sh_cart
 admin = mongodb.admin
 
 
-async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_type: str, update: Update):
-    if read_one(update.message.from_user.id) is False:
-        await context.bot.sendMessage(chat_id=user_id, text='Для оформления заказа необходимо пройти регистрацию.\n'
-                                                            'Это займет всего пару минут.')
-        return
+async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE):
     cart = sh_cart.find_one({"user_id": user_id})
     try:
         del cart['_id']
@@ -30,27 +24,23 @@ async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE, receipt_t
         await context.bot.sendMessage(chat_id=user_id, text='Нельзя оформить заказ, в корзине ничего нет.')
         return
     cart['time'] = datetime.now()
-    cart['order_num'] = datetime.now().microsecond
-    cart['delivery_type'] = receipt_type
     for resident in cart['order_items']:
         cart['order_items'][resident]['status'] = 'Новый'
     apply_promo(user_id=user_id)
-    if await create_payment(order=sh_cart.find_one({"user_id": user_id}), order_num=cart['order_num'], update=update) is False:
-        return
-    if receipt_type == 'Доставка':
+    if cart['delivery_type'] == 'Доставка':
         cart['delivery']['id'] = send_delivery_order(order=cart)
         if cart['delivery']['id'] is False:
             await context.bot.sendMessage(chat_id=user_id, text='Во время оформления доставки произошла ошибка.\n'
                                                                 'Оформление заказа прервано!\n'
                                                                 'Свяжитесь с поддержкой!')
             return
+
     orders_db.insert_one(cart)
     await send_order_residents(cart['order_num'], context)
 
     msg = 'Номер вашего заказа №{}\n' \
           '{}\n\n' \
-          'Вы получите оповещение, когда ваш заказ будет готов к выдаче!'.format(cart['order_num'],
-                                                                                show_cart(user_id=user_id))
+          'Вы получите оповещение, когда ваш заказ будет готов к выдаче!'.format(cart['order_num'], show_cart(user_id=user_id))
     await context.bot.sendMessage(chat_id=user_id, text=msg)
     sh_cart.delete_one({"user_id": user_id})
     return
@@ -180,7 +170,6 @@ async def tech_support(context: ContextTypes.DEFAULT_TYPE, msg_chat: int):
         text='Написать в тех.подждержку: @Sweet_Senpai'
     )
     return
-
 
 
 

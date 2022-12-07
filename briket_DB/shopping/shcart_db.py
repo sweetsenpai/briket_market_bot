@@ -4,7 +4,7 @@ from parcer.parcer_sheet import get_one_dish
 sh_cart = mongodb.sh_cart
 
 
-def add_dish(user_id: int, resident: str, dish: str, price: str) -> None:
+def add_dish(user_id: int, resident: str, dish: str, price: str, amount=0) -> None:
     user_cart = sh_cart.find_one({"user_id": user_id})
     if user_cart is None:
         sh_cart.insert_one({
@@ -21,8 +21,13 @@ def add_dish(user_id: int, resident: str, dish: str, price: str) -> None:
     else:
         try:
             if user_cart['order_items'][resident][dish] is not None:
-                sh_cart.find_one_and_update(filter=user_cart,
-                                            update={'$inc': {"order_items.{}.{}.quantity".format(resident, dish): 1}})
+                if amount != 0:
+                    sh_cart.find_one_and_update(filter=user_cart,
+                                                update={
+                                                    '$inc': {"order_items.{}.{}.quantity".format(resident, dish): amount}})
+                else:
+                    sh_cart.find_one_and_update(filter=user_cart,
+                                                update={'$inc': {"order_items.{}.{}.quantity".format(resident, dish): 1}})
                 sh_cart.find_one_and_update(filter={"user_id": user_id}, update={'$set': {"total": total(user_id)}})
                 return
         except KeyError or TypeError:

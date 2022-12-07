@@ -1,4 +1,3 @@
-
 from briket_DB.passwords import credentials
 import gspread
 import pandas as pd
@@ -7,12 +6,6 @@ import shutil
 import os
 
 sa = gspread.service_account_from_dict(credentials)
-
-#sheet_main = sa.open('Меню')
-
-
-#work_sheets = sheet_main.worksheets()
-#work_sheet = sheet_main.worksheet('KFC')
 
 
 def get_markets():
@@ -78,7 +71,14 @@ def create_new_table(resident_name: str):
     return
 
 
-
+def find_dish(sheet='KFC', dish='Шефбургер'):
+    sheet_main = sa.open('Меню')
+    ws = sheet_main.worksheet(sheet)
+    df = pd.DataFrame(ws.get_all_records())
+    check_dish = df.loc[df['стоп-лист'] == 'FALSE']
+    del check_dish['стоп-лист']
+    check_dish.fillna('‎')
+    return check_dish.loc[check_dish['Название'] == dish].to_dict(orient='split')['data']
 
 
 

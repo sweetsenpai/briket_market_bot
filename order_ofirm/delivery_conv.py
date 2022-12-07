@@ -2,7 +2,7 @@ from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardB
 from telegram.ext import (
     ContextTypes,
     ConversationHandler, MessageHandler, CommandHandler, filters)
-from briket_DB.shopping.order_db import push_order
+from payments.ykassa_integration import create_payment
 from briket_DB.shopping.promotions import chek_promo
 from delivery.yandex_api import delivery_range
 from briket_DB.shopping.shcart_db import sh_cart
@@ -65,7 +65,7 @@ async def comments_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def promo_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
     answer = update.message
     if answer.text == 'Нет':
-        await push_order(user_id=answer.from_user.id, context=context, receipt_type='Доставка', update=update)
+        await create_payment(user_id=answer.from_user.id, delivery_type='Доставка', update=update)
         return ConversationHandler.END
     elif answer.text == 'Да':
         await update.message.reply_text(text='Введите промокод')
@@ -81,7 +81,7 @@ async def finish_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return TWO
 
     await answer.reply_text(text=promo_result[0])
-    await push_order(user_id=answer.from_user.id, context=context, receipt_type='Доставка', update=update)
+    await create_payment(user_id=answer.from_user.id, delivery_type='Доставка', update=update)
     return ConversationHandler.END
 
 

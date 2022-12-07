@@ -1,6 +1,6 @@
 from telegram import Update
 from briket_DB.shopping.shcart_db import sh_cart
-import asyncio
+from briket_DB.shopping.order_db import push_order
 from yookassa import Configuration, Payment
 from yookassa.domain.models.currency import Currency
 from yookassa.domain.models.receipt import Receipt
@@ -14,20 +14,8 @@ Configuration.account_id = '948782'
 Configuration.secret_key = yookassa_key
 
 
-async def chek_payment(payement_id: str, update: Update):
-    loop = asyncio.get_running_loop()
-    end_time = loop.time() + 900.0
-    while True:
-        if Payment.find_one(payment_id=payement_id).status == 'succeeded':
-            await update.message.reply_text(text='Ваш заказ успешно оплачен!')
-            return True
-        if (loop.time() + 15.0) >= end_time:
-            await update.message.reply_text(text='Ссылка для оплаты устарела, оформите заказ снова.')
-            return False
-        await asyncio.sleep(15)
-
-
-async def create_payment(order, order_num: int, update: Update ):
+async def create_payment(user_id, update: Update, delivery_type):
+    order = sh_cart.find_one({'user_id': user_id})
     receipt = Receipt()
     receipt.customer = {"phone": "", "email": "test@mail.ru"}
     receipt.tax_system_code = 1
@@ -45,7 +33,7 @@ async def create_payment(order, order_num: int, update: Update ):
                     "vat_code": 2
                 })
             )
-
+    order_num = datetime.now().microsecond
     builder = PaymentRequestBuilder()
     builder.set_amount({"value": order['total'], "currency": Currency.RUB}) \
         .set_confirmation({"type": ConfirmationType.REDIRECT, "return_url": "https://t.me/briket_test_bot"}) \
@@ -59,17 +47,31 @@ async def create_payment(order, order_num: int, update: Update ):
         .format(res.confirmation.confirmation_url)
     await update.message.reply_text(text=payment_url)
     sh_cart.find_one_and_update(filter={"user_id": order['user_id']},
-                                              update={'$set': {"payment": res.id}})
+                                              update={'$set': {"payment_id": res.id}})
     sh_cart.find_one_and_update(filter={"user_id": order['user_id']},
-                                update={'$set': {"payment_time": datetime.now().time()}})
-    return
+                                update={'$set': {"payment_time": datetime.now()}})
+    sh_cart.find_one_and_update(filter={"user_id": order['user_id']},
+                                update={'$set': {"order_num": order_num}})
+    sh_cart.find_one_and_update(filter={"user_id": order['user_id']},
+                                update={'$set': {"delivery_type": delivery_type}})
+    return False
 
 
 async def payment_finder(context: ContextTypes.DEFAULT_TYPE):
-    payments = sh_cart.find(filter={"payment_time":{'$exists': True}})
+    payments = sh_cart.find(filter={"payment_time": {'$exists': True}})
     if payments is None:
         return
-#    for payment in payments:
-#        chek_payment()
+    for payment in payments:
+        if Payment.find_one(payment_id=payment['payment_id']).status == 'succeeded':
+            await context.bot.sendMessage(chat_id=payment['user_id'], text='Ваш заказ успешно оплачен!')
+            await push_order(user_id=payment['user_id'], context=context)
+            return
+        if (datetime.now() - payment['payment_time']).total_seconds() >= 900:
+            await context.bot.sendMessage(chat_id=payment['user_id'], text='Ссылка для оплаты устарела, оформите заказ снова.')
+            sh_cart.find_one_and_update(filter={"user_id": payment['user_id']},
+                                        update={'$unset': {"payment_id": ''}})
+            sh_cart.find_one_and_update(filter={"user_id": payment['user_id']},
+                                        update={'$unset': {"payment_time": datetime.now()}})
+            return
 
 

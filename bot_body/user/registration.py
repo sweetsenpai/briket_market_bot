@@ -1,7 +1,7 @@
 import logging
 from briket_DB.shopping.promotions import chek_personal_code
 from briket_DB.sql_main_files.customers import find_id, create, insert_new_addres, inser_new_name
-from telegram import ReplyKeyboardRemove, Update, ReplyKeyboardMarkup, KeyboardButton
+from telegram import ReplyKeyboardRemove, Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ContextTypes,
     ConversationHandler)
@@ -117,6 +117,9 @@ async def custommer_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
     acc_info = 'Привет, {}!\n' \
                'Телефон: {}\n' \
            'Персональный промокд на скиду: <b>{}</b>\n'.format(user['name'], user['phone'],chek_personal_code(user_id))
-    await update.message.reply_text(text=acc_info, parse_mode='HTML')
+    await update.message.reply_text(text=acc_info, parse_mode='HTML', reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(
+        text='Мои заказы',
+        callback_data='PO,0'
+    )]]))
     await show_addresses(update, context)
     return
