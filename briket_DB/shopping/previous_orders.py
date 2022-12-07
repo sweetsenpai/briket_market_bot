@@ -24,7 +24,12 @@ def po_inlinae(page, user_id, order_num):
 
 
 async def show_po(user_id, update: Update, page: int):
-    po_order = orders_db.find(filter={'user_id': user_id})[page]
+    try:
+        po_order = orders_db.find(filter={'user_id': user_id})[page]
+    except IndexError:
+        await update.callback_query.answer(text='Вы ещё не сделали ни одного заказа, самое время начать)',
+                                           show_alert=True)
+        return
     order = po_order['order_items']
     cart = ''
     for resident in order.keys():
@@ -47,7 +52,6 @@ async def repeat_order(order_num, update: Update):
             if dish == 'status':
                 continue
             dish_info = find_dish(sheet=resident, dish=dish)
-            print(order[resident][dish]['quantity'])
             if not dish_info:
                 canceled_dishes.append(dish)
             else:
