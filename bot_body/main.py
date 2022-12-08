@@ -141,28 +141,21 @@ def main() -> None:
     application.add_handler(dest_conv)
     application.add_handler(report)
     application.job_queue.run_daily(callback=ac.day_report_job, time=time.fromisoformat('20:00:00+03:00'),
-                                    job_kwargs={'max_instances': 3,
-                                                'misfire_grace_time': 600})
+                                    job_kwargs={'misfire_grace_time': 60})
     application.job_queue.run_monthly(callback=ac.mouth_report_job,
                                       when=time.fromisoformat('18:00:00+03:00'),
                                       day=-1,
-                                      job_kwargs={'max_instances': 3,
-                                                  'misfire_grace_time': 600}
-                                      )
+                                      job_kwargs={'misfire_grace_time': 60} )
     application.job_queue.run_repeating(callback=driver_number_sender,
                                         interval=300,
                                         first=time.fromisoformat('10:00:00+03:00'),
                                         last=time.fromisoformat('20:10:00+03:00'),
-                                        job_kwargs={'max_instances': 3,
-                                                    'misfire_grace_time': 600}
-                                        )
+                                        job_kwargs={'misfire_grace_time': 60})
     application.job_queue.run_repeating(callback=payment_finder,
                                         interval=30,
                                         first=time.fromisoformat('10:00:00+03:00'),
                                         last=time.fromisoformat('20:10:00+03:00'),
-                                        job_kwargs={'max_instances': 3,
-                                                    'misfire_grace_time': 600}
-                                        )
+                                        job_kwargs={'misfire_grace_time': 15})
     application.add_handler(add_conv)
     application.add_handler(del_conv)
     application.add_handler(pickup_conversation)
