@@ -118,7 +118,14 @@ async def finish_order(order_num: int, update: Update, resident: str, context: C
         if order_statuses[status]['status'] == 'Готов':
             chek_order += 1
     if chek_order == len(order_statuses):
-        await context.bot.sendMessage(
+        if full_order['delivery_type'] == 'Доставка':
+            await context.bot.sendMessage(
+                chat_id=full_order['user_id'],
+                text='Ваш заказ №{}\n'
+                     'Передан в доставку!🎉🎉🎉'.format(full_order['order_num'])
+            )
+        elif full_order['delivery_type'] == 'Самовывоз':
+            await context.bot.sendMessage(
             chat_id=full_order['user_id'],
             text='Ваш заказ №{}\n'
                  'Готов к выдаче!🎉🎉🎉'.format(full_order['order_num'])
