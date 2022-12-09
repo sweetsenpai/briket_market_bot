@@ -66,7 +66,8 @@ async def payment_finder(context: ContextTypes.DEFAULT_TYPE):
             await context.bot.sendMessage(chat_id=payment['user_id'], text='Ваш заказ успешно оплачен!')
             await push_order(user_id=payment['user_id'], context=context)
             return
-        if (datetime.now() - payment['payment_time']).total_seconds() >= 900:
+        if (datetime.now() - payment['payment_time']).total_seconds() >= 900 or \
+                datetime.time(payment['payment_time']).hour >= 20 :
             await context.bot.sendMessage(chat_id=payment['user_id'], text='Ссылка для оплаты устарела, оформите заказ снова.')
             sh_cart.find_one_and_update(filter={"user_id": payment['user_id']},
                                         update={'$unset': {"payment_id": ''}})
@@ -74,4 +75,6 @@ async def payment_finder(context: ContextTypes.DEFAULT_TYPE):
                                         update={'$unset': {"payment_time": datetime.now()}})
             return
 
+
+x = sh_cart.find_one(filter={'user_id':352354383})
 

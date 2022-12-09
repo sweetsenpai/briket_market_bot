@@ -34,7 +34,7 @@ PORT = int(os.environ.get('PORT', '80'))
 
 
 def main() -> None:
-    application = Application.builder().token(bot_key).rate_limiter(AIORateLimiter()).build()
+    application = Application.builder().token(test_bot_key).rate_limiter(AIORateLimiter()).build()
 
     reg_user = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Регистрация'), rg.start)],
@@ -145,16 +145,12 @@ def main() -> None:
     application.job_queue.run_monthly(callback=ac.mouth_report_job,
                                       when=time.fromisoformat('18:00:00+03:00'),
                                       day=-1,
-                                      job_kwargs={'misfire_grace_time': 60} )
+                                      job_kwargs={'misfire_grace_time': 60})
     application.job_queue.run_repeating(callback=driver_number_sender,
                                         interval=300,
-                                        first=time.fromisoformat('10:00:00+03:00'),
-                                        last=time.fromisoformat('20:10:00+03:00'),
                                         job_kwargs={'misfire_grace_time': 60})
     application.job_queue.run_repeating(callback=payment_finder,
                                         interval=30,
-                                        first=time.fromisoformat('10:00:00+03:00'),
-                                        last=time.fromisoformat('20:10:00+03:00'),
                                         job_kwargs={'misfire_grace_time': 15})
     application.add_handler(add_conv)
     application.add_handler(del_conv)
@@ -177,9 +173,9 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('Администратор'), admin_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Клиент'), customer_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Резидент'), resident_keyboard))
-#    application.run_polling()
-    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'{get_https()}/{bot_key}',
-                        listen="0.0.0.0")
+    application.run_polling()
+#    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'{get_https()}/{bot_key}',
+#                        listen="0.0.0.0")
 
 
 if __name__ == '__main__':
