@@ -2,7 +2,16 @@ from datetime import datetime
 
 
 def order_time_chekker():
-    now_h = int(datetime.now().hour)
-    if now_h > 20 or now_h < 10:
-        return False
-    return True
+    data_time = datetime.now()
+    w_day = data_time.weekday()
+    h_day = int(data_time.now().hour)
+    if w_day == 6:
+        if h_day > 23 or h_day < 11:
+            return False
+        else:
+            return True
+    else:
+        if h_day > 22 or h_day < 10:
+            return False
+        else:
+            return True

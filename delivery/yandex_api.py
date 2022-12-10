@@ -9,12 +9,13 @@ from datetime import datetime
 from telegram.ext import ContextTypes
 orders_db = mongodb.orders
 admins = mongodb.admin
-default_addres = 'Москва, бульв. Новинский, д. 8, стр. 1'
+default_addres = 'Москва, Цветной бульвар, д. 15 стр. 1'
 custom_head = {'Authorization': f'Bearer {yandex_key}', 'Accept-Language': 'ru/ru'}
 
 
 def send_delivery_order(order):
     customer = find_user_by_id(order['user_id'])
+    residents = ", ".join(list(order['order_items'].keys()))
     delivery_req = {
         # Требования к доставке
         "client_requirements": {
@@ -42,12 +43,13 @@ def send_delivery_order(order):
                     "city": "Москва",
                     "country": "Российская Федерация",
                     "description": "Москва, Россия",
+                    "comment": 'Универмаг "Цветной", проход для курьеров с правой стороны(надпись вход для Курьеров).\n'
+                               'Заказ №{}, {}'.format(order['order_num'], residents),
                     "fullname": f"Москва, {default_addres}",
                 },
                 # Контакты отправителя
                 "contact": {
-                    "email": "morty@yandex.ru",
-                    "name": "Кто-ты?",
+                    "name": "Администратор",
                     "phone": "+79101234567"
                 },
                 "external_order_cost": {

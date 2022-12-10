@@ -133,7 +133,9 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                                     'Это займет всего пару минут.', show_alert=True)
             return
         if order_time_chekker() is False:
-            await update.callback_query.answer(text='Заказы принимаются с 10:00 до 20:00',
+            await update.callback_query.answer(text='График работы\n'
+                                                    'Пн-Сб: с 10:00 до 22:00\n'
+                                                    'Вск: c 11:00 до 23:00',
                                                show_alert=True
                                                )
             return
