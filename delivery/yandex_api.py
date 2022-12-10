@@ -16,6 +16,10 @@ custom_head = {'Authorization': f'Bearer {yandex_key}', 'Accept-Language': 'ru/r
 def send_delivery_order(order):
     customer = find_user_by_id(order['user_id'])
     residents = ", ".join(list(order['order_items'].keys()))
+    if '+' in str(customer['phone']):
+        customer_phone = customer['phone']
+    else:
+        customer_phone = '+' + str(customer['phone'])
     delivery_req = {
         # Требования к доставке
         "client_requirements": {
@@ -76,7 +80,7 @@ def send_delivery_order(order):
                 # Контакты получателя
                 "contact": {
                     "name": f"{customer['name']}",
-                    "phone": f"{customer['phone']}"
+                    "phone": f"{customer_phone}"
                 },
                 "external_order_cost": {
                     "currency": "RUB",
@@ -95,6 +99,7 @@ def send_delivery_order(order):
         "skip_door_to_door": False,
         "skip_emergency_notify": True
     }
+
     random_call = uuid4()
     call = re.post(url=f'https://b2b.taxi.yandex.net/b2b/cargo/integration/v2/claims/create?request_id={random_call}',
                    headers=custom_head, json=delivery_req)
