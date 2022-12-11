@@ -33,7 +33,7 @@ def get_resident_report_day(resident_name):
                    datetime.date(order['time']).strftime('%Y.%m.%d')
             sub_sum = sub_total(order_num=order['order_num'], resident_name=resident_name)
             if order['delivery_type'] == 'Самовывоз':
-                msg += f'<i>Сумма заказа:{sub_sum}\nКомиссия: {round(sub_sum*0.1)}</i>\n'
+                msg += f'\n<i>Сумма заказа:{sub_sum}\nКомиссия: {round(sub_sum*0.1)}</i>\n'
                 msg += '----------------------\n'
                 comission += round(sub_sum*0.1)
             elif order['delivery_type'] == 'Доставка':
