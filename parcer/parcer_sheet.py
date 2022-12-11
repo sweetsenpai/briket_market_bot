@@ -1,13 +1,15 @@
 from briket_DB.passwords import credentials
 import gspread
+from functools import lru_cache
+import time
 import pandas as pd
 import requests
 import shutil
 import os
-
 sa = gspread.service_account_from_dict(credentials)
 
 
+@lru_cache()
 def get_markets():
     sheet_main = sa.open('Меню')
     sheets = sheet_main.worksheets()
@@ -18,8 +20,9 @@ def get_markets():
     return market_list
 
 
-def get_market_categories(ws: str):
+def get_market_categories(ws: str, ttl_hash=None):
     try:
+        del ttl_hash
         sheet_main = sa.open('Меню')
         ws = sheet_main.worksheet(ws)
         dataframe = pd.DataFrame(ws.get_all_records())
@@ -28,7 +31,8 @@ def get_market_categories(ws: str):
         return
 
 
-def get_dishs(sheet='KFC', cat='Бургеры'):
+def get_dishs(sheet='KFC', cat='Бургеры', ttl_hash=None):
+    del ttl_hash
     sheet_main = sa.open('Меню')
     ws = sheet_main.worksheet(sheet)
     df = pd.DataFrame(ws.get_all_records())
@@ -36,7 +40,6 @@ def get_dishs(sheet='KFC', cat='Бургеры'):
     del dt['Категория']
     del dt['стоп-лист']
     dt.fillna('‎')
-
     return dt.to_dict(orient='split')['data']
 
 
@@ -79,6 +82,12 @@ def find_dish(sheet='KFC', dish='Шефбургер'):
     del check_dish['стоп-лист']
     check_dish.fillna('‎')
     return check_dish.loc[check_dish['Название'] == dish].to_dict(orient='split')['data']
+
+
+def get_ttl_hash(seconds=600):
+    """Return the same value withing `seconds` time period"""
+    return round(time.time() / seconds)
+
 
 
 

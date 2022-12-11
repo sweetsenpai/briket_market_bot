@@ -110,7 +110,7 @@ async def red_order(user_id: int, update: Update):
                 ))]
             )
     cart_dishes.append(
-        [(InlineKeyboardButton(text='◀️Назад', callback_data='cart'))]
+        [(InlineKeyboardButton(text='◀️Назад', callback_data='red_order'))]
     )
     await update.callback_query.edit_message_text(
         text='Выберете позицию которую хотите изменить:',

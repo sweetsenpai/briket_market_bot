@@ -4,7 +4,7 @@ from briket_DB.config import mongodb
 from briket_DB.shopping.previous_orders import show_po, repeat_order
 from briket_DB.reviews.callback_reviews import show_review
 from briket_DB.sql_main_files.customers import delete_addres, read_one
-from bot_body.menu import dish_card_keyboard, inline_menu_generation, inline_generator
+from bot_body.menu import dish_card_keyboard, inline_menu_generation, inline_generator, dish_card
 from briket_DB.shopping.chek_time import order_time_chekker
 from briket_DB.reviews.reviews_main import publish_revie, del_review
 from briket_DB.shopping.shcart_db import (add_dish, remove_dish,
@@ -16,7 +16,7 @@ from briket_DB.shopping.order_db import (client_info,
                                          decline_order, finish_order)
 from telegram import (Update,
                       InlineKeyboardMarkup,
-                      InlineKeyboardButton)
+                      InlineKeyboardButton,constants)
 
 from telegram.ext import ContextTypes
 from text_integration.pastebin_integration import get_text_api
@@ -122,6 +122,7 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cb_data[0] == 'publish_rev':
         publish_revie(user_id=cb_data[1], resident_name=cb_data[2])
         await update.callback_query.edit_message_text(text='Отзыв успешно опубликован.')
+        await context.bot.send_message(chat_id=cb_data[1], text='Ваш отзыв опубликован!')
         return
     elif cb_data[0] == 'delete_rev':
         del_review(user_id=cb_data[1], resident=cb_data[2])
@@ -142,7 +143,8 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await make_order(update, context)
         return
     elif cb_data[0] == 'get_menu':
-        await update.callback_query.edit_message_reply_markup(reply_markup=inline_menu_generation(cb_data[1]))
+        await update.callback_query.edit_message_text(text=dish_card(cb_data[1]), parse_mode=constants.ParseMode.HTML,
+                                                      reply_markup=inline_menu_generation(cb_data[1]))
         return
 
     elif cb_data[0] == 'back_inline':
@@ -157,6 +159,10 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await show_po(user_id=update.callback_query.from_user.id,
                       update=update,
                       page=int(cb_data[1]))
+        return
     elif cb_data[0] == 'repeat':
         await repeat_order(order_num=int(cb_data[1]), update=update)
+        return
+    elif cb_data[0] == 'CB':
+        await update.callback_query.edit_message_reply_markup(reply_markup=inline_menu_generation(cb_data[1]))
         return

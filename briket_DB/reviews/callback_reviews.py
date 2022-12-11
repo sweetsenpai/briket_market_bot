@@ -10,13 +10,14 @@ from briket_DB.reviews.reviews_main import read_revie
 def review_inline(page, resident):
     back = InlineKeyboardButton(text=' ◀️', callback_data=f'show_rev,{resident}, {page-1}')
     forward = InlineKeyboardButton(text=' ▶️', callback_data=f'show_rev,{resident}, {page+1}')
+    back_menu = InlineKeyboardButton(text='Назад', callback_data='get_menu,{}'.format(resident))
     if read_revie(comment_num=page-1, resident_name=resident) is False or page == 0:
-        keyboard = InlineKeyboardMarkup([[forward]])
+        keyboard = InlineKeyboardMarkup([[forward], [back_menu]])
         return keyboard
     elif read_revie(comment_num=page+1, resident_name=resident) is False:
-        keyboard = InlineKeyboardMarkup([[back]])
+        keyboard = InlineKeyboardMarkup([[back], [back_menu]])
         return keyboard
-    keyboard = InlineKeyboardMarkup([[back, forward]])
+    keyboard = InlineKeyboardMarkup([[back, forward], [back_menu]])
     return keyboard
 
 
@@ -26,5 +27,7 @@ async def show_review(update: Update, resident_name, page=0):
         await update.callback_query.edit_message_text(text=text,
                                                       reply_markup=review_inline(int(page), resident=resident_name))
         return
-    await update.callback_query.edit_message_text(text='Пока-что тут нет отзывов.')
+    back_menu = InlineKeyboardButton(text='Назад', callback_data='get_menu,{}'.format(resident_name))
+    await update.callback_query.edit_message_text(text='Пока-что тут нет отзывов.',
+                                                  reply_markup=InlineKeyboardMarkup([[back_menu]]))
     return

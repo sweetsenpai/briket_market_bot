@@ -2,7 +2,7 @@ from telegram import Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboard
 from telegram.ext import (
     ContextTypes,
     ConversationHandler, MessageHandler, filters, CommandHandler)
-
+from bot_body.functional_key import customer_keyboard
 from briket_DB.reviews.reviews_main import insert_moderation_revie, reviews_db, update_text, get_resident
 from briket_DB.reviews.review_moderation import admin_new_rev
 
@@ -43,6 +43,7 @@ async def end_rev(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         resident=get_resident(user_id=update.message.from_user.id,
                                               text=msg))
     await update.message.reply_text(text='Ваш отзыв успешно отправлен!\n Он будет опубликован после модерации.')
+    await customer_keyboard(update, context)
     return ConversationHandler.END
 
 

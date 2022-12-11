@@ -6,7 +6,7 @@ from telegram import (InlineQueryResultArticle,
                       InlineKeyboardMarkup,
                       InlineKeyboardButton, constants)
 from telegram.ext import ContextTypes
-from briket_DB.sql_main_files.residents import read_all
+from briket_DB.sql_main_files.residents import read_all, read_one_name
 from parcer.parcer_sheet import get_market_categories, get_dishs
 from briket_DB.shopping.shcart_db import get_dish_quantity
 from text_integration.pastebin_integration import get_text_api
@@ -47,7 +47,7 @@ def dish_card_keyboard(resident: str, dish: str, price, user_id: int, query='') 
                                 text='{} ➕ Добавить в корзину'.format(
                                     get_dish_quantity(user_id=user_id, resident=resident, dish=dish)
                                 ))
-    rez2 = InlineKeyboardButton(switch_inline_query_current_chat=query,
+    rez2 = InlineKeyboardButton(callback_data='CB,{}'.format(resident),
                                 text='◀️Назад')
     rez3 = InlineKeyboardButton(callback_data=','.join(['minus', resident, dish, str(price)]),
                                 text='➖ Удалить')
@@ -73,7 +73,7 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                             message_text='<b>{}</b>\n'
                                          '{}\n'
                                          '<a href="{}">‎</a>'.format(market['resident_name'],
-                                                                     market['description'], market['img_url'],),
+                                                                     market['description'], market['img_url']),
                             parse_mode='HTML',
                             disable_web_page_preview=False
                         ),
@@ -113,7 +113,7 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     thumb_width=50
                 )
             )
-        await update.inline_query.answer(answer)
+        await update.inline_query.answer(answer, cache_time=300)
         return
 
 
@@ -136,7 +136,9 @@ def inline_menu_generation(resident):
     return reply
 
 
-# def rez_info(resident):
-#     info = read_one_name(resident)['description']
-#     reply = InlineKeyboardMarkup([[InlineKeyboardButton(callback_data=f'back_inline,{resident}', text='◀️Назад')]])
-#     return info, reply
+def dish_card(resident):
+    res_data = read_one_name(resident)
+    text = '<b>{}</b>\n{}\n<a href="{}">‎</a>'.format(res_data['resident_name'],
+                                                      res_data['description'], res_data['img_url'])
+    return text
+
