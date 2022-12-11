@@ -25,7 +25,7 @@ def send_delivery_order(order):
         "client_requirements": {
             "assign_robot": False,
             "pro_courier": False,
-            "taxi_class": "express",
+            "taxi_class": "courier",
             "cargo_options": ["thermobag"],
         },
         "items": [
@@ -54,6 +54,7 @@ def send_delivery_order(order):
                 # Контакты отправителя
                 "contact": {
                     "name": "Администратор",
+                    "email": "okulova@briketmarket.com",
                     "phone": "+79101234567"
                 },
                 "external_order_cost": {
