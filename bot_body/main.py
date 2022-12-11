@@ -22,7 +22,7 @@ from bot_body.admin.admin_promo import (add_promo_start, add_promo_onetime,
                                         add_promo_procent, add_promo_text,
                                         add_promo_end, promo_distribution,
                                         cancel_command,
-                                        CODE, TEXT, START_PRICE, ONE_TIME, PROCENT,START_DISTRIBUTION)
+                                        CODE, TEXT, START_PRICE, ONE_TIME, PROCENT, START_DISTRIBUTION)
 from functional_key import admin_keyboard, resident_keyboard, customer_keyboard, start, promo_keyboard
 import briket_DB.reviews.review_conv as rv
 import os
@@ -147,7 +147,7 @@ def main() -> None:
                                       day=-1,
                                       job_kwargs={'misfire_grace_time': 60})
     application.job_queue.run_repeating(callback=driver_number_sender,
-                                        interval=300,
+                                        interval=180,
                                         job_kwargs={'misfire_grace_time': 60})
     application.job_queue.run_repeating(callback=payment_finder,
                                         interval=30,
@@ -179,4 +179,4 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-     main()
+    main()

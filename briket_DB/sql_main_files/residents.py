@@ -146,3 +146,11 @@ def read_one_name(resident_name):
             "Resident not found for {} ".format(resident_name)
         )
 
+
+def read_one_chatid(chat_id):
+    resident = Resident.query.filter(Resident.chat_id == chat_id).one_or_none()
+    if resident is not None:
+        resident_schema = ResidentSchema()
+        return resident_schema.dump(resident)
+    else:
+        return None

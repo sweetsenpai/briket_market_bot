@@ -150,12 +150,10 @@ async def driver_number_sender(context: ContextTypes.DEFAULT_TYPE):
         return
 
     for order in orders_driver:
-        print(order)
         if order['user_id'] == 352354383:
             return
         if datetime.date(order['time']).strftime('%Y %m %d') == datetime.now().strftime('%Y %m %d'):
             driver_phone = driver_info(order['delivery']['id'])
-            print(driver_phone)
             if driver_phone is not False:
                 orders_db.find_one_and_update(filter={"user_id": order['user_id']},
                                               update={'$set': {"delivery.driver_number": driver_phone}})

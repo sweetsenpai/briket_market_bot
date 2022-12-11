@@ -1,5 +1,6 @@
 from briket_DB.shopping.order_db import orders_db
 from datetime import datetime
+from datetime import timedelta
 
 
 def get_resident_report_month(resident_name: str):
@@ -7,7 +8,7 @@ def get_resident_report_month(resident_name: str):
     comission = 0
     for order in orders_db.find({'$and': [{f'order_items.{resident_name}': {'$exists': True}},
                                           {f'order_items.{resident_name}.status': 'Готов'}]}):
-        if datetime.date(order['time']).strftime('%Y %m') == datetime.now().strftime('%Y %m'):
+        if order['time'] >= datetime.now() - timedelta(weeks=4):
             msg += 'Номер заказа: ' + str(order['order_num'])+'\n' + order['delivery_type']+'\n'
             sub_sum = sub_total(order_num=order['order_num'], resident_name=resident_name)
             if order['delivery_type'] == 'Самовывоз':
@@ -27,7 +28,7 @@ def get_resident_report_day(resident_name):
     msg = f'<b>{resident_name}</b>\n'
     for order in orders_db.find({'$and': [{f'order_items.{resident_name}': {'$exists': True}},
                                           {f'order_items.{resident_name}.status': 'Готов'}]}):
-        if datetime.date(order['time']).strftime('%Y.%m.%d ') == datetime.now().strftime('%Y.%m.%d'):
+        if order['time'] >= datetime.now() - timedelta(hours=24):
             msg += 'Номер заказа: ' + str(order['order_num'])+'\n' + order['delivery_type']+'\n'+\
                    datetime.date(order['time']).strftime('%Y.%m.%d')
             sub_sum = sub_total(order_num=order['order_num'], resident_name=resident_name)
@@ -39,7 +40,7 @@ def get_resident_report_day(resident_name):
                 msg += f'<i>Сумма заказа: {sub_sum}\nКомиссия: {round(sub_sum * 0.2)}</i>\n'
                 msg += '----------------------\n'
                 comission += round(sub_sum * 0.2)
-    msg += f'<b>Комиссия за день:{comission}₽</b>'
+    msg += f'<b>Комиссия за сутки:{comission}₽</b>'
     return msg
 
 

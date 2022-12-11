@@ -7,7 +7,7 @@ from telegram.ext import (
     ConversationHandler)
 from briket_DB.config import mongodb
 import logging
-from briket_DB.sql_main_files.residents import create, read_all
+from briket_DB.sql_main_files.residents import create, read_all, read_one_chatid
 from briket_DB.reports.report_main import get_resident_report_day, get_resident_report_month
 from text_integration.pastebin_integration import get_text_api
 admin = mongodb.admin
@@ -139,25 +139,55 @@ async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def day_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    for residen in read_all():
-        await update.message.reply_text(text=get_resident_report_day(residen['resident_name']), parse_mode='HTML')
+    chat_id = update.message.from_user.id
+    if admin.find_one(filter={'chat_id':chat_id}) is not None:
+        for residen in read_all():
+            await update.message.reply_text(text=get_resident_report_day(residen['resident_name']), parse_mode='HTML')
+            return
+    if read_one_chatid(chat_id) is not None:
+        await update.message.reply_text(text=get_resident_report_day(read_one_chatid(chat_id)['resident_name']), parse_mode='HTML')
+        return
+    await update.message.reply_text(text="У вас нет доступа к этой функции(",
+                                    parse_mode='HTML')
+    return
 
 
 async def mouth_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    for residen in read_all():
-        await update.message.reply_text(text=get_resident_report_month(residen['resident_name']), parse_mode='HTML')
+    chat_id = update.message.from_user.id
+    if admin.find_one(filter={'chat_id':chat_id}) is not None:
+        for residen in read_all():
+            await update.message.reply_text(text=get_resident_report_month(residen['resident_name']), parse_mode='HTML')
+            return
+    if read_one_chatid(chat_id) is not None:
+        await update.message.reply_text(text=get_resident_report_month(read_one_chatid(chat_id)['resident_name']), parse_mode='HTML')
+        return
+    await update.message.reply_text(text="У вас нет доступа к этой функции(",
+                                    parse_mode='HTML')
+    return
 
 
 async def mouth_report_job(context: ContextTypes.DEFAULT_TYPE):
+    admin_report_data = ""
+    for residen in read_all():
+        report_data = get_resident_report_month(residen['resident_name'])
+        admin_report_data += report_data + '\n'
+        await context.bot.sendMessage(chat_id=residen['chat_id'],
+                                      text=report_data, parse_mode='HTML')
     for admins in admin.find({'chat_id': {'$exists': True}}):
-        for residen in read_all():
-            report_data = get_resident_report_month(residen['resident_name'])
-            await context.bot.sendMessage(chat_id=residen['chat_id'], text=report_data, parse_mode='HTML')
-            await context.bot.sendMessage(chat_id=admins['chat_id'], text=report_data, parse_mode='HTML')
+        await context.bot.sendMessage(chat_id=admins['chat_id'],
+                                      text=admin_report_data, parse_mode='HTML')
+    return
 
 
 async def day_report_job(context: ContextTypes.DEFAULT_TYPE):
+    admin_report_data = ""
+    for residen in read_all():
+
+        report_data = get_resident_report_day(residen['resident_name'])
+        admin_report_data += report_data + '\n'
+        await context.bot.sendMessage(chat_id=residen['chat_id'],
+                                      text=report_data, parse_mode='HTML')
     for admins in admin.find({'chat_id': {'$exists': True}}):
-        for residen in read_all():
-            await context.bot.sendMessage(chat_id=admins['chat_id'],
-                                          text=get_resident_report_day(residen['resident_name']), parse_mode='HTML')
+        await context.bot.sendMessage(chat_id=admins['chat_id'],
+                                      text=admin_report_data, parse_mode='HTML')
+    return
