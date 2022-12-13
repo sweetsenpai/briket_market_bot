@@ -1,7 +1,5 @@
 from briket_DB.passwords import credentials
 import gspread
-from functools import lru_cache
-import time
 import pandas as pd
 import requests
 import shutil
@@ -9,7 +7,6 @@ import os
 sa = gspread.service_account_from_dict(credentials)
 
 
-@lru_cache()
 def get_markets():
     sheet_main = sa.open('Меню')
     sheets = sheet_main.worksheets()
@@ -84,9 +81,7 @@ def find_dish(sheet='KFC', dish='Шефбургер'):
     return check_dish.loc[check_dish['Название'] == dish].to_dict(orient='split')['data']
 
 
-def get_ttl_hash(seconds=600):
-    """Return the same value withing `seconds` time period"""
-    return round(time.time() / seconds)
+
 
 
 

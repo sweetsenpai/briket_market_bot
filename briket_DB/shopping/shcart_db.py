@@ -7,17 +7,30 @@ sh_cart = mongodb.sh_cart
 def add_dish(user_id: int, resident: str, dish: str, price: str, amount=0) -> None:
     user_cart = sh_cart.find_one({"user_id": user_id})
     if user_cart is None:
-        sh_cart.insert_one({
-            'user_id': user_id,
-            'order_items': {
-                resident: {
-                    dish: {
-                        'price': round(float(price), 2),
-                        'quantity': 1}
-                }},
-            'total': price
-        })
-        return
+        if amount != 0:
+            sh_cart.insert_one({
+                'user_id': user_id,
+                'order_items': {
+                    resident: {
+                        dish: {
+                            'price': round(float(price), 2),
+                            'quantity': amount}
+                    }},
+                'total': price
+            })
+            return
+        else:
+            sh_cart.insert_one({
+                'user_id': user_id,
+                'order_items': {
+                    resident: {
+                        dish: {
+                            'price': round(float(price), 2),
+                            'quantity': 1}
+                    }},
+                'total': price
+            })
+            return
     else:
         try:
             if user_cart['order_items'][resident][dish] is not None:
@@ -25,6 +38,7 @@ def add_dish(user_id: int, resident: str, dish: str, price: str, amount=0) -> No
                     sh_cart.find_one_and_update(filter=user_cart,
                                                 update={
                                                     '$inc': {"order_items.{}.{}.quantity".format(resident, dish): amount}})
+                    return
                 else:
                     sh_cart.find_one_and_update(filter=user_cart,
                                                 update={'$inc': {"order_items.{}.{}.quantity".format(resident, dish): 1}})

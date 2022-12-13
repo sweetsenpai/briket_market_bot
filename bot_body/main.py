@@ -30,6 +30,8 @@ from delivery.yandex_api import driver_number_sender
 from order_ofirm.pickup_conv import pickup_conversation
 from order_ofirm.delivery_conv import del_conv
 from user.addresses import show_addresses, add_conv
+from briket_DB.shopping.cache_category import cache_category
+
 PORT = int(os.environ.get('PORT', '80'))
 
 
@@ -151,6 +153,9 @@ def main() -> None:
                                         job_kwargs={'misfire_grace_time': 60})
     application.job_queue.run_repeating(callback=payment_finder,
                                         interval=30,
+                                        job_kwargs={'misfire_grace_time': 15})
+    application.job_queue.run_repeating(callback=cache_category,
+                                        interval=600,
                                         job_kwargs={'misfire_grace_time': 15})
     application.add_handler(add_conv)
     application.add_handler(del_conv)

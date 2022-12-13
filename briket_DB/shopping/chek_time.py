@@ -11,7 +11,8 @@ def order_time_chekker():
         else:
             return True
     else:
-        if h_day > 22 or h_day < 10:
+        if h_day > 21 or h_day < 10:
             return False
         else:
             return True
+

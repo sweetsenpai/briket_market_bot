@@ -10,6 +10,7 @@ from briket_DB.sql_main_files.residents import read_all, read_one_name
 from parcer.parcer_sheet import get_market_categories, get_dishs
 from briket_DB.shopping.shcart_db import get_dish_quantity
 from text_integration.pastebin_integration import get_text_api
+from briket_DB.shopping.cache_category import read_category
 import gspread
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -119,7 +120,7 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 
 def inline_menu_generation(resident):
-    categories = get_market_categories(resident)
+    categories = read_category(resident)
     keyboard = []
     try:
         for category in categories:

@@ -9,6 +9,7 @@ from yookassa.domain.common.confirmation_type import ConfirmationType
 from yookassa.domain.request.payment_request_builder import PaymentRequestBuilder
 from briket_DB.passwords import yookassa_key
 from telegram.ext import ContextTypes
+from briket_DB.shopping.chek_time import order_time_chekker
 from datetime import datetime
 Configuration.account_id = '948782'
 Configuration.secret_key = yookassa_key
@@ -66,15 +67,16 @@ async def payment_finder(context: ContextTypes.DEFAULT_TYPE):
             await context.bot.sendMessage(chat_id=payment['user_id'], text='Ваш заказ успешно оплачен!')
             await push_order(user_id=payment['user_id'], context=context)
             return
-        if (datetime.now() - payment['payment_time']).total_seconds() >= 900 or \
-                datetime.time(payment['payment_time']).hour >= 20 :
+        if (datetime.now() - payment['payment_time']).total_seconds() >= 900:
             await context.bot.sendMessage(chat_id=payment['user_id'], text='Ссылка для оплаты устарела, оформите заказ снова.')
             sh_cart.find_one_and_update(filter={"user_id": payment['user_id']},
                                         update={'$unset': {"payment_id": ''}})
             sh_cart.find_one_and_update(filter={"user_id": payment['user_id']},
                                         update={'$unset': {"payment_time": datetime.now()}})
             return
+        if order_time_chekker() is False:
+            return
 
 
-x = sh_cart.find_one(filter={'user_id':352354383})
+
 
