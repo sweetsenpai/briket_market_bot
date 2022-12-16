@@ -11,11 +11,13 @@ from briket_DB.passwords import yookassa_key
 from telegram.ext import ContextTypes
 from briket_DB.shopping.chek_time import order_time_chekker
 from datetime import datetime
+from briket_DB.shopping.promotions import apply_promo
 Configuration.account_id = '948782'
 Configuration.secret_key = yookassa_key
 
 
 async def create_payment(user_id, update: Update, delivery_type):
+    apply_promo(user_id)
     order = sh_cart.find_one({'user_id': user_id})
     receipt = Receipt()
     receipt.customer = {"phone": "", "email": "test@mail.ru"}
