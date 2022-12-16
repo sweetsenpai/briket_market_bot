@@ -33,7 +33,7 @@ async def admin_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
              KeyboardButton(text='Новый админ. вход')],
             [KeyboardButton(text='Промокоды'), KeyboardButton(text='Создать рассылку')]
         ], resize_keyboard=True, one_time_keyboard=False)
-    await update.message.reply_text(text='Выбири действия в меню ниже', reply_markup=ad_functions)
+    await update.message.reply_text(text='Выбери действия в меню ниже', reply_markup=ad_functions)
     return
 
 
@@ -45,7 +45,7 @@ async def customer_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [KeyboardButton(text='FAQ'), KeyboardButton(text='Аккаунт')],
             [KeyboardButton(text='🛒Корзина🛒')]
         ], resize_keyboard=True, one_time_keyboard=False)
-    await update.message.reply_text(text='Выбири действия в меню ниже', reply_markup=cust_func)
+    await update.message.reply_text(text='Выбери действия в меню ниже', reply_markup=cust_func)
     return
 
 
@@ -56,7 +56,7 @@ async def resident_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [KeyboardButton(text='Отчет')],
             [KeyboardButton(text='Новый резидент вход')]
         ], resize_keyboard=True, one_time_keyboard=False)
-    await update.message.reply_text(text='Выбири действия в меню ниже', reply_markup=res_func)
+    await update.message.reply_text(text='Выбери действия в меню ниже', reply_markup=res_func)
     return
 
 
@@ -66,5 +66,5 @@ async def promo_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [KeyboardButton(text='Создать промокод')],
             [KeyboardButton(text='Активные промокоды')]
         ], resize_keyboard=True, one_time_keyboard=False)
-    await update.message.reply_text(text='Выбири один из вариантов меню:', reply_markup=res_func)
+    await update.message.reply_text(text='Выбери один из вариантов меню:', reply_markup=res_func)
     return
