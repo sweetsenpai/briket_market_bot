@@ -14,9 +14,9 @@ def add_dish(user_id: int, resident: str, dish: str, price: str, amount=0) -> No
                     resident: {
                         dish: {
                             'price': round(float(price), 2),
-                            'quantity': amount*round(float(price), 2)}
+                            'quantity': amount}
                     }},
-                'total': total(user_id)
+                'total': amount*round(float(price), 2)
             })
             return
         else:
