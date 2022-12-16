@@ -10,7 +10,7 @@ from briket_DB.config import mongodb
 import logging
 from text_integration.pastebin_integration import get_text_api
 
-admin = mongodb.admin
+admin = mongodb.admin_db
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -32,11 +32,11 @@ async def reg_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def admin_email(update: Update, context: ContextTypes.DEFAULT_TYPE):
     phone_raw = update.message.contact.phone_number
     phone = phone_raw.replace('+', '')
-    resident = admin.find_one({"phone": phone})
-    if resident is None:
+    new_admin_chek = admin.find_one({"phone": phone})
+    if new_admin_chek is None:
         await update.message.reply_text(get_text_api('nzMSZkNW'))
 
-    elif resident is not None:
+    elif new_admin_chek is not None:
         admin.delete_one({"phone": phone})
         new_admin = {
             'chat_id': update.message.from_user.id,

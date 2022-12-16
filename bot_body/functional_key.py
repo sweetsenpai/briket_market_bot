@@ -1,13 +1,22 @@
 from telegram.ext import (ContextTypes)
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
+from bot_body.admin.access_level import admin_check, res_check
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat = update.message.from_user.id
     customer = KeyboardButton(text='Клиент')
     admin = KeyboardButton(text='Администратор')
     resident = KeyboardButton(text='Резидент')
-    role_keyboard = ReplyKeyboardMarkup(keyboard=[[customer], [admin], [resident]])
-    await update.message.reply_text(text='Привет, выбери роль в меню ниже:', reply_markup=role_keyboard)
+    a_keyboard = ReplyKeyboardMarkup(keyboard=[[customer], [admin], [resident]])
+    res_keyboar = ReplyKeyboardMarkup(keyboard=[[customer], [resident]])
+    if admin_check(chat) is True:
+        await update.message.reply_text(text='Привет, выбери роль в меню ниже:', reply_markup=a_keyboard)
+        return
+    if res_check(chat) is True:
+        await update.message.reply_text(text='Привет, выбери роль в меню ниже:', reply_markup=res_keyboar)
+        return
+    await customer_keyboard(update, context)
     return
 
 

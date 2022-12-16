@@ -13,7 +13,7 @@ from briket_DB.shopping.promotions import apply_promo
 from delivery.yandex_api import send_delivery_order
 orders_db = mongodb.orders
 sh_cart = mongodb.sh_cart
-admin = mongodb.admin
+admin = mongodb.admin_db
 
 
 async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE):

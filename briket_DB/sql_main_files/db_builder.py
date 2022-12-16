@@ -19,11 +19,22 @@ RESIDENTS = [{
         "resident_email": 'macdonalds@bk.ru',
         "description": 'Раньше было лучше',
         "img_url": str('https://upload.wikimedia.org/wikipedia/commons/c/cc/%D0%92%D0%BA%D1%83%D1%81%D0%BD%D0%BE_%E2%80%94_%D0%B8_%D1%82%D0%BE%D1%87%D0%BA%D0%B0.jpg')
+    },
+    {
+        "resident_name": 'Мурмяу',
+        "chat_id": 352354383,
+        "resident_addres": 'New-York',
+        "resident_phone": '+79042163341',
+        "resident_email": 'macdonalds@bk.ru',
+        "description": 'Это тест',
+        "img_url": str(
+            'http://res.cloudinary.com/dwexszkh4/image/upload/v1669732790/ifm6qs4hssyq0ciovfdm.jpg')
     }
 ]
 
 CUSTOMER = [
-    {'chat_id': 1, 'phone': '+79118468177', 'name': 'Александр', 'addres': 'SPB', 'disc_status': True},
+    {'chat_id': 1, 'phone': '+79118468177', 'name': 'Александр', 'addres': 'SPB', 'email': '123@bk.com'},
+    {'chat_id': 2, 'phone': '+79118468667', 'name': 'Даша', 'addres': 'MSK', 'email': 'test@bk.com'}
 ]
 
 if os.path.exists('briket.db'):
@@ -48,7 +59,7 @@ else:
                      phone=customer['phone'],
                      name=customer['name'],
                      addres=customer['addres'],
-                     disc_status=customer['disc_status'])
+                     email=customer['email'])
         db.session.add(c)
 
     db.session.commit()

@@ -4,10 +4,14 @@ from briket_DB.sql_main_files.customers import read_all
 from text_integration.pastebin_integration import get_text_api
 from bot_body.functional_key import admin_keyboard
 import asyncio
+from bot_body.admin.access_level import admin_check
 TEXT_DIST = range(1)
 
 
 async def get_text_destribution(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if admin_check(update.message.from_user.id) is False:
+        await update.message.reply_text(text='Вам отказанно в праве доступа.')
+        return ConversationHandler.END
     await update.message.reply_text(text=get_text_api('mHKEnYh7'))
     return TEXT_DIST
 

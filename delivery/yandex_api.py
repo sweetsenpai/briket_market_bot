@@ -8,7 +8,7 @@ from briket_DB.config import mongodb
 from datetime import datetime
 from telegram.ext import ContextTypes
 orders_db = mongodb.orders
-admins = mongodb.admin
+admins = mongodb.admin_db
 default_addres = 'Москва, Цветной бульвар, д. 15 стр. 1'
 custom_head = {'Authorization': f'Bearer {yandex_key}', 'Accept-Language': 'ru/ru'}
 

@@ -8,7 +8,7 @@ class Customer(db.Model):
     phone = db.Column(db.String(32))
     name = db.Column(db.String(32))
     addres = db.Column(db.String(32))
-    disc_status = db.Column(db.Boolean)
+    email = db.Column(db.String(32))
 
 
 class CustomerSchema(ma.SQLAlchemyAutoSchema):

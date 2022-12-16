@@ -31,7 +31,7 @@ from order_ofirm.pickup_conv import pickup_conversation
 from order_ofirm.delivery_conv import del_conv
 from user.addresses import show_addresses, add_conv
 from briket_DB.shopping.cache_category import cache_category
-
+from briket_DB.reports.user_data_report import user_data_updater
 PORT = int(os.environ.get('PORT', '80'))
 
 
@@ -44,7 +44,8 @@ def main() -> None:
             rg.PHONE: [MessageHandler(filters.CONTACT, rg.phone)],
             rg.LOCATION: [MessageHandler(filters.LOCATION | filters.Regex('[а-яА-ЯёЁ]'), rg.location),
                           CommandHandler("skip", rg.skip_location), ],
-            rg.INFO: [MessageHandler(filters.TEXT & ~filters.COMMAND, rg.info)]
+            rg.INFO: [MessageHandler(filters.TEXT & ~filters.COMMAND, rg.info)],
+            rg.EMAIL: [MessageHandler(filters.TEXT & ~filters.COMMAND, rg.email)]
         },
         fallbacks=[CommandHandler("cancel", rg.cancel)],
         conversation_timeout=600
@@ -157,6 +158,8 @@ def main() -> None:
     application.job_queue.run_repeating(callback=cache_category,
                                         interval=600,
                                         job_kwargs={'misfire_grace_time': 15})
+    application.job_queue.run_daily(callback=user_data_updater, time=time.fromisoformat('03:00:00+03:00'),
+                                    job_kwargs={'misfire_grace_time': 60})
     application.add_handler(add_conv)
     application.add_handler(del_conv)
     application.add_handler(pickup_conversation)

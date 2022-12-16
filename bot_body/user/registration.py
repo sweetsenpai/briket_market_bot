@@ -1,18 +1,20 @@
 import logging
 from briket_DB.shopping.promotions import chek_personal_code
-from briket_DB.sql_main_files.customers import find_id, create, insert_new_addres, inser_new_name
+from briket_DB.sql_main_files.customers import find_id, create, insert_new_addres, inser_new_name, insert_new_email
 from telegram import ReplyKeyboardRemove, Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ContextTypes,
     ConversationHandler)
 from text_integration.pastebin_integration import get_text_api
 from bot_body.user.addresses import show_addresses
+from bot_body.functional_key import customer_keyboard
+from bot_body.menu import menu
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
-PHONE, LOCATION, INFO = range(3)
+PHONE, LOCATION, INFO, EMAIL = range(4)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -45,8 +47,7 @@ async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(text=get_text_api('MBMfCNhN'))
     customer = {'chat_id': user.id,
                 'phone': str(user_contact),
-                'addres': str(''),
-                'disc_status': True}
+                'addres': str('')}
     create(customer)
     return LOCATION
 
@@ -66,7 +67,7 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user = update.message.from_user
         user_location = update.message.text
         await update.message.reply_text(
-            "И последний шаг, как тебя зовут?", reply_markup=ReplyKeyboardRemove()
+            "Как тебя зовут?", reply_markup=ReplyKeyboardRemove()
         )
         insert_new_addres(user.id, user_location)
 
@@ -91,6 +92,16 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         text=get_text_api('jTrJc5RZ'), reply_markup=ReplyKeyboardRemove()
     )
+    return EMAIL
+
+
+async def email(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_mail = update.message.text
+    insert_new_email(chat_id=update.message.from_user.id,
+                     email=user_mail)
+    await update.message.reply_text("Регистрация успешно закончена!")
+    await menu(update, context)
+    await customer_keyboard(update, context)
     return ConversationHandler.END
 
 

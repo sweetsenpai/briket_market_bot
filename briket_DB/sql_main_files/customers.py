@@ -74,6 +74,19 @@ def inser_new_name(chat_id, name):
         return 200
 
 
+def insert_new_email(chat_id, email):
+    update_customer = Customer.query.filter(Customer.chat_id == chat_id).one_or_none()
+    if update_customer is None:
+        abort(
+            404,
+            "Customer not found for id {}".format(chat_id)
+        )
+    else:
+        update_customer.email = email
+        db.session.commit()
+        return 200
+
+
 def delete(customer_id):
     customer = Customer.query.filter(Customer.customer_id == customer_id).one_or_none()
     if customer is not None:

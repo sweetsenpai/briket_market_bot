@@ -2,12 +2,15 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ContextTypes,
     ConversationHandler)
-
+from bot_body.admin.access_level import admin_check
 from briket_DB.shopping.promotions import chek_promo, sales_db, output_promotions
 PROMO = range(1)
 
 
 async def promo_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if admin_check(update.message.from_user.id) is False:
+        await update.message.reply_text(text='Вам отказанно в праве доступа.')
+        return ConversationHandler.END
     await update.message.reply_text(text='Введите промокод :')
     return PROMO
 

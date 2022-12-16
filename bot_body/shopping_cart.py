@@ -106,7 +106,7 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.callback_query.edit_message_text(text='Резидент успешно удален!')
         return
     elif cb_data[0] == 'del_admin':
-        mongodb.admin.delete_one({"phone": cb_data[1]})
+        mongodb.admin_db.delete_one({"phone": cb_data[1]})
         await update.callback_query.edit_message_text(text='Администратор успешно удален!')
         return
     elif cb_data[0] == 'del_promo':
