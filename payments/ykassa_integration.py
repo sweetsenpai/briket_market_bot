@@ -9,7 +9,6 @@ from yookassa.domain.common.confirmation_type import ConfirmationType
 from yookassa.domain.request.payment_request_builder import PaymentRequestBuilder
 from briket_DB.passwords import yookassa_key
 from telegram.ext import ContextTypes
-from briket_DB.shopping.chek_time import order_time_chekker
 from datetime import datetime
 from briket_DB.shopping.promotions import apply_promo
 Configuration.account_id = '948782'
@@ -76,8 +75,9 @@ async def payment_finder(context: ContextTypes.DEFAULT_TYPE):
             sh_cart.find_one_and_update(filter={"user_id": payment['user_id']},
                                         update={'$unset': {"payment_time": datetime.now()}})
             return
-        if order_time_chekker() is False:
+        if datetime.now().hour >= 23:
             return
+
 
 
 

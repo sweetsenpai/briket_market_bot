@@ -5,7 +5,6 @@ from briket_DB.shopping.previous_orders import show_po, repeat_order
 from briket_DB.reviews.callback_reviews import show_review
 from briket_DB.sql_main_files.customers import delete_addres, read_one
 from bot_body.menu import dish_card_keyboard, inline_menu_generation, inline_generator, dish_card
-from briket_DB.shopping.chek_time import order_time_chekker
 from briket_DB.reviews.reviews_main import publish_revie, del_review
 from briket_DB.shopping.shcart_db import (add_dish, remove_dish,
                                           show_cart, empty_shcart,
@@ -23,7 +22,7 @@ from text_integration.pastebin_integration import get_text_api
 from briket_DB.shopping.promotions import stop_promo
 from order_ofirm.callback_hend import make_order
 from user.addresses import inline_addresses
-
+from datetime import datetime
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -134,15 +133,30 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.callback_query.answer(text='Для оформления заказа необходимо пройти регистрацию.\n'
                                                     'Это займет всего пару минут.', show_alert=True)
             return
-        if order_time_chekker() is False:
-            await update.callback_query.answer(text='График работы\n'
-                                                    'Пн-Сб: с 10:00 до 22:00\n'
-                                                    'Вск: c 11:00 до 23:00',
-                                               show_alert=True
-                                               )
-            return
-        await make_order(update, context)
-        return
+
+        if datetime.now().weekday() == 6:
+            if int(datetime.now().hour) >= 23 or int(datetime.now().hour) < 11:
+                await update.callback_query.answer(text='График работы\n'
+                                                        'Пн-Сб: с 10:00 до 22:00\n'
+                                                        'Вск: c 11:00 до 23:00',
+                                                   show_alert=True
+                                                   )
+                return
+            else:
+                await make_order(update, context)
+                return
+        else:
+            if int(datetime.now().hour) >= 21 or int(datetime.now().hour) < 10:
+                await update.callback_query.answer(text='График работы\n'
+                                                        'Пн-Сб: с 10:00 до 22:00\n'
+                                                        'Вск: c 11:00 до 23:00',
+                                                   show_alert=True
+                                                   )
+                return
+            else:
+                await make_order(update, context)
+                return
+
     elif cb_data[0] == 'get_menu':
         await update.callback_query.edit_message_text(text=dish_card(cb_data[1]), parse_mode=constants.ParseMode.HTML,
                                                       reply_markup=inline_menu_generation(cb_data[1]))

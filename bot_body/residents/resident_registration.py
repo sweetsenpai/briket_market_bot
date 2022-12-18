@@ -6,14 +6,15 @@ from telegram import (ReplyKeyboardRemove,
 from telegram.ext import (
     ContextTypes,
     ConversationHandler)
-from briket_DB.sql_main_files.residents import find_phone, insert_img,insert_email,insert_name,insert_location,insert_description
+from briket_DB.sql_main_files.residents import find_phone, insert_img, \
+    insert_email, insert_name, insert_location, insert_description
 import logging
 from parcer.parcer_sheet import create_new_table
 import cloudinary
 from cloudinary import uploader
 from text_integration.pastebin_integration import get_text_api
 from briket_DB.reviews.reviews_main import reviews_db
-import glob, os, os.path
+
 cloudinary.config(
   cloud_name="dwexszkh4",
   api_key="677565459774618",

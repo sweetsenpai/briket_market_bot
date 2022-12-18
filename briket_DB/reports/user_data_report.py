@@ -5,7 +5,7 @@ import pandas as pd
 import gspread as gsp
 from telegram.ext import ContextTypes
 from parcer.parcer_sheet import sa
-
+import json
 # briketbot2022@gmail.com
 #BriketBot2022
 
@@ -26,6 +26,7 @@ async def user_data_updater(context: ContextTypes.DEFAULT_TYPE):
     df = pd.DataFrame(user_list)
     del df['customer_id']
     del df['chat_id']
+    del df['addres']
     new_df = (df.reindex(columns=['name', 'phone', 'email', 'addres', 'status', 'nickname'])).rename(columns={'name': "Имя",
                                                                                                               'phone':"Телефон",
                                                                                                               "addres": "Адрес",
