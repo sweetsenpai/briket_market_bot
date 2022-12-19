@@ -23,7 +23,9 @@ def get_market_categories(ws: str):
         sheet_main = sa.open('Меню')
         ws = sheet_main.worksheet(ws)
         dataframe = pd.DataFrame(ws.get_all_records())
-        return dataframe['Категория'].unique().tolist()
+        cat_list = dataframe['Категория'].unique().tolist()
+        cat_list = list(filter(None, cat_list))
+        return cat_list
     except KeyError:
         return
 

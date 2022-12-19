@@ -36,7 +36,7 @@ PORT = int(os.environ.get('PORT', '80'))
 
 
 def main() -> None:
-    application = Application.builder().token(test_bot_key).rate_limiter(AIORateLimiter()).build()
+    application = Application.builder().token(bot_key).rate_limiter(AIORateLimiter()).build()
 
     reg_user = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Регистрация'), rg.start)],
@@ -156,7 +156,7 @@ def main() -> None:
                                         interval=30,
                                         job_kwargs={'misfire_grace_time': 15})
     application.job_queue.run_repeating(callback=cache_category,
-                                        interval=60,
+                                        interval=600,
                                         job_kwargs={'misfire_grace_time': 15})
     application.job_queue.run_daily(callback=user_data_updater, time=time.fromisoformat('03:00:00+03:00'),
                                     job_kwargs={'misfire_grace_time': 60})
@@ -181,9 +181,9 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('Администратор'), admin_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Клиент'), customer_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Резидент'), resident_keyboard))
-    application.run_polling()
-#    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'{get_https()}/{bot_key}',
-#                        listen="0.0.0.0")
+#    application.run_polling()
+    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'{get_https()}/{bot_key}',
+                        listen="0.0.0.0")
 
 
 if __name__ == '__main__':
