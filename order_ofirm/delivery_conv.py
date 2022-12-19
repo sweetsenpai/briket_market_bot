@@ -6,8 +6,9 @@ from payments.ykassa_integration import create_payment
 from briket_DB.shopping.promotions import chek_promo
 from delivery.yandex_api import delivery_range
 from briket_DB.shopping.shcart_db import sh_cart
+from briket_DB.sql_main_files.customers import read_one
 from briket_DB.sql_main_files.customers import addres_keyboard
-
+from datetime import datetime
 ONE, TWO, THREE, FOUR = range(4)
 
 
@@ -21,6 +22,25 @@ def addres_keyboard_del(user_id):
 
 
 async def first_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if read_one(update.message.from_user.id) is False:
+        await update.message.reply_text(text='Для оформления заказа необходимо пройти регистрацию.\n'
+                                                'Это займет всего пару минут.')
+        return ConversationHandler.END
+
+    if datetime.now().weekday() == 6:
+        if int(datetime.now().hour) >= 23 or int(datetime.now().hour) < 11:
+            await update.message.reply_text(text='График работы\n'
+                                                    'Пн-Сб: с 10:00 до 22:00\n'
+                                                    'Вск: c 11:00 до 23:00')
+            return ConversationHandler.END
+
+    else:
+        if int(datetime.now().hour) >= 21 or int(datetime.now().hour) < 10:
+            await update.message.reply_text(text='График работы\n'
+                                                    'Пн-Сб: с 10:00 до 22:00\n'
+                                                    'Вск: c 11:00 до 23:00')
+            return ConversationHandler.END
+
     await update.message.reply_text(text='Укажите адрес доставки',
                                     reply_markup=addres_keyboard_del(
                                         update.message.from_user.id

@@ -137,9 +137,9 @@ async def admin_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def resident_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if admin_check(update.message.from_user.id) is False or res_check(update.message.from_user.id) is False:
-        await update.message.reply_text(text='Вам отказанно в праве доступа.')
-        return
+#    if admin_check(update.message.from_user.id) is False or res_check(update.message.from_user.id) is False:
+#        await update.message.reply_text(text='Вам отказанно в праве доступа.')
+#        return
     await update.message.reply_text(text=get_text_api('ph3Z6zLK'))
     return
 

@@ -4,12 +4,31 @@ from telegram.ext import (
     ConversationHandler, MessageHandler, CommandHandler, filters)
 from payments.ykassa_integration import create_payment
 from briket_DB.shopping.promotions import chek_promo
-
+from briket_DB.sql_main_files.customers import read_one
+from datetime import  datetime
 
 ONE, TWO = range(2)
 
 
 async def first_pickup(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if read_one(update.message.from_user.id) is False:
+        await update.message.reply_text(text='Для оформления заказа необходимо пройти регистрацию.\n'
+                                                'Это займет всего пару минут.')
+        return ConversationHandler.END
+
+    if datetime.now().weekday() == 6:
+        if int(datetime.now().hour) >= 23 or int(datetime.now().hour) < 11:
+            await update.message.reply_text(text='График работы\n'
+                                                    'Пн-Сб: с 10:00 до 22:00\n'
+                                                    'Вск: c 11:00 до 23:00')
+            return ConversationHandler.END
+
+    else:
+        if int(datetime.now().hour) >= 21 or int(datetime.now().hour) < 10:
+            await update.message.reply_text(text='График работы\n'
+                                                    'Пн-Сб: с 10:00 до 22:00\n'
+                                                    'Вск: c 11:00 до 23:00')
+            return ConversationHandler.END
     button1 = KeyboardButton(text='Да')
     button2 = KeyboardButton(text='Нет')
     key = ReplyKeyboardMarkup(keyboard=[[button1], [button2]])

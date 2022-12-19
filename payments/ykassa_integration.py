@@ -1,6 +1,7 @@
 from telegram import Update
 from briket_DB.shopping.shcart_db import sh_cart
 from briket_DB.shopping.order_db import push_order
+from briket_DB.sql_main_files.customers import find_user_by_id
 from yookassa import Configuration, Payment
 from yookassa.domain.models.currency import Currency
 from yookassa.domain.models.receipt import Receipt
@@ -17,9 +18,10 @@ Configuration.secret_key = yookassa_key
 
 async def create_payment(user_id, update: Update, delivery_type):
     apply_promo(user_id)
+    customer = find_user_by_id(user_id)
     order = sh_cart.find_one({'user_id': user_id})
     receipt = Receipt()
-    receipt.customer = {"phone": "", "email": "test@mail.ru"}
+    receipt.customer = {"phone": customer['phone'], "email": customer['email']}
     receipt.tax_system_code = 1
     receipt.items = []
     for resident in order['order_items']:

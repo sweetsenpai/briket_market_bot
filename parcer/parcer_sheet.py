@@ -17,9 +17,9 @@ def get_markets():
     return market_list
 
 
-def get_market_categories(ws: str, ttl_hash=None):
+def get_market_categories(ws: str):
     try:
-        del ttl_hash
+
         sheet_main = sa.open('Меню')
         ws = sheet_main.worksheet(ws)
         dataframe = pd.DataFrame(ws.get_all_records())
@@ -28,8 +28,8 @@ def get_market_categories(ws: str, ttl_hash=None):
         return
 
 
-def get_dishs(sheet='KFC', cat='Бургеры', ttl_hash=None):
-    del ttl_hash
+def get_dishs(sheet='KFC', cat='Бургеры'):
+
     sheet_main = sa.open('Меню')
     ws = sheet_main.worksheet(sheet)
     df = pd.DataFrame(ws.get_all_records())
