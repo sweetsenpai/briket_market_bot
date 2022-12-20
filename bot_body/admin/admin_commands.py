@@ -39,14 +39,25 @@ async def add_new_admin_phone(update: Update, context: ContextTypes.DEFAULT_TYPE
 def del_resident_keyboard():
     buttons_res = []
     for resident in read_all():
-        buttons_res.append(
-            [
-                InlineKeyboardButton(
-                    text=resident['resident_name'],
-                    callback_data=','.join(['del_resident', resident['resident_phone']])
-                )
-            ]
-        )
+        if resident['resident_name'] is not None:
+            buttons_res.append(
+                [
+                    InlineKeyboardButton(
+                        text=resident['resident_name'],
+                        callback_data=','.join(['del_resident', resident['resident_phone']])
+                    )
+                ]
+            )
+        else:
+            buttons_res.append(
+                [
+                    InlineKeyboardButton(
+                        text= resident['resident_phone'],
+                        callback_data=','.join(['del_resident', resident['resident_phone']])
+                    )
+                ]
+            )
+
     return InlineKeyboardMarkup(buttons_res)
 
 
@@ -55,7 +66,7 @@ async def del_resident(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if admin_check(update.message.from_user.id) is False:
         await update.message.reply_text(text='Вам отказанно в праве доступа.')
         return
-    if mongodb.admin_db.find_one({'chat_id': admin_id}) is None:
+    if admin_db.find_one({'chat_id': admin_id}) is None:
         await update.message.reply_text(text=get_text_api('trhpLPsm'))
         return
     else:
@@ -68,7 +79,7 @@ async def del_resident(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 def del_admin_keyboard(admin_id: int):
     button_admin = []
-    for admins in mongodb.admin_db.find():
+    for admins in mongodb.admin.find():
         button_admin.append(
             [
                 InlineKeyboardButton(
@@ -82,12 +93,8 @@ def del_admin_keyboard(admin_id: int):
 
 async def dele_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     admin_id = update.message.from_user.id
-    if admin_check(update.message.from_user.id) is False:
+    if admin_check(admin_id) is False:
         await update.message.reply_text(text='Вам отказанно в праве доступа.')
-        return
-
-    if mongodb.admin_db.find_one({'chat_id': admin_id}) is None:
-        await update.message.reply_text(text=get_text_api('trhpLPsm'))
         return
     else:
         await update.message.reply_text(
@@ -146,7 +153,7 @@ async def resident_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
     id = update.message.from_user.id
-    if mongodb.admin_db.find_one({'chat_id': id}) is not None:
+    if admin_db.find_one({'chat_id': id}) is not None:
         day = KeyboardButton(text='За день')
         mounth = KeyboardButton(text='Месячный')
         keyboard = ReplyKeyboardMarkup(keyboard=[[day], [mounth]])

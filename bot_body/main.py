@@ -156,7 +156,7 @@ def main() -> None:
                                         interval=30,
                                         job_kwargs={'misfire_grace_time': 15})
     application.job_queue.run_repeating(callback=cache_category,
-                                        interval=600,
+                                        interval=60,
                                         job_kwargs={'misfire_grace_time': 15})
     application.job_queue.run_daily(callback=user_data_updater, time=time.fromisoformat('03:00:00+03:00'),
                                     job_kwargs={'misfire_grace_time': 60})

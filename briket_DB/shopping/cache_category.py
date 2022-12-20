@@ -19,7 +19,10 @@ async def cache_category(context: ContextTypes.DEFAULT_TYPE):
 
 
 def read_category(resident: str):
-    category = cachedb.find_one({'resident': resident})['category']
-    return category
+    try:
+        category = cachedb.find_one({'resident': resident})['category']
+        return category
+    except TypeError:
+        return
 
 

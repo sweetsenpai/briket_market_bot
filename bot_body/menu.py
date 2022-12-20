@@ -65,24 +65,27 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         results = []
         for market in read_all():
             try:
-                results.append(
-                    InlineQueryResultArticle(
-                        id=str(uuid4()),
-                        title=market['resident_name'],
-                        description=market['description'],
-                        input_message_content=InputTextMessageContent(
-                            message_text='<b>{}</b>\n'
-                                         '{}\n'
-                                         '<a href="{}">‎</a>'.format(market['resident_name'],
-                                                                     market['description'], market['img_url']),
-                            parse_mode='HTML',
-                            disable_web_page_preview=False
-                        ),
-                        thumb_url=market['img_url'],
-                        thumb_width=50,
-                        thumb_height=50,
-                        reply_markup=inline_generator(market['resident_name'])
-                    ))
+                if market['description'] is not None:
+                    results.append(
+                        InlineQueryResultArticle(
+                            id=str(uuid4()),
+                            title=market['resident_name'],
+                            description=market['description'],
+                            input_message_content=InputTextMessageContent(
+                                message_text='<b>{}</b>\n'
+                                             '{}\n'
+                                             '<a href="{}">‎</a>'.format(market['resident_name'],
+                                                                         market['description'], market['img_url']),
+                                parse_mode='HTML',
+                                disable_web_page_preview=False
+                            ),
+                            thumb_url=market['img_url'],
+                            thumb_width=50,
+                            thumb_height=50,
+                            reply_markup=inline_generator(market['resident_name'])
+                        ))
+                else:
+                    continue
             except gspread.exceptions.WorksheetNotFound or KeyError:
                 pass
         await update.inline_query.answer(results, cache_time=600)
@@ -130,7 +133,8 @@ def inline_menu_generation(resident):
                     switch_inline_query_current_chat='#/{}/{}'.format(resident, category)
                 ))]
             )
-    except TypeError:
+    except TypeError or TypeError:
+
         pass
     back = [InlineKeyboardButton(callback_data=f'back_inline,{resident}', text='◀️Назад')]
     keyboard.append(back)
