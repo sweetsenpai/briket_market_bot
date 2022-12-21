@@ -1,5 +1,7 @@
 import asyncio
 
+import telegram.error
+
 from briket_DB.config import mongodb
 from datetime import datetime
 from briket_DB.sql_main_files.residents import get_chat_id
@@ -13,7 +15,7 @@ from briket_DB.shopping.promotions import apply_promo
 from delivery.yandex_api import send_delivery_order
 orders_db = mongodb.orders
 sh_cart = mongodb.sh_cart
-admin = mongodb.admin_db
+admin = mongodb.admin
 
 
 async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE):
@@ -26,7 +28,6 @@ async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE):
     cart['time'] = datetime.now()
     for resident in cart['order_items']:
         cart['order_items'][resident]['status'] = 'Новый'
-    apply_promo(user_id=user_id)
     if cart['delivery_type'] == 'Доставка':
         cart['delivery']['id'] = send_delivery_order(order=cart)
         if cart['delivery']['id'] is False:
@@ -46,7 +47,7 @@ async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE):
     return
 
 
-def resident_inline_keyboard(order_num: int, resident: str, btn_text='✅', cbd='accept') -> InlineKeyboardMarkup:
+def resident_inline_keyboard(order_num: int, resident: str, btn_text='✅', cbd='accept') :
     order_num = str(order_num)
     accept = InlineKeyboardButton(text=btn_text, callback_data=','.join([cbd, order_num, resident]))
     decline = InlineKeyboardButton(text='Отменить❌', callback_data=','.join(['decline_order', order_num, resident]))
@@ -54,8 +55,9 @@ def resident_inline_keyboard(order_num: int, resident: str, btn_text='✅', cbd=
     client = InlineKeyboardButton(text='Клиент📒', callback_data=','.join(['client', order_num, resident]))
 #   red = InlineKeyboardButton(text='Редактировать заказ⚙', callback_data=','.join(['redaction_order',
     #   order_num, resident]))
-    rez = InlineKeyboardMarkup([[accept, decline], [support, client]])
-    return rez
+    rez = InlineKeyboardMarkup([[accept], [support]])
+    admin_board = InlineKeyboardMarkup([[decline], [client]])
+    return rez, admin_board
 
 
 async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYPE):
@@ -72,16 +74,18 @@ async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYP
             try:
                 resident_order += '{}. {}: {} шт. \n'.format(count + 1, dish,
                                                              full_order['order_items'][resident][dish]['quantity'])
-            except TypeError: pass
+            except TypeError:
+                pass
         resident_order += '\n Клиент: {}'.format(find_user_by_id(full_order['user_id'])['name'])
         await context.bot.sendMessage(text=resident_order,
                                       chat_id=get_chat_id(resident),
-                                      reply_markup=resident_inline_keyboard(order_num, resident=resident))
+                                      reply_markup=resident_inline_keyboard(order_num, resident=resident)[0])
         for admins in admin.find():
             try:
                 await context.bot.sendMessage(text=resident_order,
-                                              chat_id=admins['chat_id'])
-            except: continue
+                                              chat_id=admins['chat_id'], reply_markup=resident_inline_keyboard(order_num, resident=resident)[1])
+            except telegram.error.BadRequest:
+                continue
     return
 
 
@@ -105,7 +109,7 @@ async def accept_order(order_num: int, update: Update, resident: str):
                                                   reply_markup=resident_inline_keyboard(order_num=order_num,
                                                                                         resident=resident,
                                                                                         btn_text='Готов🏆',
-                                                                                        cbd='finish_order'))
+                                                                                        cbd='finish_order')[0])
 
 
 async def finish_order(order_num: int, update: Update, resident: str, context: ContextTypes.DEFAULT_TYPE):
