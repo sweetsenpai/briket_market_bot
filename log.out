@@ -49,3 +49,27 @@ FROM residents ORDER BY residents.resident_id
 2022-12-21 20:01:53,914 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:02:23 UTC)" executed successfully
 2022-12-21 20:02:23,865 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:02:53 UTC)" (scheduled at 2022-12-21 17:02:23.834037+00:00)
 2022-12-21 20:02:23,914 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:02:53 UTC)" executed successfully
+2022-12-21 20:02:53,865 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:03:23 UTC)" (scheduled at 2022-12-21 17:02:53.834037+00:00)
+2022-12-21 20:02:53,914 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:03:23 UTC)" executed successfully
+2022-12-21 20:03:23,855 - apscheduler.executors.default - INFO - Running job "driver_number_sender (trigger: interval[0:03:00], next run at: 2022-12-21 17:06:23 UTC)" (scheduled at 2022-12-21 17:03:23.833775+00:00)
+2022-12-21 20:03:23,856 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:03:53 UTC)" (scheduled at 2022-12-21 17:03:23.834037+00:00)
+2022-12-21 20:03:23,955 - apscheduler.executors.default - INFO - Job "driver_number_sender (trigger: interval[0:03:00], next run at: 2022-12-21 17:06:23 UTC)" executed successfully
+2022-12-21 20:03:23,955 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:03:53 UTC)" executed successfully
+2022-12-21 20:03:53,865 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:04:23 UTC)" (scheduled at 2022-12-21 17:03:53.834037+00:00)
+2022-12-21 20:03:53,914 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:04:23 UTC)" executed successfully
+2022-12-21 20:04:23,865 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:04:53 UTC)" (scheduled at 2022-12-21 17:04:23.834037+00:00)
+2022-12-21 20:04:23,914 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:04:53 UTC)" executed successfully
+2022-12-21 20:04:53,865 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:05:23 UTC)" (scheduled at 2022-12-21 17:04:53.834037+00:00)
+2022-12-21 20:04:53,914 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:05:23 UTC)" executed successfully
+2022-12-21 20:05:23,865 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:05:53 UTC)" (scheduled at 2022-12-21 17:05:23.834037+00:00)
+2022-12-21 20:05:23,914 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:05:53 UTC)" executed successfully
+2022-12-21 20:05:53,841 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:06:23 UTC)" (scheduled at 2022-12-21 17:05:53.834037+00:00)
+2022-12-21 20:05:53,891 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:06:23 UTC)" executed successfully
+2022-12-21 20:06:23,865 - apscheduler.executors.default - INFO - Running job "driver_number_sender (trigger: interval[0:03:00], next run at: 2022-12-21 17:09:23 UTC)" (scheduled at 2022-12-21 17:06:23.833775+00:00)
+2022-12-21 20:06:23,865 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:06:53 UTC)" (scheduled at 2022-12-21 17:06:23.834037+00:00)
+2022-12-21 20:06:23,964 - apscheduler.executors.default - INFO - Job "driver_number_sender (trigger: interval[0:03:00], next run at: 2022-12-21 17:09:23 UTC)" executed successfully
+2022-12-21 20:06:23,965 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:06:53 UTC)" executed successfully
+2022-12-21 20:06:53,865 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:07:23 UTC)" (scheduled at 2022-12-21 17:06:53.834037+00:00)
+2022-12-21 20:06:53,914 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:07:23 UTC)" executed successfully
+2022-12-21 20:07:23,865 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:07:53 UTC)" (scheduled at 2022-12-21 17:07:23.834037+00:00)
+2022-12-21 20:07:23,914 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:07:53 UTC)" executed successfully
