@@ -35,6 +35,7 @@ async def admin_email(update: Update, context: ContextTypes.DEFAULT_TYPE):
     new_admin_chek = admin.find_one({"phone": phone})
     if new_admin_chek is None:
         await update.message.reply_text(get_text_api('nzMSZkNW'))
+        return ConversationHandler.END
 
     elif new_admin_chek is not None:
         admin.delete_one({"phone": phone})
