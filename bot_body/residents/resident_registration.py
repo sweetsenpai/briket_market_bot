@@ -21,7 +21,7 @@ cloudinary.config(
   api_secret="CaPikHBUwKY8zX8aHuHRyeDhxrM"
 )
 
-PHONE, NAME, IMG, EMAIL, DESCRIPTION, ADDRES = range(6)
+PHONE, NAME, IMG, DESCRIPTION = range(4)
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -45,32 +45,15 @@ async def phon_res(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if phone is None:
         await update.message.reply_text(
-            text=get_text_api('5P5GnnZJ'))
-        return
+            text='Вашего номера нет в базе( Свяжитесь с администратором.')
+        return ConversationHandler.END
     elif phone is not None:
         logger.info(
             "Contact of {}: {}".format(resident.first_name, resident_contact)
         )
-        await update.message.reply_text(text=get_text_api('qe2ivh2N'))
-        return ADDRES
-
-
-async def resident_addres(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    resident = update.message.from_user
-    try:
-        resident_location = update.message.location
-        logger.info(
-            "Location of %s: %f / %f", resident.first_name, resident_location.latitude, resident_location.longitude
-        )
-        insert_location(resident_id=update.message.from_user.id,
-                        location=''.join([str(resident_location.latitude), str(resident_location.longitude)]))
-    except:
-        resident_location = update.message.text
-        insert_location(resident_id=resident.id, location=resident_location)
-    await update.message.reply_text(
-        get_text_api('LrmNMLiH'), reply_markup=ReplyKeyboardRemove()
-    )
-    return NAME
+        await update.message.reply_text(text='Отлично, ваш номер добавлен администратором!\n '
+                                             'Теперь укажите название заведения')
+        return NAME
 
 
 async def resident_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -78,15 +61,7 @@ async def resident_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
     insert_name(resident_id=update.message.from_user.id, name=update.message.text)
     reviews_db.insert_one({'resident': resident})
     create_new_table(resident_name=update.message.text)
-    await update.message.reply_text(get_text_api('cJA44azM'))
-    return EMAIL
-
-
-async def resident_email(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    resident = update.message.from_user
-    insert_email(resident_id=update.message.from_user.id, email=update.message.text)
-    logger.info("email заведения: %s: %s", resident.first_name, update.message.text)
-    await update.message.reply_text(text=get_text_api('31PHCAUT'))
+    await update.message.reply_text(text='Следующий шаг, пришлите описание вашего заведения.')
     return DESCRIPTION
 
 

@@ -56,9 +56,7 @@ def main() -> None:
                       CommandHandler('registration', res_reg.registration)],
         states={
             res_reg.PHONE: [MessageHandler(filters.CONTACT, res_reg.phon_res)],
-            res_reg.ADDRES: [MessageHandler(filters.LOCATION | filters.Regex('[а-яА-ЯёЁ]'), res_reg.resident_addres)],
             res_reg.NAME: [MessageHandler(filters.TEXT, res_reg.resident_name)],
-            res_reg.EMAIL: [MessageHandler(filters.TEXT, res_reg.resident_email)],
             res_reg.DESCRIPTION: [MessageHandler(filters.TEXT, res_reg.resident_description)],
             res_reg.IMG: [MessageHandler(filters.PHOTO, res_reg.resident_img)]
         },

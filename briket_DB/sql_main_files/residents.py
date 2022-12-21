@@ -155,5 +155,3 @@ def read_one_chatid(chat_id):
     else:
         return None
 
-for r in read_all():
-    print(r['resident_phone'])

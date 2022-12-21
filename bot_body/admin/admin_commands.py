@@ -29,7 +29,14 @@ async def add_new_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 
 async def add_new_admin_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    phone = update.message.text
+    phone = update.message.text.replace('+', '')
+    phone = phone.replace(' ', '')
+    phone = phone.replace('-', '')
+    phone = phone.replace('(', '')
+    phone = phone.replace(')', '')
+    phone = list(phone)
+    phone[0] = '7'
+    phone = ''.join(phone)
     admin_db.insert_one({'phone': phone})
     await update.message.reply_text(text='Номер нового администратора({}) успешно добавлен, '
                                          'теперь новый админ может пройти регистрацию.'
@@ -62,7 +69,6 @@ def del_resident_keyboard():
 
 
 async def del_resident(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    admin_id = update.message.from_user.id
     if admin_check(update.message.from_user.id) is False:
         await update.message.reply_text(text='Вам отказанно в праве доступа.')
         return
@@ -92,7 +98,7 @@ async def dele_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     admin_id = update.message.from_user.id
     if admin_check(admin_id) is False:
         await update.message.reply_text(text='Вам отказанно в праве доступа.')
-        return
+        return ConversationHandler.END
     else:
         await update.message.reply_text(
             text='Выберете номер администратора которого необходимо удалить из базы:',
@@ -110,7 +116,14 @@ async def add_new_resident_start(update: Update, context: ContextTypes.DEFAULT_T
 
 
 async def add_new_resident_end(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    phone = update.message.text
+    phone = update.message.text.replace('+', '')
+    phone = phone.replace(' ', '')
+    phone = phone.replace('-', '')
+    phone = phone.replace('(', '')
+    phone = phone.replace(')', '')
+    phone = list(phone)
+    phone[0] = '7'
+    phone = ''.join(phone)
     resident_new = {
         "resident_name": '',
         "chat_id": 123,
@@ -141,10 +154,13 @@ async def admin_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def resident_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
-#    if admin_check(update.message.from_user.id) is False or res_check(update.message.from_user.id) is False:
-#        await update.message.reply_text(text='Вам отказанно в праве доступа.')
-#        return
-    await update.message.reply_text(text=get_text_api('ph3Z6zLK'))
+    if admin_check(update.message.from_user.id) is True:
+        await update.message.reply_text(text=get_text_api('ph3Z6zLK'))
+        return
+    if res_check(update.message.from_user.id) is True:
+        await update.message.reply_text(text=get_text_api('ph3Z6zLK'))
+        return
+    await update.message.reply_text(text='Вам отказано в доступе!')
     return
 
 
@@ -228,3 +244,4 @@ async def day_report_job(context: ContextTypes.DEFAULT_TYPE):
         except telegram.error.BadRequest:
             continue
     return
+
