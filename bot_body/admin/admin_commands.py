@@ -40,7 +40,7 @@ async def add_new_admin_phone(update: Update, context: ContextTypes.DEFAULT_TYPE
 def del_resident_keyboard():
     buttons_res = []
     for resident in read_all():
-        if resident['resident_name'] is not None:
+        if resident['resident_name'] is not None and resident['resident_name'] != '':
             buttons_res.append(
                 [
                     InlineKeyboardButton(
@@ -53,12 +53,11 @@ def del_resident_keyboard():
             buttons_res.append(
                 [
                     InlineKeyboardButton(
-                        text= resident['resident_phone'],
+                        text=resident['resident_phone'],
                         callback_data=','.join(['del_resident', resident['resident_phone']])
                     )
                 ]
             )
-
     return InlineKeyboardMarkup(buttons_res)
 
 
@@ -66,9 +65,6 @@ async def del_resident(update: Update, context: ContextTypes.DEFAULT_TYPE):
     admin_id = update.message.from_user.id
     if admin_check(update.message.from_user.id) is False:
         await update.message.reply_text(text='Вам отказанно в праве доступа.')
-        return
-    if admin_db.find_one({'chat_id': admin_id}) is None:
-        await update.message.reply_text(text=get_text_api('trhpLPsm'))
         return
     else:
         await update.message.reply_text(

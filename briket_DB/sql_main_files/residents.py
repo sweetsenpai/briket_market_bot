@@ -154,3 +154,6 @@ def read_one_chatid(chat_id):
         return resident_schema.dump(resident)
     else:
         return None
+
+for r in read_all():
+    print(r['resident_phone'])
