@@ -64,8 +64,10 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     if query == "":
         results = []
         for market in read_all():
+
             try:
-                if market['description'] is not None:
+                print(market['description'])
+                if market['img_url'] != '':
                     results.append(
                         InlineQueryResultArticle(
                             id=str(uuid4()),
@@ -87,8 +89,8 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                 else:
                     continue
             except gspread.exceptions.WorksheetNotFound or KeyError:
-                pass
-        await update.inline_query.answer(results, cache_time=600)
+                continue
+        await update.inline_query.answer(results, cache_time=300)
         return
     elif '#' in query:
         answer = []

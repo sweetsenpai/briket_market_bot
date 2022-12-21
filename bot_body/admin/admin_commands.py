@@ -126,7 +126,7 @@ async def add_new_resident_end(update: Update, context: ContextTypes.DEFAULT_TYP
     phone = ''.join(phone)
     resident_new = {
         "resident_name": '',
-        "chat_id": 123,
+        "chat_id": 1,
         "resident_addres": '',
         "resident_phone": phone,
         "resident_email": '',
