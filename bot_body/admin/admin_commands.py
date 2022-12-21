@@ -1,3 +1,4 @@
+import telegram.error
 from telegram import (Update,
                       ReplyKeyboardMarkup,
                       KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup)
@@ -200,23 +201,34 @@ async def mouth_report_job(context: ContextTypes.DEFAULT_TYPE):
     for residen in read_all():
         report_data = get_resident_report_month(residen['resident_name'])
         admin_report_data += report_data + '\n'
-        await context.bot.sendMessage(chat_id=residen['chat_id'],
-                                      text=report_data, parse_mode='HTML')
+        try:
+            await context.bot.sendMessage(chat_id=residen['chat_id'],
+                                          text=report_data, parse_mode='HTML')
+        except telegram.error.BadRequest:
+            continue
     for admins in admin_db.find({'chat_id': {'$exists': True}}):
-        await context.bot.sendMessage(chat_id=admins['chat_id'],
-                                      text=admin_report_data, parse_mode='HTML')
+        try:
+            await context.bot.sendMessage(chat_id=admins['chat_id'],
+                                          text=admin_report_data, parse_mode='HTML')
+        except telegram.error.BadRequest:
+            continue
     return
 
 
 async def day_report_job(context: ContextTypes.DEFAULT_TYPE):
     admin_report_data = ""
     for residen in read_all():
-
         report_data = get_resident_report_day(residen['resident_name'])
         admin_report_data += report_data + '\n'
-        await context.bot.sendMessage(chat_id=residen['chat_id'],
-                                      text=report_data, parse_mode='HTML')
+        try:
+            await context.bot.sendMessage(chat_id=residen['chat_id'],
+                                          text=report_data, parse_mode='HTML')
+        except telegram.error.BadRequest:
+            continue
     for admins in admin_db.find({'chat_id': {'$exists': True}}):
-        await context.bot.sendMessage(chat_id=admins['chat_id'],
+        try:
+            await context.bot.sendMessage(chat_id=admins['chat_id'],
                                       text=admin_report_data, parse_mode='HTML')
+        except telegram.error.BadRequest:
+            continue
     return

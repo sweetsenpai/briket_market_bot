@@ -143,7 +143,7 @@ def main() -> None:
     application.add_handler(promo_conv)
     application.add_handler(dest_conv)
     application.add_handler(report)
-    application.job_queue.run_daily(callback=ac.day_report_job, time=time.fromisoformat('12:00:00+03:00'),
+    application.job_queue.run_daily(callback=ac.day_report_job, time=time.fromisoformat('14:19:00+03:00'),
                                     job_kwargs={'misfire_grace_time': 60})
     application.job_queue.run_monthly(callback=ac.mouth_report_job,
                                       when=time.fromisoformat('12:00:00+03:00'),
@@ -156,7 +156,7 @@ def main() -> None:
                                         interval=30,
                                         job_kwargs={'misfire_grace_time': 15})
     application.job_queue.run_repeating(callback=cache_category,
-                                        interval=60,
+                                        interval=600,
                                         job_kwargs={'misfire_grace_time': 15})
     application.job_queue.run_daily(callback=user_data_updater, time=time.fromisoformat('03:00:00+03:00'),
                                     job_kwargs={'misfire_grace_time': 60})

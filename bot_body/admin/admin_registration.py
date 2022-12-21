@@ -10,7 +10,7 @@ from briket_DB.config import mongodb
 import logging
 from text_integration.pastebin_integration import get_text_api
 
-admin = mongodb.admin_db
+admin = mongodb.admin
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -61,3 +61,5 @@ async def admin_final(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def admin_exit(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Регистрация прервана!')
     return ConversationHandler.END
+
+
