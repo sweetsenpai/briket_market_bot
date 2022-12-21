@@ -66,8 +66,7 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         for market in read_all():
 
             try:
-                print(market['description'])
-                if market['img_url'] != '' and market['resident_name'] != '' and ['description'] != '':
+                if market['img_url'] != '' and market['img_url'] is not None:
                     results.append(
                         InlineQueryResultArticle(
                             id=str(uuid4()),
