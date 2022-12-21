@@ -1,0 +1,51 @@
+nohup: ignoring input
+/root/bot/briket_market_bot/bot_body/main.py:144: PTBUserWarning: Prior to v20.0 the `days` parameter was not aligned to that of cron's weekday scheme.We recommend double checking if the passed value is correct.
+  application.job_queue.run_daily(callback=ac.day_report_job, time=time.fromisoformat('14:19:00+03:00'),
+2022-12-21 20:00:23,831 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2022-12-21 20:00:23,832 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2022-12-21 20:00:23,833 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2022-12-21 20:00:23,834 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2022-12-21 20:00:23,834 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+/root/bot/briket_market_bot/bot_body/main.py:159: PTBUserWarning: Prior to v20.0 the `days` parameter was not aligned to that of cron's weekday scheme.We recommend double checking if the passed value is correct.
+  application.job_queue.run_daily(callback=user_data_updater, time=time.fromisoformat('03:00:00+03:00'),
+2022-12-21 20:00:23,834 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2022-12-21 20:00:23,835 - pyngrok.process - INFO - Updating authtoken for default "config_path" of "ngrok_path": /root/bot/env/lib/python3.10/site-packages/pyngrok/bin/ngrok
+2022-12-21 20:00:23,849 - pyngrok.ngrok - INFO - Opening tunnel named: http-80-427a16e0-50d5-45b3-8d4c-e95dd1e59658
+2022-12-21 20:00:23,862 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:23+0300 lvl=info msg="no configuration paths supplied"
+2022-12-21 20:00:23,862 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:23+0300 lvl=info msg="using configuration at default config path" path=/root/.ngrok2/ngrok.yml
+2022-12-21 20:00:23,862 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:23+0300 lvl=info msg="open config file" path=/root/.ngrok2/ngrok.yml err=nil
+2022-12-21 20:00:23,865 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:23+0300 lvl=info msg="starting web service" obj=web addr=127.0.0.1:4040
+2022-12-21 20:00:24,381 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:24+0300 lvl=info msg="tunnel session started" obj=tunnels.session
+2022-12-21 20:00:24,382 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:24+0300 lvl=info msg="client session established" obj=csess id=7f7f61519b71
+2022-12-21 20:00:24,387 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:24+0300 lvl=info msg=start pg=/api/tunnels id=e1e6af405f7894b8
+2022-12-21 20:00:24,387 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:24+0300 lvl=info msg=end pg=/api/tunnels id=e1e6af405f7894b8 status=200 dur=467.364µs
+2022-12-21 20:00:24,389 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:24+0300 lvl=info msg=start pg=/api/tunnels id=78454bd97b592e99
+2022-12-21 20:00:24,390 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:24+0300 lvl=info msg=end pg=/api/tunnels id=78454bd97b592e99 status=200 dur=164.525µs
+2022-12-21 20:00:24,390 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:24+0300 lvl=info msg=start pg=/api/tunnels id=deaffc054e08ab26
+2022-12-21 20:00:24,557 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:24+0300 lvl=info msg="started tunnel" obj=tunnels name=http-80-427a16e0-50d5-45b3-8d4c-e95dd1e59658 addr=http://localhost:80 url=https://8e4e-92-63-100-36.ngrok.io
+2022-12-21 20:00:24,557 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:24+0300 lvl=info msg=end pg=/api/tunnels id=deaffc054e08ab26 status=201 dur=156.34697ms
+2022-12-21 20:00:24,760 - apscheduler.scheduler - INFO - Added job "day_report_job" to job store "default"
+2022-12-21 20:00:24,761 - apscheduler.scheduler - INFO - Added job "mouth_report_job" to job store "default"
+2022-12-21 20:00:24,761 - apscheduler.scheduler - INFO - Added job "driver_number_sender" to job store "default"
+2022-12-21 20:00:24,761 - apscheduler.scheduler - INFO - Added job "payment_finder" to job store "default"
+2022-12-21 20:00:24,761 - apscheduler.scheduler - INFO - Added job "cache_category" to job store "default"
+2022-12-21 20:00:24,761 - apscheduler.scheduler - INFO - Added job "user_data_updater" to job store "default"
+2022-12-21 20:00:24,761 - apscheduler.scheduler - INFO - Scheduler started
+2022-12-21 20:00:24,761 - telegram.ext._application - INFO - Application started
+2022-12-21 20:00:47,454 - pyngrok.process.ngrok - INFO - t=2022-12-21T20:00:47+0300 lvl=info msg="join connections" obj=join id=1b94bc0825f5 l=127.0.0.1:80 r=91.108.6.78:34602
+2022-12-21 20:00:47,473 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2022-12-21 20:00:47,473 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2022-12-21 20:00:47,476 INFO sqlalchemy.engine.Engine SELECT residents.resident_id AS residents_resident_id, residents.resident_name AS residents_resident_name, residents.chat_id AS residents_chat_id, residents.resident_addres AS residents_resident_addres, residents.resident_phone AS residents_resident_phone, residents.resident_email AS residents_resident_email, residents.description AS residents_description, residents.img_url AS residents_img_url 
+FROM residents ORDER BY residents.resident_id
+2022-12-21 20:00:47,476 - sqlalchemy.engine.Engine - INFO - SELECT residents.resident_id AS residents_resident_id, residents.resident_name AS residents_resident_name, residents.chat_id AS residents_chat_id, residents.resident_addres AS residents_resident_addres, residents.resident_phone AS residents_resident_phone, residents.resident_email AS residents_resident_email, residents.description AS residents_description, residents.img_url AS residents_img_url 
+FROM residents ORDER BY residents.resident_id
+2022-12-21 20:00:47,477 INFO sqlalchemy.engine.Engine [generated in 0.00035s] ()
+2022-12-21 20:00:47,477 - sqlalchemy.engine.Engine - INFO - [generated in 0.00035s] ()
+2022-12-21 20:00:53,841 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:01:23 UTC)" (scheduled at 2022-12-21 17:00:53.834037+00:00)
+2022-12-21 20:00:54,297 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:01:23 UTC)" executed successfully
+2022-12-21 20:01:23,865 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:01:53 UTC)" (scheduled at 2022-12-21 17:01:23.834037+00:00)
+2022-12-21 20:01:23,914 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:01:53 UTC)" executed successfully
+2022-12-21 20:01:53,865 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:02:23 UTC)" (scheduled at 2022-12-21 17:01:53.834037+00:00)
+2022-12-21 20:01:53,914 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:02:23 UTC)" executed successfully
+2022-12-21 20:02:23,865 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:02:53 UTC)" (scheduled at 2022-12-21 17:02:23.834037+00:00)
+2022-12-21 20:02:23,914 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 17:02:53 UTC)" executed successfully
