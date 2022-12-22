@@ -128,7 +128,9 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.callback_query.edit_message_text(text='Отзыв удален.')
         return
     elif cb_data[0] == 'make_order':
-
+        if show_cart(user_id=update.callback_query.from_user.id) == 'Тут ничего нет':
+            await update.callback_query.answer(text='В корзине ничего нет(', show_alert=True)
+            return
         if read_one(update.callback_query.from_user.id) is False:
             await update.callback_query.answer(text='Для оформления заказа необходимо пройти регистрацию.\n'
                                                     'Это займет всего пару минут.', show_alert=True)
