@@ -82,11 +82,10 @@ async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYP
                                       reply_markup=resident_inline_keyboard(order_num, resident=resident)[0])
         for admins in admin.find():
             try:
-                x = admins['chat_id']
                 await context.bot.sendMessage(text=resident_order,
                                               chat_id=admins['chat_id'], reply_markup=resident_inline_keyboard(order_num, resident=resident)[1])
             except telegram.error.BadRequest or KeyError:
-                continue
+                pass
     return
 
 
