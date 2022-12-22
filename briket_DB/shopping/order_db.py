@@ -80,11 +80,14 @@ async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYP
         await context.bot.sendMessage(text=resident_order,
                                       chat_id=get_chat_id(resident),
                                       reply_markup=resident_inline_keyboard(order_num, resident=resident)[0])
-        for admins in admin.find():
+        for admins in admin.find({'chat_id': {'$exists': True}}):
             try:
+                x = admins['chat_id']
+                print(x)
                 await context.bot.sendMessage(text=resident_order,
                                               chat_id=admins['chat_id'], reply_markup=resident_inline_keyboard(order_num, resident=resident)[1])
             except telegram.error.BadRequest or KeyError:
+                print('Нет такого чата')
                 pass
     return
 
