@@ -30,18 +30,27 @@ async def reg_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def admin_email(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    phone_raw = update.message.contact.phone_number
-    phone = phone_raw.replace('+', '')
-    new_admin_chek = admin.find_one({"phone": phone})
+    try:
+        user_contact = update.message.contact.phone_number
+    except AttributeError:
+        raw_number = update.message.text.replace('+', '')
+        raw_number = raw_number.replace(' ', '')
+        raw_number = raw_number.replace('-', '')
+        raw_number = raw_number.replace('(', '')
+        raw_number = raw_number.replace(')', '')
+        raw_number = list(raw_number)
+        raw_number[0] = '7'
+        user_contact = ''.join(raw_number)
+    new_admin_chek = admin.find_one({"phone": user_contact})
     if new_admin_chek is None:
         await update.message.reply_text(get_text_api('nzMSZkNW'))
         return ConversationHandler.END
 
     elif new_admin_chek is not None:
-        admin.delete_one({"phone": phone})
+        admin.delete_one({"phone": user_contact})
         new_admin = {
             'chat_id': update.message.from_user.id,
-            'phone': phone,
+            'phone': user_contact,
             'email': ''
         }
         admin.insert_one(new_admin)

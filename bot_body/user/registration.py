@@ -38,7 +38,18 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user = update.message.from_user
-    user_contact = update.message.contact.phone_number
+
+    try:
+        user_contact = update.message.contact.phone_number
+    except AttributeError:
+        raw_number = update.message.text.replace('+', '')
+        raw_number = raw_number.replace(' ', '')
+        raw_number = raw_number.replace('-', '')
+        raw_number = raw_number.replace('(', '')
+        raw_number = raw_number.replace(')', '')
+        raw_number = list(raw_number)
+        raw_number[0] = '7'
+        user_contact = ''.join(raw_number)
 
     logger.info(
         "Contact of {}: {}".format(user.first_name, user_contact)

@@ -40,7 +40,18 @@ async def registration(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def phon_res(update: Update, context: ContextTypes.DEFAULT_TYPE):
     resident = update.message.from_user
-    resident_contact = update.message.contact.phone_number.replace('+', '')
+
+    try:
+        resident_contact = update.message.contact.phone_number
+    except AttributeError:
+        raw_number = update.message.text.replace('+', '')
+        raw_number = raw_number.replace(' ', '')
+        raw_number = raw_number.replace('-', '')
+        raw_number = raw_number.replace('(', '')
+        raw_number = raw_number.replace(')', '')
+        raw_number = list(raw_number)
+        raw_number[0] = '7'
+        resident_contact = ''.join(raw_number)
     phone = find_phone(resident_id=update.message.from_user.id, phone=resident_contact)
 
     if phone is None:

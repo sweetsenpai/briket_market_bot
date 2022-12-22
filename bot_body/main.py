@@ -41,7 +41,7 @@ def main() -> None:
     reg_user = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Регистрация'), rg.start)],
         states={
-            rg.PHONE: [MessageHandler(filters.CONTACT, rg.phone)],
+            rg.PHONE: [MessageHandler(filters.CONTACT | filters.TEXT, rg.phone)],
             rg.LOCATION: [MessageHandler(filters.LOCATION | filters.Regex('[а-яА-ЯёЁ]'), rg.location),
                           CommandHandler("skip", rg.skip_location), ],
             rg.INFO: [MessageHandler(filters.TEXT & ~filters.COMMAND, rg.info)],
@@ -55,7 +55,7 @@ def main() -> None:
         entry_points=[MessageHandler(filters.Regex('Новый резидент вход'), res_reg.registration),
                       CommandHandler('registration', res_reg.registration)],
         states={
-            res_reg.PHONE: [MessageHandler(filters.CONTACT, res_reg.phon_res)],
+            res_reg.PHONE: [MessageHandler(filters.CONTACT | filters.TEXT, res_reg.phon_res)],
             res_reg.NAME: [MessageHandler(filters.TEXT, res_reg.resident_name)],
             res_reg.DESCRIPTION: [MessageHandler(filters.TEXT, res_reg.resident_description)],
             res_reg.IMG: [MessageHandler(filters.PHOTO, res_reg.resident_img)]
@@ -67,7 +67,7 @@ def main() -> None:
         entry_points=[MessageHandler(filters.Regex('Новый админ. вход'), ar.reg_admin_start),
                       CommandHandler('reg_admin_start', ar.reg_admin_start)],
         states={
-            ar.PHONE: [MessageHandler(filters.CONTACT, ar.admin_email)],
+            ar.PHONE: [MessageHandler(filters.CONTACT | filters.TEXT, ar.admin_email)],
             ar.EMAIL: [MessageHandler(filters.TEXT, ar.admin_final)]
         },
         fallbacks=[CommandHandler('admin_exit', ar.admin_exit)],
