@@ -4,3 +4,6 @@ venv/
 briket_DB/passwords.py
 briket_DB/passwords.py
 /venv2/
+bot_body/file_6.jpg
+*.jpg
+*.txt
