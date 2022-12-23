@@ -42,7 +42,7 @@ async def phon_res(update: Update, context: ContextTypes.DEFAULT_TYPE):
     resident = update.message.from_user
 
     try:
-        resident_contact = update.message.contact.phone_number
+        resident_contact = update.message.contact.phone_number.replace('+', '')
     except AttributeError:
         raw_number = update.message.text.replace('+', '')
         raw_number = raw_number.replace(' ', '')

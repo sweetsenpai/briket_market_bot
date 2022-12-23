@@ -31,7 +31,7 @@ async def reg_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def admin_email(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
-        user_contact = update.message.contact.phone_number
+        user_contact = update.message.contact.phone_number.replace('+', '')
     except AttributeError:
         raw_number = update.message.text.replace('+', '')
         raw_number = raw_number.replace(' ', '')

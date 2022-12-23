@@ -182,10 +182,10 @@ async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def day_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.message.from_user.id
-    if admin_db.find_one(filter={'chat_id':chat_id}) is not None:
+    if admin_db.find_one(filter={'chat_id': chat_id}) is not None:
         for residen in read_all():
             await update.message.reply_text(text=get_resident_report_day(residen['resident_name']), parse_mode='HTML')
-            return
+        return
     if read_one_chatid(chat_id) is not None:
         await update.message.reply_text(text=get_resident_report_day(read_one_chatid(chat_id)['resident_name']), parse_mode='HTML')
         return
