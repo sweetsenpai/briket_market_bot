@@ -1,6 +1,7 @@
 from telegram.ext import (ContextTypes)
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
 from bot_body.admin.access_level import admin_check, res_check
+from briket_DB.sql_main_files.customers import find_id
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -38,13 +39,21 @@ async def admin_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def customer_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    cust_func = ReplyKeyboardMarkup(
-        [
-            [KeyboardButton(text='Регистрация')],
-            [KeyboardButton(text='Меню'), KeyboardButton(text='Оставить отзыв')],
-            [KeyboardButton(text='FAQ'), KeyboardButton(text='Аккаунт')],
-            [KeyboardButton(text='🛒Корзина🛒')]
-        ], resize_keyboard=True, one_time_keyboard=False)
+    if find_id(update.message.from_user.id) is None:
+        cust_func = ReplyKeyboardMarkup(
+            [
+                [KeyboardButton(text='Регистрация')],
+                [KeyboardButton(text='Меню'), KeyboardButton(text='Оставить отзыв')],
+                [KeyboardButton(text='FAQ'), KeyboardButton(text='Аккаунт')],
+                [KeyboardButton(text='🛒Корзина🛒')]
+            ], resize_keyboard=True, one_time_keyboard=False)
+    else:
+        cust_func = ReplyKeyboardMarkup(
+            [
+                [KeyboardButton(text='Меню'), KeyboardButton(text='Оставить отзыв')],
+                [KeyboardButton(text='FAQ'), KeyboardButton(text='Аккаунт')],
+                [KeyboardButton(text='🛒Корзина🛒')]
+            ], resize_keyboard=True, one_time_keyboard=False)
     await update.message.reply_text(text='Выбери действия в меню ниже', reply_markup=cust_func)
     return
 
