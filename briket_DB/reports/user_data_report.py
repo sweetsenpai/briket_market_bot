@@ -27,12 +27,12 @@ async def user_data_updater(context: ContextTypes.DEFAULT_TYPE):
     del df['customer_id']
     del df['chat_id']
     del df['addres']
-    new_df = (df.reindex(columns=['name', 'phone', 'email', 'addres', 'status', 'nickname'])).rename(columns={'name': "Имя",
-                                                                                                              'phone':"Телефон",
-                                                                                                              "addres": "Адрес",
-                                                                                                              "status":"Статус"})
+    new_df = ((df.reindex(columns=['name', 'phone', 'email', 'addres', 'status'])).fillna('-')).rename(
+        columns={'name': "Имя", 'phone': "Телефон", "addres": "Адрес", "status": "Статус"})
 
     user_sheet = sa.open('Данные пользователей')
     user_work = user_sheet.worksheet('Пользователи')
     user_work.update([new_df.columns.values.tolist()] + new_df.values.tolist())
     return
+
+

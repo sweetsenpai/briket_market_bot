@@ -12,6 +12,7 @@ from briket_DB.sql_main_files.residents import create, read_all, read_one_chatid
 from briket_DB.reports.report_main import get_resident_report_day, get_resident_report_month
 from text_integration.pastebin_integration import get_text_api
 from bot_body.admin.access_level import admin_check, res_check
+from werkzeug import exceptions
 admin_db = mongodb.admin
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -132,12 +133,17 @@ async def add_new_resident_end(update: Update, context: ContextTypes.DEFAULT_TYP
         "resident_email": '',
         "description": '',
         "img_url": str('')}
-    create(resident_new)
-    await update.message.reply_text(text='Номер нового резидента({}) успешно добавлен!\n '
-                                         'Теперь резидент может пройти регистрацию.\n'
-                                         'Для прохождения регистрации необходимо написать в чат:\n /registration'.format(
-        phone))
-    return ConversationHandler.END
+    try:
+        create(resident_new)
+        await update.message.reply_text(text='Номер нового резидента({}) успешно добавлен!\n '
+                                             'Теперь резидент может пройти регистрацию.\n'
+                                             'Для прохождения регистрации необходимо написать в чат:\n /registration'.format(
+            phone))
+        return ConversationHandler.END
+    except exceptions.Conflict:
+        await update.message.reply_text(text='Пользователь с данным номером телефона уже внесен в базу. Чтобы добавить '
+                                             'другого резидента вызывите команду повторно.')
+        return ConversationHandler.END
 
 
 async def cancel_conv(update: Update, context: ContextTypes.DEFAULT_TYPE):

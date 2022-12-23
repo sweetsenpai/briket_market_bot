@@ -69,7 +69,7 @@ def create_new_table(resident_name: str):
     try:
         sheet_main.add_worksheet(title=resident_name, rows="100", cols="10")
     except gspread.exceptions.APIError:
-        sheet_main.add_worksheet(title='Повтор {}'.format(resident_name), rows="100", cols="10")
+        pass
     return
 
 
