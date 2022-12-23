@@ -1,0 +1,287 @@
+nohup: ignoring input
+/root/bot/briket_market_bot/bot_body/main.py:146: PTBUserWarning: Prior to v20.0 the `days` parameter was not aligned to that of cron's weekday scheme.We recommend double checking if the passed value is correct.
+  application.job_queue.run_daily(callback=ac.day_report_job, time=time.fromisoformat('14:19:00+03:00'),
+2022-12-21 14:36:41,033 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2022-12-21 14:36:41,034 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2022-12-21 14:36:41,035 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2022-12-21 14:36:41,035 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2022-12-21 14:36:41,036 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+/root/bot/briket_market_bot/bot_body/main.py:161: PTBUserWarning: Prior to v20.0 the `days` parameter was not aligned to that of cron's weekday scheme.We recommend double checking if the passed value is correct.
+  application.job_queue.run_daily(callback=user_data_updater, time=time.fromisoformat('03:00:00+03:00'),
+2022-12-21 14:36:41,036 - apscheduler.scheduler - INFO - Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2022-12-21 14:36:41,037 - pyngrok.process - INFO - Updating authtoken for default "config_path" of "ngrok_path": /root/bot/env/lib/python3.10/site-packages/pyngrok/bin/ngrok
+2022-12-21 14:36:41,052 - pyngrok.ngrok - INFO - Opening tunnel named: http-80-72c9b87d-fbe0-4fc1-a551-fa0bd789e723
+2022-12-21 14:36:41,064 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg="no configuration paths supplied"
+2022-12-21 14:36:41,065 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg="using configuration at default config path" path=/root/.ngrok2/ngrok.yml
+2022-12-21 14:36:41,065 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg="open config file" path=/root/.ngrok2/ngrok.yml err=nil
+2022-12-21 14:36:41,067 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg="starting web service" obj=web addr=127.0.0.1:4040
+2022-12-21 14:36:41,606 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg="tunnel session started" obj=tunnels.session
+2022-12-21 14:36:41,606 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg="client session established" obj=csess id=aaa80ca47d38
+2022-12-21 14:36:41,611 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg=start pg=/api/tunnels id=86d78fe7160c6ea6
+2022-12-21 14:36:41,611 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg=end pg=/api/tunnels id=86d78fe7160c6ea6 status=200 dur=428.214µs
+2022-12-21 14:36:41,613 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg=start pg=/api/tunnels id=476f7a4c0851752b
+2022-12-21 14:36:41,613 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg=end pg=/api/tunnels id=476f7a4c0851752b status=200 dur=132.329µs
+2022-12-21 14:36:41,614 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg=start pg=/api/tunnels id=b32090618809042b
+2022-12-21 14:36:41,771 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg="started tunnel" obj=tunnels name=http-80-72c9b87d-fbe0-4fc1-a551-fa0bd789e723 addr=http://localhost:80 url=https://cebf-92-63-100-36.ngrok.io
+2022-12-21 14:36:41,771 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:36:41+0300 lvl=info msg=end pg=/api/tunnels id=b32090618809042b status=201 dur=159.025491ms
+2022-12-21 14:36:42,003 - apscheduler.scheduler - INFO - Added job "day_report_job" to job store "default"
+2022-12-21 14:36:42,004 - apscheduler.scheduler - INFO - Added job "mouth_report_job" to job store "default"
+2022-12-21 14:36:42,004 - apscheduler.scheduler - INFO - Added job "driver_number_sender" to job store "default"
+2022-12-21 14:36:42,004 - apscheduler.scheduler - INFO - Added job "payment_finder" to job store "default"
+2022-12-21 14:36:42,004 - apscheduler.scheduler - INFO - Added job "cache_category" to job store "default"
+2022-12-21 14:36:42,004 - apscheduler.scheduler - INFO - Added job "user_data_updater" to job store "default"
+2022-12-21 14:36:42,004 - apscheduler.scheduler - INFO - Scheduler started
+2022-12-21 14:36:42,005 - telegram.ext._application - INFO - Application started
+2022-12-21 14:37:11,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:37:41 UTC)" (scheduled at 2022-12-21 11:37:11.035705+00:00)
+2022-12-21 14:37:11,834 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:37:41 UTC)" executed successfully
+2022-12-21 14:37:33,145 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:37:33+0300 lvl=info msg="join connections" obj=join id=dd4d3358e3ea l=127.0.0.1:80 r=91.108.6.78:43964
+2022-12-21 14:37:33,215 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2022-12-21 14:37:33,219 - sqlalchemy.engine.Engine - INFO - SELECT residents.resident_id AS residents_resident_id, residents.resident_name AS residents_resident_name, residents.chat_id AS residents_chat_id, residents.resident_addres AS residents_resident_addres, residents.resident_phone AS residents_resident_phone, residents.resident_email AS residents_resident_email, residents.description AS residents_description, residents.img_url AS residents_img_url 
+FROM residents 
+WHERE residents.chat_id = ?
+2022-12-21 14:37:33,219 - sqlalchemy.engine.Engine - INFO - [generated in 0.00043s] (352354383,)
+2022-12-21 14:37:33,220 - telegram.ext._application - ERROR - No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "/root/bot/env/src/python-telegram-bot/telegram/ext/_application.py", line 1002, in process_update
+    await coroutine
+  File "/root/bot/env/src/python-telegram-bot/telegram/ext/_handler.py", line 137, in handle_update
+    return await self.callback(update, context)
+  File "/root/bot/briket_market_bot/bot_body/functional_key.py", line 16, in start
+    if res_check(chat) is True:
+  File "/root/bot/briket_market_bot/bot_body/admin/access_level.py", line 14, in res_check
+    if read_one_chatid(chat_id) is not None:
+  File "/root/bot/briket_market_bot/briket_DB/sql_main_files/residents.py", line 151, in read_one_chatid
+    resident = Resident.query.filter(Resident.chat_id == chat_id).one_or_none()
+  File "/root/bot/env/lib/python3.10/site-packages/sqlalchemy/orm/query.py", line 2849, in one_or_none
+    return self._iter().one_or_none()
+  File "/root/bot/env/lib/python3.10/site-packages/sqlalchemy/engine/result.py", line 1464, in one_or_none
+    return self._only_one_row(
+  File "/root/bot/env/lib/python3.10/site-packages/sqlalchemy/engine/result.py", line 614, in _only_one_row
+    raise exc.MultipleResultsFound(
+sqlalchemy.exc.MultipleResultsFound: Multiple rows were found when one or none was required
+2022-12-21 14:37:41,045 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:38:11 UTC)" (scheduled at 2022-12-21 11:37:41.035705+00:00)
+2022-12-21 14:37:41,267 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:38:11 UTC)" executed successfully
+2022-12-21 14:38:01,651 - apscheduler.scheduler - INFO - Added job "_trigger_timeout" to job store "default"
+2022-12-21 14:38:04,209 - apscheduler.scheduler - INFO - Removed job 32e52fdd2ec2461c9374717e8f3ddaf4
+2022-12-21 14:38:04,740 - apscheduler.scheduler - INFO - Added job "_trigger_timeout" to job store "default"
+2022-12-21 14:38:11,043 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:38:41 UTC)" (scheduled at 2022-12-21 11:38:11.035705+00:00)
+2022-12-21 14:38:11,274 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:38:41 UTC)" executed successfully
+2022-12-21 14:38:15,114 - apscheduler.scheduler - INFO - Removed job 1e2b7704dfcb4a22b6e1dfe6f6115933
+2022-12-21 14:38:41,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:39:11 UTC)" (scheduled at 2022-12-21 11:38:41.035705+00:00)
+2022-12-21 14:38:41,273 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:39:11 UTC)" executed successfully
+2022-12-21 14:39:11,067 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:39:41 UTC)" (scheduled at 2022-12-21 11:39:11.035705+00:00)
+2022-12-21 14:39:11,277 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:39:41 UTC)" executed successfully
+2022-12-21 14:39:41,058 - apscheduler.executors.default - INFO - Running job "driver_number_sender (trigger: interval[0:03:00], next run at: 2022-12-21 11:42:41 UTC)" (scheduled at 2022-12-21 11:39:41.035415+00:00)
+2022-12-21 14:39:41,059 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:40:11 UTC)" (scheduled at 2022-12-21 11:39:41.035705+00:00)
+2022-12-21 14:39:41,330 - apscheduler.executors.default - INFO - Job "driver_number_sender (trigger: interval[0:03:00], next run at: 2022-12-21 11:42:41 UTC)" executed successfully
+2022-12-21 14:39:41,330 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:40:11 UTC)" executed successfully
+2022-12-21 14:40:11,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:40:41 UTC)" (scheduled at 2022-12-21 11:40:11.035705+00:00)
+2022-12-21 14:40:11,267 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:40:41 UTC)" executed successfully
+2022-12-21 14:40:41,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:41:11 UTC)" (scheduled at 2022-12-21 11:40:41.035705+00:00)
+2022-12-21 14:40:41,572 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:41:11 UTC)" executed successfully
+2022-12-21 14:41:11,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:41:41 UTC)" (scheduled at 2022-12-21 11:41:11.035705+00:00)
+2022-12-21 14:41:11,108 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:41:41 UTC)" executed successfully
+2022-12-21 14:41:41,067 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:42:11 UTC)" (scheduled at 2022-12-21 11:41:41.035705+00:00)
+2022-12-21 14:41:41,117 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:42:11 UTC)" executed successfully
+2022-12-21 14:42:11,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:42:41 UTC)" (scheduled at 2022-12-21 11:42:11.035705+00:00)
+2022-12-21 14:42:11,108 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:42:41 UTC)" executed successfully
+2022-12-21 14:42:41,067 - apscheduler.executors.default - INFO - Running job "driver_number_sender (trigger: interval[0:03:00], next run at: 2022-12-21 11:45:41 UTC)" (scheduled at 2022-12-21 11:42:41.035415+00:00)
+2022-12-21 14:42:41,067 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:43:11 UTC)" (scheduled at 2022-12-21 11:42:41.035705+00:00)
+2022-12-21 14:42:41,168 - apscheduler.executors.default - INFO - Job "driver_number_sender (trigger: interval[0:03:00], next run at: 2022-12-21 11:45:41 UTC)" executed successfully
+2022-12-21 14:42:41,169 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:43:11 UTC)" executed successfully
+2022-12-21 14:43:11,059 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:43:41 UTC)" (scheduled at 2022-12-21 11:43:11.035705+00:00)
+2022-12-21 14:43:11,109 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:43:41 UTC)" executed successfully
+2022-12-21 14:43:41,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:44:11 UTC)" (scheduled at 2022-12-21 11:43:41.035705+00:00)
+2022-12-21 14:43:41,109 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:44:11 UTC)" executed successfully
+2022-12-21 14:44:11,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:44:41 UTC)" (scheduled at 2022-12-21 11:44:11.035705+00:00)
+2022-12-21 14:44:11,108 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:44:41 UTC)" executed successfully
+2022-12-21 14:44:41,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:45:11 UTC)" (scheduled at 2022-12-21 11:44:41.035705+00:00)
+2022-12-21 14:44:41,108 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:45:11 UTC)" executed successfully
+2022-12-21 14:45:11,059 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:45:41 UTC)" (scheduled at 2022-12-21 11:45:11.035705+00:00)
+2022-12-21 14:45:11,108 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:45:41 UTC)" executed successfully
+2022-12-21 14:45:41,058 - apscheduler.executors.default - INFO - Running job "driver_number_sender (trigger: interval[0:03:00], next run at: 2022-12-21 11:48:41 UTC)" (scheduled at 2022-12-21 11:45:41.035415+00:00)
+2022-12-21 14:45:41,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:46:11 UTC)" (scheduled at 2022-12-21 11:45:41.035705+00:00)
+2022-12-21 14:45:41,159 - apscheduler.executors.default - INFO - Job "driver_number_sender (trigger: interval[0:03:00], next run at: 2022-12-21 11:48:41 UTC)" executed successfully
+2022-12-21 14:45:41,159 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:46:11 UTC)" executed successfully
+2022-12-21 14:46:11,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:46:41 UTC)" (scheduled at 2022-12-21 11:46:11.035705+00:00)
+2022-12-21 14:46:11,109 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:46:41 UTC)" executed successfully
+2022-12-21 14:46:41,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:47:11 UTC)" (scheduled at 2022-12-21 11:46:41.035705+00:00)
+2022-12-21 14:46:41,059 - apscheduler.executors.default - INFO - Running job "cache_category (trigger: interval[0:10:00], next run at: 2022-12-21 11:56:41 UTC)" (scheduled at 2022-12-21 11:46:41.035932+00:00)
+2022-12-21 14:46:50,576 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:47:11 UTC)" executed successfully
+2022-12-21 14:46:50,577 - apscheduler.executors.default - INFO - Job "cache_category (trigger: interval[0:10:00], next run at: 2022-12-21 11:56:41 UTC)" executed successfully
+2022-12-21 14:47:11,057 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:47:41 UTC)" (scheduled at 2022-12-21 11:47:11.035705+00:00)
+2022-12-21 14:47:11,107 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:47:41 UTC)" executed successfully
+2022-12-21 14:47:41,068 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:48:11 UTC)" (scheduled at 2022-12-21 11:47:41.035705+00:00)
+2022-12-21 14:47:41,118 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:48:11 UTC)" executed successfully
+2022-12-21 14:48:11,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:48:41 UTC)" (scheduled at 2022-12-21 11:48:11.035705+00:00)
+2022-12-21 14:48:11,108 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:48:41 UTC)" executed successfully
+2022-12-21 14:48:15,190 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:48:15+0300 lvl=info msg="join connections" obj=join id=0f732eecce57 l=127.0.0.1:80 r=91.108.6.78:43606
+2022-12-21 14:48:24,777 - shopping_cart - INFO - Callback data: ['make_order']
+2022-12-21 14:48:24,781 - sqlalchemy.engine.Engine - INFO - SELECT customers.customer_id AS customers_customer_id, customers.chat_id AS customers_chat_id, customers.phone AS customers_phone, customers.name AS customers_name, customers.addres AS customers_addres, customers.email AS customers_email 
+FROM customers 
+WHERE customers.chat_id = ?
+2022-12-21 14:48:24,781 - sqlalchemy.engine.Engine - INFO - [generated in 0.00047s] (352354383,)
+2022-12-21 14:48:26,061 - sqlalchemy.engine.Engine - INFO - SELECT customers.customer_id AS customers_customer_id, customers.chat_id AS customers_chat_id, customers.phone AS customers_phone, customers.name AS customers_name, customers.addres AS customers_addres, customers.email AS customers_email 
+FROM customers 
+WHERE customers.chat_id = ?
+2022-12-21 14:48:26,062 - sqlalchemy.engine.Engine - INFO - [cached since 1.281s ago] (352354383,)
+2022-12-21 14:48:27,667 - sqlalchemy.engine.Engine - INFO - SELECT customers.customer_id AS customers_customer_id, customers.chat_id AS customers_chat_id, customers.phone AS customers_phone, customers.name AS customers_name, customers.addres AS customers_addres, customers.email AS customers_email 
+FROM customers 
+WHERE customers.chat_id = ?
+2022-12-21 14:48:27,667 - sqlalchemy.engine.Engine - INFO - [cached since 2.886s ago] (352354383,)
+2022-12-21 14:48:41,050 - apscheduler.executors.default - INFO - Running job "driver_number_sender (trigger: interval[0:03:00], next run at: 2022-12-21 11:51:41 UTC)" (scheduled at 2022-12-21 11:48:41.035415+00:00)
+2022-12-21 14:48:41,050 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:49:11 UTC)" (scheduled at 2022-12-21 11:48:41.035705+00:00)
+2022-12-21 14:48:41,325 - apscheduler.executors.default - INFO - Job "driver_number_sender (trigger: interval[0:03:00], next run at: 2022-12-21 11:51:41 UTC)" executed successfully
+2022-12-21 14:48:41,764 - sqlalchemy.engine.Engine - INFO - SELECT customers.customer_id AS customers_customer_id, customers.chat_id AS customers_chat_id, customers.phone AS customers_phone, customers.name AS customers_name, customers.addres AS customers_addres, customers.email AS customers_email 
+FROM customers 
+WHERE customers.chat_id = ?
+2022-12-21 14:48:41,764 - sqlalchemy.engine.Engine - INFO - [cached since 16.98s ago] (352354383,)
+2022-12-21 14:48:41,767 - sqlalchemy.engine.Engine - INFO - SELECT residents.resident_id AS residents_resident_id, residents.resident_name AS residents_resident_name, residents.chat_id AS residents_chat_id, residents.resident_addres AS residents_resident_addres, residents.resident_phone AS residents_resident_phone, residents.resident_email AS residents_resident_email, residents.description AS residents_description, residents.img_url AS residents_img_url 
+FROM residents 
+WHERE residents.resident_name = ?
+2022-12-21 14:48:41,767 - sqlalchemy.engine.Engine - INFO - [generated in 0.00043s] ('KFC',)
+2022-12-21 14:48:41,980 - sqlalchemy.engine.Engine - INFO - SELECT customers.customer_id AS customers_customer_id, customers.chat_id AS customers_chat_id, customers.phone AS customers_phone, customers.name AS customers_name, customers.addres AS customers_addres, customers.email AS customers_email 
+FROM customers 
+WHERE customers.chat_id = ?
+2022-12-21 14:48:41,980 - sqlalchemy.engine.Engine - INFO - [cached since 17.2s ago] (352354383,)
+2022-12-21 14:48:41,983 - sqlalchemy.engine.Engine - INFO - SELECT residents.resident_id AS residents_resident_id, residents.resident_name AS residents_resident_name, residents.chat_id AS residents_chat_id, residents.resident_addres AS residents_resident_addres, residents.resident_phone AS residents_resident_phone, residents.resident_email AS residents_resident_email, residents.description AS residents_description, residents.img_url AS residents_img_url 
+FROM residents 
+WHERE residents.resident_name = ?
+2022-12-21 14:48:41,984 - sqlalchemy.engine.Engine - INFO - [cached since 0.2169s ago] ('Сатоши',)
+2022-12-21 14:48:41,985 - telegram.ext._application - ERROR - No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "/root/bot/env/src/python-telegram-bot/telegram/ext/_jobqueue.py", line 696, in _run
+    await self.callback(context)
+  File "/root/bot/briket_market_bot/payments/ykassa_integration.py", line 71, in payment_finder
+    await push_order(user_id=payment['user_id'], context=context)
+  File "/root/bot/briket_market_bot/briket_DB/shopping/order_db.py", line 39, in push_order
+    await send_order_residents(cart['order_num'], context)
+  File "/root/bot/briket_market_bot/briket_DB/shopping/order_db.py", line 78, in send_order_residents
+    chat_id=get_chat_id(resident),
+  File "/root/bot/briket_market_bot/briket_DB/sql_main_files/residents.py", line 76, in get_chat_id
+    abort(
+  File "/root/bot/env/lib/python3.10/site-packages/flask/helpers.py", line 312, in abort
+    _wz_abort(code, *args, **kwargs)
+  File "/root/bot/env/lib/python3.10/site-packages/werkzeug/exceptions.py", line 881, in abort
+    _aborter(status, *args, **kwargs)
+  File "/root/bot/env/lib/python3.10/site-packages/werkzeug/exceptions.py", line 864, in __call__
+    raise self.mapping[code](*args, **kwargs)
+werkzeug.exceptions.NotFound: 404 Not Found: Resident not found by name Сатоши
+2022-12-21 14:48:41,988 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:49:11 UTC)" executed successfully
+2022-12-21 14:48:51,489 - shopping_cart - INFO - Callback data: ['accept', '718720', 'KFC']
+2022-12-21 14:48:53,135 - shopping_cart - INFO - Callback data: ['finish_order', '718720', 'KFC']
+2022-12-21 14:49:11,045 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:49:41 UTC)" (scheduled at 2022-12-21 11:49:11.035705+00:00)
+2022-12-21 14:49:11,697 - sqlalchemy.engine.Engine - INFO - SELECT customers.customer_id AS customers_customer_id, customers.chat_id AS customers_chat_id, customers.phone AS customers_phone, customers.name AS customers_name, customers.addres AS customers_addres, customers.email AS customers_email 
+FROM customers 
+WHERE customers.chat_id = ?
+2022-12-21 14:49:11,697 - sqlalchemy.engine.Engine - INFO - [cached since 46.92s ago] (352354383,)
+2022-12-21 14:49:11,699 - sqlalchemy.engine.Engine - INFO - SELECT residents.resident_id AS residents_resident_id, residents.resident_name AS residents_resident_name, residents.chat_id AS residents_chat_id, residents.resident_addres AS residents_resident_addres, residents.resident_phone AS residents_resident_phone, residents.resident_email AS residents_resident_email, residents.description AS residents_description, residents.img_url AS residents_img_url 
+FROM residents 
+WHERE residents.resident_name = ?
+2022-12-21 14:49:11,700 - sqlalchemy.engine.Engine - INFO - [cached since 29.93s ago] ('KFC',)
+2022-12-21 14:49:11,894 - sqlalchemy.engine.Engine - INFO - SELECT customers.customer_id AS customers_customer_id, customers.chat_id AS customers_chat_id, customers.phone AS customers_phone, customers.name AS customers_name, customers.addres AS customers_addres, customers.email AS customers_email 
+FROM customers 
+WHERE customers.chat_id = ?
+2022-12-21 14:49:11,895 - sqlalchemy.engine.Engine - INFO - [cached since 47.11s ago] (352354383,)
+2022-12-21 14:49:11,896 - sqlalchemy.engine.Engine - INFO - SELECT residents.resident_id AS residents_resident_id, residents.resident_name AS residents_resident_name, residents.chat_id AS residents_chat_id, residents.resident_addres AS residents_resident_addres, residents.resident_phone AS residents_resident_phone, residents.resident_email AS residents_resident_email, residents.description AS residents_description, residents.img_url AS residents_img_url 
+FROM residents 
+WHERE residents.resident_name = ?
+2022-12-21 14:49:11,896 - sqlalchemy.engine.Engine - INFO - [cached since 30.13s ago] ('Сатоши',)
+2022-12-21 14:49:11,897 - telegram.ext._application - ERROR - No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "/root/bot/env/src/python-telegram-bot/telegram/ext/_jobqueue.py", line 696, in _run
+    await self.callback(context)
+  File "/root/bot/briket_market_bot/payments/ykassa_integration.py", line 71, in payment_finder
+    await push_order(user_id=payment['user_id'], context=context)
+  File "/root/bot/briket_market_bot/briket_DB/shopping/order_db.py", line 39, in push_order
+    await send_order_residents(cart['order_num'], context)
+  File "/root/bot/briket_market_bot/briket_DB/shopping/order_db.py", line 78, in send_order_residents
+    chat_id=get_chat_id(resident),
+  File "/root/bot/briket_market_bot/briket_DB/sql_main_files/residents.py", line 76, in get_chat_id
+    abort(
+  File "/root/bot/env/lib/python3.10/site-packages/flask/helpers.py", line 312, in abort
+    _wz_abort(code, *args, **kwargs)
+  File "/root/bot/env/lib/python3.10/site-packages/werkzeug/exceptions.py", line 881, in abort
+    _aborter(status, *args, **kwargs)
+  File "/root/bot/env/lib/python3.10/site-packages/werkzeug/exceptions.py", line 864, in __call__
+    raise self.mapping[code](*args, **kwargs)
+werkzeug.exceptions.NotFound: 404 Not Found: Resident not found by name Сатоши
+2022-12-21 14:49:11,898 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:49:41 UTC)" executed successfully
+2022-12-21 14:49:41,058 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:50:11 UTC)" (scheduled at 2022-12-21 11:49:41.035705+00:00)
+2022-12-21 14:49:41,643 - sqlalchemy.engine.Engine - INFO - SELECT customers.customer_id AS customers_customer_id, customers.chat_id AS customers_chat_id, customers.phone AS customers_phone, customers.name AS customers_name, customers.addres AS customers_addres, customers.email AS customers_email 
+FROM customers 
+WHERE customers.chat_id = ?
+2022-12-21 14:49:41,643 - sqlalchemy.engine.Engine - INFO - [cached since 76.86s ago] (352354383,)
+2022-12-21 14:49:41,645 - sqlalchemy.engine.Engine - INFO - SELECT residents.resident_id AS residents_resident_id, residents.resident_name AS residents_resident_name, residents.chat_id AS residents_chat_id, residents.resident_addres AS residents_resident_addres, residents.resident_phone AS residents_resident_phone, residents.resident_email AS residents_resident_email, residents.description AS residents_description, residents.img_url AS residents_img_url 
+FROM residents 
+WHERE residents.resident_name = ?
+2022-12-21 14:49:41,645 - sqlalchemy.engine.Engine - INFO - [cached since 59.88s ago] ('KFC',)
+2022-12-21 14:49:41,771 - sqlalchemy.engine.Engine - INFO - SELECT customers.customer_id AS customers_customer_id, customers.chat_id AS customers_chat_id, customers.phone AS customers_phone, customers.name AS customers_name, customers.addres AS customers_addres, customers.email AS customers_email 
+FROM customers 
+WHERE customers.chat_id = ?
+2022-12-21 14:49:41,771 - sqlalchemy.engine.Engine - INFO - [cached since 76.99s ago] (352354383,)
+2022-12-21 14:49:41,773 - sqlalchemy.engine.Engine - INFO - SELECT residents.resident_id AS residents_resident_id, residents.resident_name AS residents_resident_name, residents.chat_id AS residents_chat_id, residents.resident_addres AS residents_resident_addres, residents.resident_phone AS residents_resident_phone, residents.resident_email AS residents_resident_email, residents.description AS residents_description, residents.img_url AS residents_img_url 
+FROM residents 
+WHERE residents.resident_name = ?
+2022-12-21 14:49:41,773 - sqlalchemy.engine.Engine - INFO - [cached since 60.01s ago] ('Сатоши',)
+2022-12-21 14:49:41,774 - telegram.ext._application - ERROR - No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "/root/bot/env/src/python-telegram-bot/telegram/ext/_jobqueue.py", line 696, in _run
+    await self.callback(context)
+  File "/root/bot/briket_market_bot/payments/ykassa_integration.py", line 71, in payment_finder
+    await push_order(user_id=payment['user_id'], context=context)
+  File "/root/bot/briket_market_bot/briket_DB/shopping/order_db.py", line 39, in push_order
+    await send_order_residents(cart['order_num'], context)
+  File "/root/bot/briket_market_bot/briket_DB/shopping/order_db.py", line 78, in send_order_residents
+    chat_id=get_chat_id(resident),
+  File "/root/bot/briket_market_bot/briket_DB/sql_main_files/residents.py", line 76, in get_chat_id
+    abort(
+  File "/root/bot/env/lib/python3.10/site-packages/flask/helpers.py", line 312, in abort
+    _wz_abort(code, *args, **kwargs)
+  File "/root/bot/env/lib/python3.10/site-packages/werkzeug/exceptions.py", line 881, in abort
+    _aborter(status, *args, **kwargs)
+  File "/root/bot/env/lib/python3.10/site-packages/werkzeug/exceptions.py", line 864, in __call__
+    raise self.mapping[code](*args, **kwargs)
+werkzeug.exceptions.NotFound: 404 Not Found: Resident not found by name Сатоши
+2022-12-21 14:49:41,775 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:50:11 UTC)" executed successfully
+2022-12-21 14:50:11,066 - apscheduler.executors.default - INFO - Running job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:50:41 UTC)" (scheduled at 2022-12-21 11:50:11.035705+00:00)
+2022-12-21 14:50:11,755 - sqlalchemy.engine.Engine - INFO - SELECT customers.customer_id AS customers_customer_id, customers.chat_id AS customers_chat_id, customers.phone AS customers_phone, customers.name AS customers_name, customers.addres AS customers_addres, customers.email AS customers_email 
+FROM customers 
+WHERE customers.chat_id = ?
+2022-12-21 14:50:11,756 - sqlalchemy.engine.Engine - INFO - [cached since 107s ago] (352354383,)
+2022-12-21 14:50:11,757 - sqlalchemy.engine.Engine - INFO - SELECT residents.resident_id AS residents_resident_id, residents.resident_name AS residents_resident_name, residents.chat_id AS residents_chat_id, residents.resident_addres AS residents_resident_addres, residents.resident_phone AS residents_resident_phone, residents.resident_email AS residents_resident_email, residents.description AS residents_description, residents.img_url AS residents_img_url 
+FROM residents 
+WHERE residents.resident_name = ?
+2022-12-21 14:50:11,757 - sqlalchemy.engine.Engine - INFO - [cached since 89.99s ago] ('KFC',)
+2022-12-21 14:50:11,948 - sqlalchemy.engine.Engine - INFO - SELECT customers.customer_id AS customers_customer_id, customers.chat_id AS customers_chat_id, customers.phone AS customers_phone, customers.name AS customers_name, customers.addres AS customers_addres, customers.email AS customers_email 
+FROM customers 
+WHERE customers.chat_id = ?
+2022-12-21 14:50:11,948 - sqlalchemy.engine.Engine - INFO - [cached since 107.2s ago] (352354383,)
+2022-12-21 14:50:11,950 - sqlalchemy.engine.Engine - INFO - SELECT residents.resident_id AS residents_resident_id, residents.resident_name AS residents_resident_name, residents.chat_id AS residents_chat_id, residents.resident_addres AS residents_resident_addres, residents.resident_phone AS residents_resident_phone, residents.resident_email AS residents_resident_email, residents.description AS residents_description, residents.img_url AS residents_img_url 
+FROM residents 
+WHERE residents.resident_name = ?
+2022-12-21 14:50:11,950 - sqlalchemy.engine.Engine - INFO - [cached since 90.18s ago] ('Сатоши',)
+2022-12-21 14:50:11,951 - telegram.ext._application - ERROR - No error handlers are registered, logging exception.
+Traceback (most recent call last):
+  File "/root/bot/env/src/python-telegram-bot/telegram/ext/_jobqueue.py", line 696, in _run
+    await self.callback(context)
+  File "/root/bot/briket_market_bot/payments/ykassa_integration.py", line 71, in payment_finder
+    await push_order(user_id=payment['user_id'], context=context)
+  File "/root/bot/briket_market_bot/briket_DB/shopping/order_db.py", line 39, in push_order
+    await send_order_residents(cart['order_num'], context)
+  File "/root/bot/briket_market_bot/briket_DB/shopping/order_db.py", line 78, in send_order_residents
+    chat_id=get_chat_id(resident),
+  File "/root/bot/briket_market_bot/briket_DB/sql_main_files/residents.py", line 76, in get_chat_id
+    abort(
+  File "/root/bot/env/lib/python3.10/site-packages/flask/helpers.py", line 312, in abort
+    _wz_abort(code, *args, **kwargs)
+  File "/root/bot/env/lib/python3.10/site-packages/werkzeug/exceptions.py", line 881, in abort
+    _aborter(status, *args, **kwargs)
+  File "/root/bot/env/lib/python3.10/site-packages/werkzeug/exceptions.py", line 864, in __call__
+    raise self.mapping[code](*args, **kwargs)
+werkzeug.exceptions.NotFound: 404 Not Found: Resident not found by name Сатоши
+2022-12-21 14:50:11,951 - apscheduler.executors.default - INFO - Job "payment_finder (trigger: interval[0:00:30], next run at: 2022-12-21 11:50:41 UTC)" executed successfully
+2022-12-21 14:50:30,495 - telegram.ext._application - INFO - Application is stopping. This might take a moment.
+2022-12-21 14:50:30,496 - apscheduler.scheduler - INFO - Scheduler has been shut down
+2022-12-21 14:50:30,507 - telegram.ext._application - INFO - Application.stop() complete
+2022-12-21 14:50:30,511 - pyngrok.process.ngrok - INFO - t=2022-12-21T14:50:30+0300 lvl=info msg="received stop request" obj=app stopReq="{err:<nil> restart:false}"
