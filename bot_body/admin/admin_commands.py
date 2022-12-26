@@ -142,7 +142,7 @@ async def add_new_resident_end(update: Update, context: ContextTypes.DEFAULT_TYP
         return ConversationHandler.END
     except exceptions.Conflict:
         await update.message.reply_text(text='Пользователь с данным номером телефона уже внесен в базу. Чтобы добавить '
-                                             'другого резидента вызывите команду повторно.')
+                                             'другого резидента вызовите команду повторно.')
         return ConversationHandler.END
 
 
