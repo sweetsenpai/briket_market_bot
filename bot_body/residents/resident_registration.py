@@ -1,3 +1,5 @@
+import os
+
 from telegram import (ReplyKeyboardRemove,
                       Update,
                       ReplyKeyboardMarkup,
@@ -87,11 +89,20 @@ async def resident_description(update: Update, context: ContextTypes.DEFAULT_TYP
 
 async def resident_img(update: Update, context: ContextTypes.DEFAULT_TYPE):
     resident = update.message.from_user
-    file = update.message.photo[-1].file_id
-    obj = await context.bot.get_file(file)
-    url = cloudinary.uploader.upload(await obj.download_to_drive())['url']
+    if update.message.photo:
+        file = update.message.photo[-1].file_id
+        obj = await context.bot.get_file(file)
+        url = cloudinary.uploader.upload(await obj.download_to_drive(custom_path='img.jpg'))['url']
+    elif not update.message.photo:
+        file_id = update.message.document.file_id
+        new_file = await context.bot.get_file(file_id)
+        url = cloudinary.uploader.upload(await new_file.download_to_drive(custom_path='img.jpg'))['url']
+    else:
+        await update.message.reply_text(text="Пожалуйста, попробуйте загрузить изображение в другом формате")
+        return IMG
     insert_img(resident_id=update.message.from_user.id, img=url)
     logger.info('Изображение заведения {} :{}'.format(resident.first_name, url))
+    os.remove('img.jpg')
     await update.message.reply_text(text=get_text_api('Am9gdnpc'))
     return ConversationHandler.END
 

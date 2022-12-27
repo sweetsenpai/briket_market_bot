@@ -58,7 +58,7 @@ def main() -> None:
             res_reg.PHONE: [MessageHandler(filters.CONTACT | filters.TEXT, res_reg.phon_res)],
             res_reg.NAME: [MessageHandler(filters.TEXT, res_reg.resident_name)],
             res_reg.DESCRIPTION: [MessageHandler(filters.TEXT, res_reg.resident_description)],
-            res_reg.IMG: [MessageHandler(filters.PHOTO, res_reg.resident_img)]
+            res_reg.IMG: [MessageHandler(filters.PHOTO | filters.Document.ALL, res_reg.resident_img)]
         },
         fallbacks=[CommandHandler('cancel_reg', res_reg.resident_end)],
         conversation_timeout=600
