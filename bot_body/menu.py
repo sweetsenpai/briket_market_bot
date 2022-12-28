@@ -7,7 +7,7 @@ from telegram import (InlineQueryResultArticle,
                       InlineKeyboardButton, constants)
 from telegram.ext import ContextTypes
 from briket_DB.sql_main_files.residents import read_all, read_one_name
-from parcer.parcer_sheet import get_market_categories, get_dishs
+from parcer.parcer_sheet import get_dishs
 from briket_DB.shopping.shcart_db import get_dish_quantity
 from text_integration.pastebin_integration import get_text_api
 from briket_DB.shopping.cache_category import read_category

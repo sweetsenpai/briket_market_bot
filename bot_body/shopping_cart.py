@@ -38,6 +38,19 @@ def cart_inline():
     return res
 
 
+async def handle_invalid_button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Informs the user that the button is no longer available."""
+    await update.callback_query.answer("Прости, данные уже устарели😔 Вызови меню ещё раз.")
+    return
+
+
+async def clear(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Clears the callback data cache"""
+    context.bot.callback_data_cache.clear_callback_data()
+    context.bot.callback_data_cache.clear_callback_queries()
+    await update.effective_message.reply_text("All clear!")
+
+
 async def cart_show_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(text=show_cart(update.message.from_user.id),
                                     reply_markup=cart_inline())
