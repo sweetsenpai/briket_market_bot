@@ -6,6 +6,8 @@ import shutil
 import os
 sa = gspread.service_account_from_dict(credentials)
 
+# TODO: сделать  кэш всех позиций резидента
+
 
 def get_markets():
     sheet_main = sa.open('Меню')

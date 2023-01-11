@@ -116,6 +116,8 @@ async def add_new_resident_start(update: Update, context: ContextTypes.DEFAULT_T
     return PHONE_RS_ADD
 
 
+# TODO: Проверка номера резидента в бд клиентов
+
 async def add_new_resident_end(update: Update, context: ContextTypes.DEFAULT_TYPE):
     phone = update.message.text.replace('+', '')
     phone = phone.replace(' ', '')
@@ -205,7 +207,7 @@ async def mouth_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if admin_db.find_one(filter={'chat_id': chat_id}) is not None:
         for residen in read_all():
             await update.message.reply_text(text=get_resident_report_month(residen['resident_name']), parse_mode='HTML')
-            return
+        return
     if read_one_chatid(chat_id) is not None:
         await update.message.reply_text(text=get_resident_report_month(read_one_chatid(chat_id)['resident_name']), parse_mode='HTML')
         return

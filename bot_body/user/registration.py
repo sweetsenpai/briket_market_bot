@@ -16,6 +16,8 @@ logger = logging.getLogger(__name__)
 
 PHONE, LOCATION, INFO, EMAIL = range(4)
 
+# TODO: Проверка номера  в бд резидентов
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.message.chat_id
