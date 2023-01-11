@@ -158,6 +158,8 @@ async def finish_order(order_num: int, update: Update, resident: str, context: C
     await update.callback_query.edit_message_text(text=messeg, reply_markup=None)
 
 
+# TODO: Удалять оьтмененые заказы в чатах
+
 async def decline_order(order_num: int, update: Update, resident: str):
     full_order = orders_db.find_one({"order_num": order_num})
     orders_db.find_one_and_update(filter=full_order,
