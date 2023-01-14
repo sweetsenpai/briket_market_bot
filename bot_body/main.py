@@ -14,7 +14,7 @@ from telegram.ext import (
 from bot_body.user import registration as rg
 import menu
 from bot_body.shopping_cart import cart_show_button
-from shopping_cart import call_back_handler, clear, handle_invalid_button
+from shopping_cart import call_back_handler, handle_invalid_button
 from bot_body.residents import resident_registration as res_reg
 from bot_body.admin import admin_commands as ac, promo_conversation as promo, admin_registration as ar
 from bot_body.admin.destribytion import start_distribution, get_text_destribution, cov_end, TEXT_DIST

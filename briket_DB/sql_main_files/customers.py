@@ -159,4 +159,12 @@ def delete_addres(chat_id: int, del_addres):
         return 200
 
 
+def find_customer_by_phone(phone):
+    customer = Customer.query.filter(Customer.phone == phone).one_or_none()
+    if customer is not None:
+        customer_schema = CustomerSchema()
+        return customer_schema.dump(customer)
+    else:
+        return None
+
 

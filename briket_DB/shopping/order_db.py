@@ -77,17 +77,22 @@ async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYP
             except TypeError:
                 pass
         resident_order += '\n Клиент: {}'.format(find_user_by_id(full_order['user_id'])['name'])
-        await context.bot.sendMessage(text=resident_order,
+        x = await context.bot.sendMessage(text=resident_order,
                                       chat_id=get_chat_id(resident),
                                       reply_markup=resident_inline_keyboard(order_num, resident=resident)[0])
+
+        orders_db.find_one_and_update(filter={'order_num': order_num},
+                                      update={'$push': {'chats_data': {'chat_id': x['chat']['id'],
+                                                                       'message_id': x['message_id']}}})
         for admins in admin.find({'chat_id': {'$exists': True}}):
             try:
-                x = admins['chat_id']
-                print(x)
-                await context.bot.sendMessage(text=resident_order,
+
+                x = await context.bot.sendMessage(text=resident_order,
                                               chat_id=admins['chat_id'], reply_markup=resident_inline_keyboard(order_num, resident=resident)[1])
+                orders_db.find_one_and_update(filter={'order_num': order_num},
+                                              update={'$push': {'chats_data': {'chat_id': x['chat']['id'],
+                                                                               'message_id': x['message_id']}}})
             except telegram.error.BadRequest or KeyError:
-                print('Нет такого чата')
                 pass
     return
 
@@ -158,15 +163,21 @@ async def finish_order(order_num: int, update: Update, resident: str, context: C
     await update.callback_query.edit_message_text(text=messeg, reply_markup=None)
 
 
-# TODO: Удалять оьтмененые заказы в чатах
+async def decline_order(order_num: int, update: Update, resident: str, context: ContextTypes.DEFAULT_TYPE):
 
-async def decline_order(order_num: int, update: Update, resident: str):
-    full_order = orders_db.find_one({"order_num": order_num})
-    orders_db.find_one_and_update(filter=full_order,
-                                  update={'$set': {"order_items.{}.status".format(resident): 'Отменен'}})
+    full_order = orders_db.find_one_and_update(filter={"order_num": order_num},
+                                               update={'$set': {"order_items.{}.status".format(resident): 'Отменен'}})
     messeg = 'Заказ №{}\nТип: {}\nСтатус:  Отменен❌\n'.format(full_order['order_num'],
                                                                     full_order['delivery_type'])
     await update.callback_query.edit_message_text(text=messeg)
+    for chat_data in full_order['chats_data']:
+        try:
+            await context.bot.edit_message_text(text=messeg, chat_id=chat_data['chat_id'], message_id=chat_data['message_id'],
+                                                reply_markup=None)
+        except telegram.error.BadRequest:
+            continue
+    await context.bot.sendMessage(chat_id=full_order['user_id'], text='Заказ №{} отменем администратором.'.format(full_order['order_num']))
+    return
 
 
 async def client_info(order_num: int, context: ContextTypes.DEFAULT_TYPE, msg_chat: int):

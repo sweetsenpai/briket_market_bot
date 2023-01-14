@@ -1,6 +1,7 @@
 import logging
 from briket_DB.shopping.promotions import chek_personal_code
 from briket_DB.sql_main_files.customers import find_id, create, insert_new_addres, inser_new_name, insert_new_email
+from briket_DB.sql_main_files.residents import find_phone
 from telegram import ReplyKeyboardRemove, Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ContextTypes,
@@ -15,8 +16,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 PHONE, LOCATION, INFO, EMAIL = range(4)
-
-# TODO: Проверка номера  в бд резидентов
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -43,6 +42,7 @@ async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         user_contact = update.message.contact.phone_number
+        user_contact = user_contact.replace('+', '')
     except AttributeError:
         raw_number = update.message.text.replace('+', '')
         raw_number = raw_number.replace(' ', '')
@@ -53,6 +53,13 @@ async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
         raw_number[0] = '7'
         user_contact = ''.join(raw_number)
 
+    resident_search = find_phone(user.id, user_contact)
+    if resident_search is not None:
+        await context.bot.send_message(chat_id=resident_search['chat_id'],
+                                       text='Администратор внес вас в раздел резидентов.\n'
+                                            'Чтобы пройти регистрацию от лица заведения,\n'
+                                            'нажмите сюда -> /registration')
+        return ConversationHandler.END
     logger.info(
         "Contact of {}: {}".format(user.first_name, user_contact)
     )

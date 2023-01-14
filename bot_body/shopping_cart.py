@@ -99,7 +99,7 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.answer()
         return
     elif cb_data[0] == 'decline_order':
-        await decline_order(order_num=int(cb_data[1]), update=update, resident=cb_data[2])
+        await decline_order(order_num=int(cb_data[1]), update=update, resident=cb_data[2], context=context)
         await query.answer()
     elif cb_data[0] == 'support':
         await tech_support(context=context, msg_chat=update.callback_query.from_user.id)

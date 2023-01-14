@@ -9,6 +9,7 @@ from telegram.ext import (
 from briket_DB.config import mongodb
 import logging
 from briket_DB.sql_main_files.residents import create, read_all, read_one_chatid
+from briket_DB.sql_main_files.customers import find_customer_by_phone
 from briket_DB.reports.report_main import get_resident_report_day, get_resident_report_month
 from text_integration.pastebin_integration import get_text_api
 from bot_body.admin.access_level import admin_check, res_check
@@ -116,7 +117,13 @@ async def add_new_resident_start(update: Update, context: ContextTypes.DEFAULT_T
     return PHONE_RS_ADD
 
 
-# TODO: Проверка номера резидента в бд клиентов
+async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    x = await context.bot.send_message(chat_id=352354383,
+                                   text='test))))')
+    print(x['chat']['id'], x['message_id'])
+    await context.bot.delete_message(chat_id=352354383, message_id=5420)
+    return
+
 
 async def add_new_resident_end(update: Update, context: ContextTypes.DEFAULT_TYPE):
     phone = update.message.text.replace('+', '')
@@ -141,6 +148,11 @@ async def add_new_resident_end(update: Update, context: ContextTypes.DEFAULT_TYP
                                              'Теперь резидент может пройти регистрацию.\n'
                                              'Для прохождения регистрации необходимо написать в чат:\n /registration'.format(
             phone))
+        customer_result = find_customer_by_phone(phone)
+        if customer_result is not None:
+            await context.bot.send_message(chat_id=customer_result['chat_id'], text='Администратор внес вас в раздел резидентов.\n'
+                                                                                    'Чтобы пройти регистрацию от лица заведения,\n'
+                                                                                    'нажмите сюда -> /registration')
         return ConversationHandler.END
     except exceptions.Conflict:
         await update.message.reply_text(text='Пользователь с данным номером телефона уже внесен в базу. Чтобы добавить '
@@ -192,6 +204,8 @@ async def day_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.message.from_user.id
     if admin_db.find_one(filter={'chat_id': chat_id}) is not None:
         for residen in read_all():
+            if residen['resident_name'] == '':
+                continue
             await update.message.reply_text(text=get_resident_report_day(residen['resident_name']), parse_mode='HTML')
         return
     if read_one_chatid(chat_id) is not None:
@@ -206,6 +220,8 @@ async def mouth_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.message.from_user.id
     if admin_db.find_one(filter={'chat_id': chat_id}) is not None:
         for residen in read_all():
+            if residen['resident_name'] == '':
+                continue
             await update.message.reply_text(text=get_resident_report_month(residen['resident_name']), parse_mode='HTML')
         return
     if read_one_chatid(chat_id) is not None:
@@ -220,7 +236,7 @@ async def mouth_report_job(context: ContextTypes.DEFAULT_TYPE):
     admin_report_data = ""
     for residen in read_all():
         report_data = get_resident_report_month(residen['resident_name'])
-        admin_report_data += report_data + '\n'
+        admin_report_data += report_data + '\n-------------------------\n'
         try:
             await context.bot.sendMessage(chat_id=residen['chat_id'],
                                           text=report_data, parse_mode='HTML')
@@ -239,7 +255,7 @@ async def day_report_job(context: ContextTypes.DEFAULT_TYPE):
     admin_report_data = ""
     for residen in read_all():
         report_data = get_resident_report_day(residen['resident_name'])
-        admin_report_data += report_data + '\n'
+        admin_report_data += report_data + '\n-------------------------\n'
         try:
             await context.bot.sendMessage(chat_id=residen['chat_id'],
                                           text=report_data, parse_mode='HTML')

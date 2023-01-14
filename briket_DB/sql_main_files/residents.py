@@ -90,7 +90,8 @@ def find_phone(resident_id=0, phone=0):
     resident = Resident.query.filter(Resident.resident_phone == phone).one_or_none()
     if resident is not None:
         resident.chat_id = resident_id
-        return 200
+        resident_chema = ResidentSchema()
+        return resident_chema.dump(resident)
     else:
         return None
 

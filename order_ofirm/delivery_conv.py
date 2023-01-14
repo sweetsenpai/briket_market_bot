@@ -20,6 +20,8 @@ def addres_keyboard_del(user_id):
         )
     return ReplyKeyboardMarkup(key)
 
+# TODO: возвращать главное меню после завершения овормления заказа
+
 
 async def first_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if read_one(update.message.from_user.id) is False:
