@@ -8,6 +8,7 @@ from delivery.yandex_api import delivery_range
 from briket_DB.shopping.shcart_db import sh_cart
 from briket_DB.sql_main_files.customers import read_one
 from briket_DB.sql_main_files.customers import addres_keyboard
+from bot_body.functional_key import start
 from datetime import datetime
 ONE, TWO, THREE, FOUR = range(4)
 
@@ -20,7 +21,7 @@ def addres_keyboard_del(user_id):
         )
     return ReplyKeyboardMarkup(key)
 
-# TODO: возвращать главное меню после завершения овормления заказа
+
 
 
 async def first_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -34,6 +35,7 @@ async def first_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(text='График работы\n'
                                                     'Пн-Сб: с 10:00 до 22:00\n'
                                                     'Вск: c 11:00 до 23:00')
+            await start(update, context)
             return ConversationHandler.END
 
     else:
@@ -41,6 +43,7 @@ async def first_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(text='График работы\n'
                                                     'Пн-Сб: с 10:00 до 22:00\n'
                                                     'Вск: c 11:00 до 23:00')
+            await start(update, context)
             return ConversationHandler.END
 
     await update.message.reply_text(text='Укажите адрес доставки',
@@ -52,7 +55,6 @@ async def first_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def second_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
     addres = update.message.text
-    print(addres)
     chek = delivery_range(addres)
     if chek[0] is True:
         sh_cart.find_one_and_update(filter={'user_id': update.message.from_user.id},
@@ -104,6 +106,7 @@ async def finish_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await answer.reply_text(text=promo_result[0])
     await create_payment(user_id=answer.from_user.id, delivery_type='Доставка', update=update)
+    await start(update, context)
     return ConversationHandler.END
 
 
@@ -111,7 +114,7 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "Оформление заказа прервано", reply_markup=ReplyKeyboardRemove()
     )
-
+    await start(update, context)
     return ConversationHandler.END
 
 del_conv = ConversationHandler(

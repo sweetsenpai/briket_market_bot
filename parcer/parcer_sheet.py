@@ -25,6 +25,9 @@ def get_market_categories(ws: str):
         sheet_main = sa.open('Меню')
         ws = sheet_main.worksheet(ws)
         dataframe = pd.DataFrame(ws.get_all_records())
+        for index, row in dataframe.iterrows():
+            print(row)
+            print('------------------------------')
         cat_list = dataframe['Категория'].unique().tolist()
         cat_list = list(filter(None, cat_list))
         return cat_list
@@ -85,7 +88,15 @@ def find_dish(sheet='KFC', dish='Шефбургер'):
     return check_dish.loc[check_dish['Название'] == dish].to_dict(orient='split')['data']
 
 
+sh = sa.open('Меню')
+x = sh.worksheets()
 
+for i in x:
+    df = pd.DataFrame(i.get_all_records())
+    print(i.title)
+    for ind, rows in df.iterrows():
+        print(rows)
+        print('-------------')
 
 
 
