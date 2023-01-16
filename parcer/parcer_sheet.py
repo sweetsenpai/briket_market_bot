@@ -3,11 +3,12 @@ import gspread
 import pandas as pd
 import requests
 import shutil
+from briket_DB.config import mongodb
+from telegram.ext import ContextTypes
 import os
+
 sa = gspread.service_account_from_dict(credentials)
-
-# TODO: сделать  кэш всех позиций резидента
-
+cachedb = mongodb.test
 
 def get_markets():
     sheet_main = sa.open('Меню')
@@ -19,15 +20,8 @@ def get_markets():
     return market_list
 
 
-def get_market_categories(ws: str):
+def get_market_categories(dataframe: pd.DataFrame):
     try:
-
-        sheet_main = sa.open('Меню')
-        ws = sheet_main.worksheet(ws)
-        dataframe = pd.DataFrame(ws.get_all_records())
-        for index, row in dataframe.iterrows():
-            print(row)
-            print('------------------------------')
         cat_list = dataframe['Категория'].unique().tolist()
         cat_list = list(filter(None, cat_list))
         return cat_list
@@ -35,11 +29,7 @@ def get_market_categories(ws: str):
         return
 
 
-def get_dishs(sheet='KFC', cat='Бургеры'):
-
-    sheet_main = sa.open('Меню')
-    ws = sheet_main.worksheet(sheet)
-    df = pd.DataFrame(ws.get_all_records())
+def get_dishs(df: pd.DataFrame, cat: str):
     dt = df.loc[df['Категория'] == cat].loc[df['стоп-лист'] == 'FALSE']
     del dt['Категория']
     del dt['стоп-лист']
@@ -47,14 +37,12 @@ def get_dishs(sheet='KFC', cat='Бургеры'):
     return dt.to_dict(orient='split')['data']
 
 
-def get_one_dish(sheet='KFC', name='Шефбургер'):
-    sheet_main = sa.open('Меню')
-    ws = sheet_main.worksheet(sheet)
-    df = pd.DataFrame(ws.get_all_records())
-    dt = df.loc[df['Название'] == name]
-    del dt['Категория'], df['стоп-лист']
-    dt.fillna('‎')
-    return dt.to_dict(orient='split')['data']
+def get_one_dish(resident, name='Шефбургер'):
+    for category in read_category(resident):
+        try:
+            return get_dishs_db(resident, category)[name]
+        except KeyError:
+            continue
 
 
 def load_img(img_url):
@@ -88,15 +76,42 @@ def find_dish(sheet='KFC', dish='Шефбургер'):
     return check_dish.loc[check_dish['Название'] == dish].to_dict(orient='split')['data']
 
 
-sh = sa.open('Меню')
-x = sh.worksheets()
+async def cache_menu(context: ContextTypes.DEFAULT_TYPE):
+    full_data = sa.open('Меню').worksheets()
+    for res in full_data:
+        res_df = pd.DataFrame(res.get_all_records())
+        if cachedb.find_one_and_update(filter={'resident': res.title}, update={'$unset': {'category': ''}}) is None:
+            cachedb.insert_one({'resident': res.title,
+                                'category': get_market_categories(res_df)})
+        else:
+            try:
+                res.get_all_records()
+                for category in get_market_categories(res_df):
+                    for dish in get_dishs(res_df, category):
+                        if dish[0] == '':
+                            continue
+                        dish_data = {'Вес': dish[1], 'Цена': dish[2], 'IMG': dish[3],
+                                         'Белки': dish[4], 'Жиры': dish[5], 'Углеводы': dish[6], 'Описание': dish[7]}
 
-for i in x:
-    df = pd.DataFrame(i.get_all_records())
-    print(i.title)
-    for ind, rows in df.iterrows():
-        print(rows)
-        print('-------------')
+                        cachedb.find_one_and_update(filter={'resident': res.title},
+                                                    update={'$set': {f'category.{category}.{dish[0]}': dish_data}})
+            except TypeError:
+                continue
+
+    return
+
+
+def read_category(resident: str):
+    try:
+        rez = cachedb.find_one({'resident': resident})['category'].keys()
+        return rez
+    except TypeError or KeyError:
+        return
+
+
+def get_dishs_db(resident, category):
+    result_dish = cachedb.find_one({'resident': resident})
+    return result_dish['category'][category]
 
 
 

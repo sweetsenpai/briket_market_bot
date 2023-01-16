@@ -7,10 +7,9 @@ from telegram import (InlineQueryResultArticle,
                       InlineKeyboardButton, constants)
 from telegram.ext import ContextTypes
 from briket_DB.sql_main_files.residents import read_all, read_one_name
-from parcer.parcer_sheet import get_dishs
+from parcer.parcer_sheet import read_category, get_dishs_db, get_one_dish
 from briket_DB.shopping.shcart_db import get_dish_quantity
 from text_integration.pastebin_integration import get_text_api
-from briket_DB.shopping.cache_category import read_category
 import gspread
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -94,27 +93,34 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     elif '#' in query:
         answer = []
         data = query.split('/')
-        for dish in get_dishs(sheet=data[1], cat=data[2]):
+        for dish in get_dishs_db(data[1], data[2]):
+            dish_data = get_one_dish(resident=data[1], name=dish)
+            print((dish, dish_data['Описание'], dish_data['Вес'],
+                                                                dish_data['Цена'], dish_data['IMG'],
+                                                                dish_data['Белки'], dish_data['Жиры'],
+                                                                dish_data['Углеводы']))
             answer.append(
                 InlineQueryResultArticle(
                     id=str(uuid4()),
-                    title=dish[0],
+                    title=dish,
                     description='Вес:{} гр.\n'
-                                'Цена:{}'.format(dish[1], dish[2]),
+                                'Цена:{}'.format(dish_data['Вес'], dish_data['Цена']),
                     input_message_content=InputTextMessageContent(
                         message_text='<b>{}</b>\n'
                                      '{}\n'
                                      'Вес: {} гр.\n'
                                      'Цена: {}'
                                      '<a href="{}">‎</a>'
-                                     '\nБ|Ж|У: {}|{}|{}'.format(dish[0], dish[7], dish[1], dish[2],
-                                                                                  dish[3], dish[4], dish[5], dish[6]),
+                                     '\nБ|Ж|У: {}|{}|{}'.format(dish, dish_data['Описание'], dish_data['Вес'],
+                                                                dish_data['Цена'], dish_data['IMG'],
+                                                                dish_data['Белки'], dish_data['Жиры'],
+                                                                dish_data['Углеводы']),
                         disable_web_page_preview=False,
                         parse_mode=constants.ParseMode.HTML
                         ),
-                    reply_markup=dish_card_keyboard(query=query, resident=data[1], dish=dish[0], price=dish[2],
+                    reply_markup=dish_card_keyboard(query=query, resident=data[1], dish=dish, price=dish_data['Цена'],
                                                     user_id=update.inline_query.from_user.id),
-                    thumb_url=dish[3],
+                    thumb_url=dish_data['IMG'],
                     thumb_height=50,
                     thumb_width=50
                 )

@@ -4,7 +4,7 @@ from telegram import (
                       InlineKeyboardMarkup,
                       InlineKeyboardButton)
 from briket_DB.shopping.shcart_db import add_dish
-from parcer.parcer_sheet import find_dish
+from parcer.parcer_sheet import get_one_dish
 
 
 def po_inlinae(page, user_id, order_num):
@@ -51,7 +51,7 @@ async def repeat_order(order_num, update: Update):
         for dish in order[resident].keys():
             if dish == 'status':
                 continue
-            dish_info = find_dish(sheet=resident, dish=dish)
+            dish_info = get_one_dish(resident, dish)
             if not dish_info:
                 canceled_dishes.append(dish)
             else:

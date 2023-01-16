@@ -133,19 +133,19 @@ async def red_order(user_id: int, update: Update):
 
 
 async def show_red_dish(resident: str, dish: str, user_id: int,  update: Update):
-    dish_data = get_one_dish(resident, dish)[0]
+    dish_data = get_one_dish(resident, dish)
     msg = '{}\n' \
           'Вес: {}\n' \
           'Цена: {} р.\n' \
-          '<a href="{}">.</a>'.format(dish_data[0], dish_data[1], dish_data[2], dish_data[3])
+          '<a href="{}">.</a>'.format(dish, dish_data['Вес'], dish_data['Цена'], dish_data['IMG'])
     rez1 = InlineKeyboardButton(callback_data=','.join(['add',
-                                                        resident, dish, str(dish_data[2])]),
+                                                        resident, dish, str(dish_data['Цена'])]),
                                 text='{} ➕ Добавить в корзину'.format(
                                     get_dish_quantity(user_id=user_id, resident=resident, dish=dish)
                                 ))
     rez2 = InlineKeyboardButton(callback_data='cart',
                                 text='◀️Назад')
-    rez3 = InlineKeyboardButton(callback_data=','.join(['minus', resident, dish, str(dish_data[2])]),
+    rez3 = InlineKeyboardButton(callback_data=','.join(['minus', resident, dish, str(dish_data['Цена'])]),
                                 text='➖ Удалить')
     keyboard = InlineKeyboardMarkup([[rez1, rez3], [rez2]])
     await update.callback_query.edit_message_text(

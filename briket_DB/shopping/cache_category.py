@@ -1,32 +1,31 @@
+import pandas as pd
 from briket_DB.config import mongodb
-from parcer.parcer_sheet import get_markets, get_market_categories, get_dishs
 from telegram.ext import ContextTypes
 
 cachedb = mongodb.test
 
 
 # context: ContextTypes.DEFAULT_TYPE
-def cache_category():
-    for resident in get_markets():
 
-        if cachedb.find_one_and_update(filter={'resident': resident}, update={'$unset': {'category': ''}}) is None:
-            cachedb.insert_one({'resident': resident,
-                                'category': get_market_categories(resident)})
+def cache_menu(context: ContextTypes.DEFAULT_TYPE):
+    full_data = sa.open('Меню').worksheets()
+    for res in full_data:
+        res_df = pd.DataFrame(res.get_all_records())
+        if cachedb.find_one_and_update(filter={'resident': res.title}, update={'$unset': {'category': ''}}) is None:
+            cachedb.insert_one({'resident': res.title,
+                                'category': get_market_categories(res_df)})
         else:
             try:
-                for category in get_market_categories(resident):
-                    for dish in get_dishs(resident, category):
+                res.get_all_records()
+                for category in get_market_categories(res_df):
+                    for dish in get_dishs(res_df, category):
                         if dish[0] == '':
                             continue
-                        try:
-                            dish_data = {'Вес': dish[1], 'Цена': dish[2], 'IMG': dish[3],
-                                     'стоп-лист': dish[4], 'Белки': dish[5], 'Жиры': dish[6], 'Углеводы': dish[7], 'Описание': dish[8]}
-                        except IndexError:
-                            dish_data = {'Вес': dish[1], 'Цена': dish[2], 'IMG': dish[3],
-                                         'стоп-лист': dish[4], 'Белки': '', 'Жиры': '', 'Углеводы': '',
-                                         'Описание': ''}
+                        dish_data = {'Вес': dish[1], 'Цена': dish[2], 'IMG': dish[3],
+                                         'Белки': dish[4], 'Жиры': dish[5], 'Углеводы': dish[6], 'Описание': dish[7]}
+
                         print(dish_data)
-                        cachedb.find_one_and_update(filter={'resident': resident},
+                        cachedb.find_one_and_update(filter={'resident': res.title},
                                                     update={'$set': {f'category.{category}.{dish[0]}': dish_data}})
             except TypeError:
                 continue
@@ -36,9 +35,12 @@ def cache_category():
 
 def read_category(resident: str):
     try:
-        rez = cachedb.find_one({'resident': resident})
-        return rez['category']
+        rez = cachedb.find_one({'resident': resident})['category'].keys()
+        return rez
     except TypeError:
         return
 
-print(cache_category())
+
+def get_dishs_db(resident, category):
+    return cachedb.find_one(filter={'resident': resident})['category'][category]
+
