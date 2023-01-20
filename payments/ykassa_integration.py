@@ -8,11 +8,11 @@ from yookassa.domain.models.receipt import Receipt
 from yookassa.domain.models.receipt_item import ReceiptItem
 from yookassa.domain.common.confirmation_type import ConfirmationType
 from yookassa.domain.request.payment_request_builder import PaymentRequestBuilder
-from briket_DB.passwords import yookassa_key
+from briket_DB.passwords import yookassa_key, yookassa_id
 from telegram.ext import ContextTypes
 from datetime import datetime
 from briket_DB.shopping.promotions import apply_promo
-Configuration.account_id = '948782'
+Configuration.account_id = yookassa_id
 Configuration.secret_key = yookassa_key
 
 
@@ -39,7 +39,7 @@ async def create_payment(user_id, update: Update, delivery_type):
             )
     order_num = datetime.now().microsecond
     builder = PaymentRequestBuilder()
-    builder.set_amount({"value": order['total'], "currency": Currency.RUB}) \
+    builder.set_amount({"value": 1, "currency": Currency.RUB}) \
         .set_confirmation({"type": ConfirmationType.REDIRECT, "return_url": "https://t.me/briket_test_bot"}) \
         .set_capture('waiting_for_capture ') \
         .set_description(f"Заказ №{order_num}") \

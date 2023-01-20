@@ -90,7 +90,7 @@ def send_delivery_order(order):
                 },
                 "external_order_id": str(order['order_num']),
                 "point_id": 2,
-                "skip_confirmation": False,
+                "skip_confirmation": True,
                 "type": "destination",
                 "visit_order": 2
             }

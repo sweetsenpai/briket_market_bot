@@ -8,19 +8,19 @@ from telegram import (ReplyKeyboardRemove,
 from telegram.ext import (
     ContextTypes,
     ConversationHandler)
-from briket_DB.sql_main_files.residents import find_phone, insert_img, \
-    insert_email, insert_name, insert_location, insert_description
+from briket_DB.sql_main_files.residents import find_phone, insert_img, insert_name, insert_description
 import logging
 from parcer.parcer_sheet import create_new_table
 import cloudinary
 from cloudinary import uploader
+from briket_DB.passwords import cloudinary_name, cloudinary_secret, cloudinary_api_key
 from text_integration.pastebin_integration import get_text_api
 from briket_DB.reviews.reviews_main import reviews_db
 
 cloudinary.config(
-  cloud_name="dwexszkh4",
-  api_key="677565459774618",
-  api_secret="CaPikHBUwKY8zX8aHuHRyeDhxrM"
+  cloud_name=cloudinary_name,
+  api_key=cloudinary_api_key,
+  api_secret=cloudinary_secret
 )
 
 PHONE, NAME, IMG, DESCRIPTION = range(4)
