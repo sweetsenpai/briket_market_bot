@@ -39,7 +39,7 @@ async def create_payment(user_id, update: Update, delivery_type):
             )
     order_num = datetime.now().microsecond
     builder = PaymentRequestBuilder()
-    builder.set_amount({"value": 1, "currency": Currency.RUB}) \
+    builder.set_amount({"value":  order['total'], "currency": Currency.RUB}) \
         .set_confirmation({"type": ConfirmationType.REDIRECT, "return_url": "https://t.me/briket_test_bot"}) \
         .set_capture('waiting_for_capture ') \
         .set_description(f"Заказ №{order_num}") \
