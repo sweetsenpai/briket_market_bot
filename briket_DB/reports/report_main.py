@@ -40,7 +40,7 @@ def get_resident_report_day(resident_name):
                 msg += f'<i>Сумма заказа: {sub_sum}\nКомиссия: {round(sub_sum * 0.2)}</i>\n'
                 msg += '----------------------\n'
                 comission += round(sub_sum * 0.2)
-    msg += f'<b>Комиссия за сутки:{comission}₽</b>'
+    msg += f'<b>Комиссия за сутки: {comission}₽</b>'
     return msg
 
 

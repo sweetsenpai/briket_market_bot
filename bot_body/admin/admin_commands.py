@@ -236,7 +236,7 @@ async def mouth_report_job(context: ContextTypes.DEFAULT_TYPE):
     admin_report_data = ""
     for residen in read_all():
         report_data = get_resident_report_month(residen['resident_name'])
-        admin_report_data += report_data + '\n'
+        admin_report_data += report_data + '\n----------------------------\n'
         try:
             await context.bot.sendMessage(chat_id=residen['chat_id'],
                                           text=report_data, parse_mode='HTML')
@@ -254,8 +254,10 @@ async def mouth_report_job(context: ContextTypes.DEFAULT_TYPE):
 async def day_report_job(context: ContextTypes.DEFAULT_TYPE):
     admin_report_data = ""
     for residen in read_all():
+        if residen['resident_name'] == '':
+            continue
         report_data = get_resident_report_day(residen['resident_name'])
-        admin_report_data += report_data + '\n'
+        admin_report_data += report_data + '\n----------------------------\n'
         try:
             await context.bot.sendMessage(chat_id=residen['chat_id'],
                                           text=report_data, parse_mode='HTML')

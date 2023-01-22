@@ -161,7 +161,7 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await make_order(update, context)
                 return
         else:
-            if int(datetime.now().hour) >= 21 or int(datetime.now().hour) < 10:
+            if int(datetime.now().hour) >= 22 or int(datetime.now().hour) < 10:
                 await update.callback_query.answer(text='График работы\n'
                                                         'Пн-Сб: с 10:00 до 22:00\n'
                                                         'Вск: c 11:00 до 23:00',
