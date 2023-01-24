@@ -31,7 +31,10 @@ def get_market_categories(dataframe: pd.DataFrame):
 
 
 def get_dishs(df: pd.DataFrame, cat: str):
-    dt = df.loc[df['Категория'] == cat].loc[df['стоп-лист'] == 'FALSE']
+    try:
+        dt = df.loc[df['Категория'] == cat].loc[df['стоп-лист'] == 'FALSE']
+    except KeyError:
+        return
     del dt['Категория']
     del dt['стоп-лист']
     dt.fillna('‎')
@@ -78,7 +81,12 @@ def find_dish(sheet='KFC', dish='Шефбургер'):
 
 
 async def cache_menu(context: ContextTypes.DEFAULT_TYPE):
-    full_data = sa.open('Меню').worksheets()
+    sheet = sa.open('Меню')
+    if cachedb.find_one({'Title': 'LustUpdate'})['time'] == sheet.lastUpdateTime:
+        return
+
+    cachedb.find_one_and_update(filter={'Title': 'LustUpdate'}, update={'$set': {'time': sheet.lastUpdateTime}})
+    full_data = sheet.worksheets()
     for res in full_data:
         res_df = pd.DataFrame(res.get_all_records())
         if cachedb.find_one_and_update(filter={'resident': res.title}, update={'$unset': {'category': ''}}) is None:
@@ -89,6 +97,7 @@ async def cache_menu(context: ContextTypes.DEFAULT_TYPE):
                 res.get_all_records()
                 for category in get_market_categories(res_df):
                     for dish in get_dishs(res_df, category):
+                        print(dish)
                         if dish[0] == '':
                             continue
                         dish_data = {'Вес': dish[1], 'Цена': dish[2], 'IMG': dish[3],
@@ -98,7 +107,6 @@ async def cache_menu(context: ContextTypes.DEFAULT_TYPE):
                                                     update={'$set': {f'category.{category}.{dish[0]}': dish_data}})
             except TypeError:
                 continue
-
     return
 
 
@@ -113,6 +121,8 @@ def read_category(resident: str):
 def get_dishs_db(resident, category):
     result_dish = cachedb.find_one({'resident': resident})
     return result_dish['category'][category]
+
+
 
 
 
