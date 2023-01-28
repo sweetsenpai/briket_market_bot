@@ -4,9 +4,7 @@ from datetime import time
 from payments.ykassa_integration import payment_finder
 from telegram.ext import (
     Application,
-    CommandHandler,
-    ConversationHandler,
-    MessageHandler,
+    CommandHandler, ConversationHandler, MessageHandler,
     filters,
     InlineQueryHandler,
     CallbackQueryHandler, AIORateLimiter,

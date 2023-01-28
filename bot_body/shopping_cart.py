@@ -15,7 +15,7 @@ from briket_DB.shopping.order_db import (client_info,
                                          decline_order, finish_order)
 from telegram import (Update,
                       InlineKeyboardMarkup,
-                      InlineKeyboardButton,constants)
+                      InlineKeyboardButton, constants)
 
 from telegram.ext import ContextTypes
 from text_integration.pastebin_integration import get_text_api
