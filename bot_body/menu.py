@@ -103,8 +103,8 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                 InlineQueryResultArticle(
                     id=str(uuid4()),
                     title=dish,
-                    description='Вес:{} гр.\n'
-                                'Цена:{}'.format(dish_data['Вес'], dish_data['Цена']),
+                    description='Вес: {}гр.\n'
+                                'Цена: {} руб.'.format(dish_data['Вес'], dish_data['Цена']),
                     input_message_content=InputTextMessageContent(
                         message_text='<b>{}</b>\n'
                                      '{}\n'

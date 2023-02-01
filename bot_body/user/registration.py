@@ -10,6 +10,7 @@ from text_integration.pastebin_integration import get_text_api
 from bot_body.user.addresses import show_addresses
 from bot_body.functional_key import customer_keyboard
 from bot_body.menu import menu
+import re
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
 )
@@ -20,7 +21,7 @@ PHONE, LOCATION, INFO, EMAIL = range(4)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.message.chat_id
-    share_button = KeyboardButton(text='Share my contact', request_contact=True)
+    share_button = KeyboardButton(text='Поделиться номером телефона', request_contact=True)
 
     key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
                                     keyboard=[[share_button]],
@@ -100,7 +101,9 @@ async def skip_location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     await update.message.reply_text(
         "Как хочешь("
     )
-
+    await update.message.reply_text(
+        "Как тебя зовут?", reply_markup=ReplyKeyboardRemove()
+    )
     return INFO
 
 
@@ -117,6 +120,10 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def email(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_mail = update.message.text
+    p = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+    if re.match(p, user_mail) is None:
+        await update.message.reply_text("Вы указали невалидный email, попробуйте ещё раз. ")
+        return EMAIL
     insert_new_email(chat_id=update.message.from_user.id,
                      email=user_mail)
     await update.message.reply_text("Регистрация успешно закончена!")
@@ -154,3 +161,4 @@ async def custommer_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )]]))
     await show_addresses(update, context)
     return
+

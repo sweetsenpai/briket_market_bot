@@ -22,12 +22,11 @@ def addres_keyboard_del(user_id):
     return ReplyKeyboardMarkup(key)
 
 
-
-
 async def first_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if read_one(update.message.from_user.id) is False:
         await update.message.reply_text(text='Для оформления заказа необходимо пройти регистрацию.\n'
                                                 'Это займет всего пару минут.')
+        await start(update, context)
         return ConversationHandler.END
 
     if datetime.now().weekday() == 6:
@@ -56,16 +55,22 @@ async def first_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def second_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
     addres = update.message.text
     chek = delivery_range(addres)
+    if addres == '/cancel':
+        await stop(update, context)
+        return ConversationHandler.END
+
     if chek[0] is True:
         sh_cart.find_one_and_update(filter={'user_id': update.message.from_user.id},
                                     update={'$set': {"delivery.addres": addres}})
         button1 = KeyboardButton(text='Нет')
-        key = ReplyKeyboardMarkup(keyboard=[[button1]])
+        button2 = KeyboardButton(text='Назад')
+        key = ReplyKeyboardMarkup(keyboard=[[button1], [button2]])
         await update.message.reply_text(text='Отлично, вы указали корректный адрес.')
 
         await update.message.reply_text(text='Хотите добавить комментарии для курьера?\n'
                                              'Если вас легко найти, то просто нажмите <Нет> на клавиатуре',
                                         reply_markup=key)
+        await update.message.reply_text(text='Всегда можно нажать "Назад", чтобы вернуться на предыдущий шаг.')
         return TWO
     elif chek[0] is False:
         await update.message.reply_text(text=chek[1])
@@ -76,37 +81,75 @@ async def second_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def comments_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
     answer = update.message.text
-    if sh_cart.find_one(filter={'user_id': update.message.from_user.id, 'delivery.comment': {"$exists": True}}) is None:
+    if answer == '/cancel':
+        await stop(update, context)
+        return ConversationHandler.END
+    elif answer == 'Назад':
+        await update.message.reply_text(text='Укажите адрес доставки',
+                                        reply_markup=addres_keyboard_del(
+                                            update.message.from_user.id
+                                        ))
+        return ONE
+    elif sh_cart.find_one(filter={'user_id': update.message.from_user.id, 'delivery.comment': {"$exists": True}}) is None:
         sh_cart.find_one_and_update(filter={'user_id': update.message.from_user.id},
                                     update={'$set': {"delivery.comment": answer}})
     button1 = KeyboardButton(text='Да')
     button2 = KeyboardButton(text='Нет')
-    key = ReplyKeyboardMarkup(keyboard=[[button1], [button2]])
+    button3 = KeyboardButton(text='Назад')
+    key = ReplyKeyboardMarkup(keyboard=[[button1], [button2], [button3]])
     await update.message.reply_text(text='Хотите активировать промокод?\n', reply_markup=key)
     return THREE
 
 
 async def promo_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
     answer = update.message
-    if answer.text == 'Нет':
+    if answer.text == '/cancel':
+        await stop(update, context)
+        return ConversationHandler.END
+    elif answer.text == 'Назад':
+        button1 = KeyboardButton(text='Нет')
+        button2 = KeyboardButton(text='Назад')
+        key = ReplyKeyboardMarkup(keyboard=[[button1], [button2]])
+        await update.message.reply_text(text='Хотите добавить комментарии для курьера?\n'
+                                             'Если вас легко найти, то просто нажмите <Нет> на клавиатуре',
+                                        reply_markup=key)
+        return TWO
+    elif answer.text.lower() == 'нет':
         await create_payment(user_id=answer.from_user.id, delivery_type='Доставка', update=update)
         return ConversationHandler.END
-    elif answer.text == 'Да':
+    elif answer.text.lower() == 'да':
         await update.message.reply_text(text='Введите промокод')
         return FOUR
+    else:
+        await update.message.reply_text(text='Не совсем тебя понял(\n Воспользуйся клавиатурой или просто напиши Да/Нет')
+        return TWO
 
 
 async def finish_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
     answer = update.message
+    if answer.text == '/cancel':
+        await stop(update, context)
+        return ConversationHandler.END
+    elif answer.text == 'Назад':
+        button1 = KeyboardButton(text='Да')
+        button2 = KeyboardButton(text='Нет')
+        button3 = KeyboardButton(text='Назад')
+        key = ReplyKeyboardMarkup(keyboard=[[button1], [button2], [button3]], one_time_keyboard=True)
+        await update.message.reply_text(text='Хотите активировать промокод?\n', reply_markup=key)
+        return THREE
     promo_result = chek_promo(promo_code=answer.text, user_id=answer.from_user.id)
     if promo_result[1] is False:
         await answer.reply_text(text=promo_result[0])
         await promo_delivery(update, context)
         return TWO
-
-    await answer.reply_text(text=promo_result[0])
+    cust_func = ReplyKeyboardMarkup(
+        [
+            [KeyboardButton(text='Меню'), KeyboardButton(text='Оставить отзыв')],
+            [KeyboardButton(text='FAQ'), KeyboardButton(text='Аккаунт')],
+            [KeyboardButton(text='🛒Корзина🛒')]
+        ], resize_keyboard=True, one_time_keyboard=False)
+    await answer.reply_text(text=promo_result[0], reply_markup=cust_func)
     await create_payment(user_id=answer.from_user.id, delivery_type='Доставка', update=update)
-    await start(update, context)
     return ConversationHandler.END
 
 

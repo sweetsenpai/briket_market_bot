@@ -6,7 +6,7 @@ from payments.ykassa_integration import create_payment
 from briket_DB.shopping.promotions import chek_promo
 from briket_DB.sql_main_files.customers import read_one
 from bot_body.functional_key import start
-from datetime import  datetime
+from datetime import datetime
 
 ONE, TWO = range(2)
 
@@ -42,16 +42,26 @@ async def first_pickup(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def second_pickup(update: Update, context: ContextTypes.DEFAULT_TYPE):
     answer = update.message
-    if answer.text == 'Нет':
+    if answer.text.lower() == 'нет':
         await create_payment(user_id=answer.from_user.id, delivery_type='Самовывоз', update=update)
         return ConversationHandler.END
-    elif answer.text == 'Да':
+    elif answer.text.lower() == 'да':
         await update.message.reply_text(text='Введите промокод')
         return TWO
+    elif answer.text == '/stop':
+        await stop(update, context)
+        return ConversationHandler.END
+    else:
+        await update.message.reply_text(text='Не совсем тебя понял(\n Воспользуйся клавиатурой или просто напиши Да/Нет')
+        return ONE
 
 
 async def finish_pickup(update: Update, context: ContextTypes.DEFAULT_TYPE):
     answer = update.message
+    if answer.text == '/stop':
+        await stop(update, context)
+        return ConversationHandler.END
+
     promo_result = chek_promo(promo_code=answer.text, user_id=answer.from_user.id)
     if promo_result[1] is False:
         await answer.reply_text(text=promo_result[0])

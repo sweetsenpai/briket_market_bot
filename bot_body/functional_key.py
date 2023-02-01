@@ -47,6 +47,13 @@ async def customer_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 [KeyboardButton(text='FAQ'), KeyboardButton(text='Аккаунт')],
                 [KeyboardButton(text='🛒Корзина🛒')]
             ], resize_keyboard=True, one_time_keyboard=False)
+        hello_msg = '‎‎' \
+                    '                           Привет, друг!\n\n' \
+                    '                  Это Брикет Маркет Бот.\n\n' \
+                    '  Я помогу тебе заказать любимые блюда у \n   резидентов фуд-корта «Брикет Маркет»\n\n\n' \
+                    '                Нажми на кнопку «Регистрация»'
+        await update.message.reply_text(text=hello_msg, reply_markup=cust_func)
+        return
     else:
         cust_func = ReplyKeyboardMarkup(
             [
@@ -77,3 +84,5 @@ async def promo_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ], resize_keyboard=True, one_time_keyboard=False)
     await update.message.reply_text(text='Выбери один из вариантов меню:', reply_markup=res_func)
     return
+
+
