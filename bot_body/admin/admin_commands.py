@@ -240,13 +240,17 @@ async def mouth_report_job(context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.sendMessage(chat_id=residen['chat_id'],
                                           text=report_data, parse_mode='HTML')
-        except telegram.error.BadRequest or telegram.error.Forbidden:
+        except telegram.error.BadRequest:
+            continue
+        except telegram.error.Forbidden:
             continue
     for admins in admin_db.find({'chat_id': {'$exists': True}}):
         try:
             await context.bot.sendMessage(chat_id=admins['chat_id'],
                                           text=admin_report_data, parse_mode='HTML')
-        except telegram.error.BadRequest or telegram.error.Forbidden:
+        except telegram.error.BadRequest:
+            continue
+        except telegram.error.Forbidden:
             continue
     return
 
@@ -261,13 +265,16 @@ async def day_report_job(context: ContextTypes.DEFAULT_TYPE):
         try:
             await context.bot.sendMessage(chat_id=residen['chat_id'],
                                           text=report_data, parse_mode='HTML')
-        except telegram.error.BadRequest or telegram.error.Forbidden:
+        except telegram.error.BadRequest:
+            continue
+        except telegram.error.Forbidden:
             continue
     for admins in admin_db.find({'chat_id': {'$exists': True}}):
         try:
-            await context.bot.sendMessage(chat_id=admins['chat_id'],
-                                      text=admin_report_data, parse_mode='HTML')
-        except telegram.error.BadRequest or telegram.error.Forbidden:
+            await context.bot.sendMessage(chat_id=admins['chat_id'], text=admin_report_data, parse_mode='HTML')
+        except telegram.error.BadRequest:
+            continue
+        except telegram.error.Forbidden:
             continue
     return
 
