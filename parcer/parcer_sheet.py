@@ -94,12 +94,14 @@ async def cache_menu(context: ContextTypes.DEFAULT_TYPE):
                                 'category': get_market_categories(res_df)})
         else:
             try:
+                print(res.title)
                 res.get_all_records()
                 for category in get_market_categories(res_df):
                     for dish in get_dishs(res_df, category):
                         print(dish)
                         if dish[0] == '':
                             continue
+                        dish[0] = str(dish[0]).replace('.', '')
                         dish_data = {'Вес': dish[1], 'Цена': dish[2], 'IMG': dish[3],
                                          'Белки': dish[4], 'Жиры': dish[5], 'Углеводы': dish[6], 'Описание': dish[7]}
 
