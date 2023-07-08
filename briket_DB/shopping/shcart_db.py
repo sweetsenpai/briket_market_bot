@@ -77,7 +77,7 @@ def show_cart(user_id: int):
         for resident in order.keys():
             for dish in order[resident].keys():
                 cart += '{}: {} * {}\n'.format(dish, order[resident][dish]['quantity'], order[resident][dish]['price'])
-        cart += 'Итого: {}р.'.format(user_cart['total'])
+        cart += 'Итого: {} руб.'.format(user_cart['total'])
         return cart
     except TypeError:
         return 'Тут ничего нет'
@@ -105,7 +105,7 @@ def get_dish_quantity(user_id: int, resident, dish: str) -> str:
 
 async def empty_shcart(user_id: int, update: Update):
     sh_cart.delete_one({"user_id": user_id})
-    await update.callback_query.edit_message_text(text='Ваша корзина очищена!',
+    await update.callback_query.edit_message_text(text='Корзина очищена!',
                                                   reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(
                                                       text='Вернутся к выбору',
                                                       switch_inline_query_current_chat=''
@@ -127,7 +127,7 @@ async def red_order(user_id: int, update: Update):
         [(InlineKeyboardButton(text='◀️Назад', callback_data='red_order'))]
     )
     await update.callback_query.edit_message_text(
-        text='Выберете позицию которую хотите изменить:',
+        text='Выбери позицию которую хочешь изменить:',
         reply_markup=InlineKeyboardMarkup(cart_dishes)
     )
 
@@ -136,7 +136,7 @@ async def show_red_dish(resident: str, dish: str, user_id: int,  update: Update)
     dish_data = get_one_dish(resident, dish)
     msg = '{}\n' \
           'Вес: {}\n' \
-          'Цена: {} р.\n' \
+          'Цена: {} руб.\n' \
           '<a href="{}">.</a>'.format(dish, dish_data['Вес'], dish_data['Цена'], dish_data['IMG'])
     rez1 = InlineKeyboardButton(callback_data=','.join(['add',
                                                         resident, dish, str(dish_data['Цена'])]),

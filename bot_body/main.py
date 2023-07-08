@@ -11,6 +11,7 @@ from telegram.ext import (
     InvalidCallbackData, PicklePersistence)
 from bot_body.user import registration as rg
 import menu
+from residents.workers import add_new_worker
 from bot_body.shopping_cart import cart_show_button
 from shopping_cart import call_back_handler, handle_invalid_button
 from bot_body.residents import resident_registration as res_reg
@@ -31,20 +32,22 @@ from order_ofirm.delivery_conv import del_conv
 from user.addresses import show_addresses, add_conv
 from parcer.parcer_sheet import cache_menu
 from briket_DB.reports.user_data_report import user_data_updater
-PORT = int(os.environ.get('PORT', '80'))
+from briket_DB.config import db
+PORT = int(os.environ.get('PORT', '30'))
+key = bot_key
 
 
 def main() -> None:
     persistence = PicklePersistence(filepath="arbitrarycallbackdatabot")
-    application = Application.builder().token(bot_key).persistence(persistence).arbitrary_callback_data(True).rate_limiter(AIORateLimiter()).build()
+    application = Application.builder().token(test_bot_key).persistence(persistence).arbitrary_callback_data(True).rate_limiter(AIORateLimiter()).build()
 
     reg_user = ConversationHandler(
         entry_points=[MessageHandler(filters.Regex('Регистрация'), rg.start)],
         states={
-            rg.PHONE: [MessageHandler(filters.CONTACT | filters.TEXT, rg.phone)],
+            rg.INFO: [MessageHandler(filters.TEXT & ~filters.COMMAND, rg.info)],
             rg.LOCATION: [MessageHandler(filters.LOCATION | filters.Regex('[а-яА-ЯёЁ]'), rg.location),
                           CommandHandler("skip", rg.skip_location), ],
-            rg.INFO: [MessageHandler(filters.TEXT & ~filters.COMMAND, rg.info)],
+            rg.PHONE: [MessageHandler(filters.CONTACT | filters.TEXT, rg.phone)],
             rg.EMAIL: [MessageHandler(filters.TEXT & ~filters.COMMAND, rg.email)]
         },
         fallbacks=[CommandHandler("cancel", rg.cancel)],
@@ -141,6 +144,8 @@ def main() -> None:
     application.add_handler(promo_conv)
     application.add_handler(dest_conv)
     application.add_handler(report)
+
+    application.add_handler(MessageHandler(filters.Regex('Добавить нового сотрудника'), add_new_worker))
     application.job_queue.run_daily(callback=ac.day_report_job, time=time.fromisoformat('12:00:00+03:00'),
                                     job_kwargs={'misfire_grace_time': 60})
     application.job_queue.run_monthly(callback=ac.mouth_report_job,
@@ -182,9 +187,9 @@ def main() -> None:
     application.add_handler(MessageHandler(filters.Regex('Администратор'), admin_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Клиент'), customer_keyboard))
     application.add_handler(MessageHandler(filters.Regex('Резидент'), resident_keyboard))
-#    application.run_polling()
-    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'{get_https()}/{bot_key}',
-                        listen="0.0.0.0")
+    application.run_polling()
+#    application.run_webhook(port=PORT, url_path=bot_key, webhook_url=f'{get_https()}/{key}',
+#                           listen="0.0.0.0")
 
 
 if __name__ == '__main__':

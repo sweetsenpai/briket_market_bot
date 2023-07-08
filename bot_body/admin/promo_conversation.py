@@ -9,7 +9,7 @@ PROMO = range(1)
 
 async def promo_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if admin_check(update.message.from_user.id) is False:
-        await update.message.reply_text(text='Вам отказанно в праве доступа.')
+        await update.message.reply_text(text='Тебе отказанно в праве доступа.')
         return ConversationHandler.END
     await update.message.reply_text(text='Введите промокод :')
     return PROMO
@@ -37,7 +37,7 @@ async def delete_promotion(update: Update, context: ContextTypes.DEFAULT_TYPE):
             [InlineKeyboardButton(text=output_promotions(pormotion), callback_data='del_promo,{}'.format(pormotion['code']))]
         )
     promo_keyboard = InlineKeyboardMarkup(keyboard_buttons)
-    await update.message.reply_text('Выберете акцию которую хотите остановить из  списка ниже',
+    await update.message.reply_text('Выбери акцию которую хотите остановить из  списка ниже',
                                     reply_markup=promo_keyboard)
     return
 

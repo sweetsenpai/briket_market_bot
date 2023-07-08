@@ -10,7 +10,7 @@ TEXT_DIST = range(1)
 
 async def get_text_destribution(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if admin_check(update.message.from_user.id) is False:
-        await update.message.reply_text(text='Вам отказанно в праве доступа.')
+        await update.message.reply_text(text='Тебе отказанно в праве доступа.')
         return ConversationHandler.END
     await update.message.reply_text(text=get_text_api('mHKEnYh7'))
     return TEXT_DIST

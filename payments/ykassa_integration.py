@@ -47,7 +47,7 @@ async def create_payment(user_id, update: Update, delivery_type):
         .set_receipt(receipt)
     request = builder.build()
     res = Payment.create(request)
-    payment_url = 'Ваш заказ можно оплатить по этой ссылке:\n{}\n Ссылка будет действительна в течении 15 минут.'\
+    payment_url = 'Заказ можно оплатить по этой ссылке:\n{}\n Ссылка будет действительна в течении 15 минут.\n Для того, чтобы открыть главное меню, нажми /start'\
         .format(res.confirmation.confirmation_url)
     await update.message.reply_text(text=payment_url)
     sh_cart.find_one_and_update(filter={"user_id": order['user_id']},
@@ -67,11 +67,11 @@ async def payment_finder(context: ContextTypes.DEFAULT_TYPE):
         return
     for payment in payments:
         if Payment.find_one(payment_id=payment['payment_id']).status == 'succeeded':
-            await context.bot.sendMessage(chat_id=payment['user_id'], text='Ваш заказ успешно оплачен!')
+            await context.bot.sendMessage(chat_id=payment['user_id'], text='Твой заказ успешно оплачен!')
             await push_order(user_id=payment['user_id'], context=context)
             return
         if (datetime.now() - payment['payment_time']).total_seconds() >= 900:
-            await context.bot.sendMessage(chat_id=payment['user_id'], text='Ссылка для оплаты устарела, оформите заказ снова.')
+            await context.bot.sendMessage(chat_id=payment['user_id'], text='Ссылка для оплаты устарела, оформи заказ снова.')
             sh_cart.find_one_and_update(filter={"user_id": payment['user_id']},
                                         update={'$unset': {"payment_id": ''}})
             sh_cart.find_one_and_update(filter={"user_id": payment['user_id']},

@@ -34,7 +34,7 @@ def cart_inline():
     redact_order = InlineKeyboardButton(text=get_text_api('XDHGv5uZ'), callback_data='red_order')
     empty_cart = InlineKeyboardButton(text=get_text_api('MguE3Kt7'), callback_data='empty_cart')
     back = InlineKeyboardButton(text=get_text_api('4Sj7fP4j'), switch_inline_query_current_chat='')
-    res = InlineKeyboardMarkup([[conf_order, redact_order], [back, empty_cart]])
+    res = InlineKeyboardMarkup([[conf_order], [redact_order], [empty_cart], [back]])
     return res
 
 
@@ -134,7 +134,7 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif cb_data[0] == 'publish_rev':
         publish_revie(user_id=cb_data[1], resident_name=cb_data[2])
         await update.callback_query.edit_message_text(text='Отзыв успешно опубликован.')
-        await context.bot.send_message(chat_id=cb_data[1], text='Ваш отзыв опубликован!')
+        await context.bot.send_message(chat_id=cb_data[1], text='Отзыв опубликован!')
         return
     elif cb_data[0] == 'delete_rev':
         del_review(user_id=cb_data[1], resident=cb_data[2])
@@ -182,7 +182,7 @@ async def call_back_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     elif cb_data[0] == 'remove_address':
         delete_addres(chat_id=update.callback_query.from_user.id, del_addres=cb_data[1])
-        await update.callback_query.edit_message_text('Адрес успешно удален.',
+        await update.callback_query.edit_message_text('Адрес удален.',
                                                       reply_markup=inline_addresses(user_id=
                                                                                     update.callback_query.from_user.id))
     elif cb_data[0] == 'PO':

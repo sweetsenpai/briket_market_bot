@@ -74,8 +74,7 @@ async def promo_distribution(update: Update, context: ContextTypes.DEFAULT_TYPE)
     answer = update.message.text
     text_prm = sales_db.find_one(filter={'master': update.message.chat_id})['description']
     sales_db.find_one_and_update(filter={'master': update.message.chat_id},
-                                 update={'$unset': {'master': ''}})['description']
-    print(text_prm)
+                                       update={'$unset': {'master': ''}})['description']
     if answer == 'Да':
         await update.message.reply_text('Рассылка запущена!')
         context.application.create_task(

@@ -65,17 +65,17 @@ async def second_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
         button1 = KeyboardButton(text='Нет')
         button2 = KeyboardButton(text='Назад')
         key = ReplyKeyboardMarkup(keyboard=[[button1], [button2]])
-        await update.message.reply_text(text='Отлично, вы указали корректный адрес.')
+        await update.message.reply_text(text='Отлично, ты указал корректный адрес.')
 
-        await update.message.reply_text(text='Хотите добавить комментарии для курьера?\n'
-                                             'Если вас легко найти, то просто нажмите <Нет> на клавиатуре',
+        await update.message.reply_text(text='Хочешь добавить комментарий для курьера?\n'
+                                             'Если тебя легко найти, то просто нажми <Нет> на клавиатуре',
                                         reply_markup=key)
         await update.message.reply_text(text='Всегда можно нажать "Назад", чтобы вернуться на предыдущий шаг.')
         return TWO
     elif chek[0] is False:
         await update.message.reply_text(text=chek[1])
-        await update.message.reply_text(text='Вы можете указать другой адрес доставки '
-                                             'или прервать оформление командой /cancel')
+        await update.message.reply_text(text='Прости, твой адрес находится вне зоны доставки. \n'
+                                             'Выбери другой адрес или отмени оформление заказа /cancel')
         return ONE
 
 
@@ -85,7 +85,7 @@ async def comments_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await stop(update, context)
         return ConversationHandler.END
     elif answer == 'Назад':
-        await update.message.reply_text(text='Укажите адрес доставки',
+        await update.message.reply_text(text='Укажи адрес доставки',
                                         reply_markup=addres_keyboard_del(
                                             update.message.from_user.id
                                         ))
@@ -110,15 +110,15 @@ async def promo_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
         button1 = KeyboardButton(text='Нет')
         button2 = KeyboardButton(text='Назад')
         key = ReplyKeyboardMarkup(keyboard=[[button1], [button2]])
-        await update.message.reply_text(text='Хотите добавить комментарии для курьера?\n'
-                                             'Если вас легко найти, то просто нажмите <Нет> на клавиатуре',
+        await update.message.reply_text(text='Хочешь добавить комментарий для курьера?\n'
+                                             'Если тебя легко найти, то просто нажми <Нет> на клавиатуре',
                                         reply_markup=key)
         return TWO
     elif answer.text.lower() == 'нет':
         await create_payment(user_id=answer.from_user.id, delivery_type='Доставка', update=update)
         return ConversationHandler.END
     elif answer.text.lower() == 'да':
-        await update.message.reply_text(text='Введите промокод')
+        await update.message.reply_text(text='Введи промокод')
         return FOUR
     else:
         await update.message.reply_text(text='Не совсем тебя понял(\n Воспользуйся клавиатурой или просто напиши Да/Нет')
@@ -155,7 +155,7 @@ async def finish_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Оформление заказа прервано", reply_markup=ReplyKeyboardRemove()
+        "Заказ отменен :( \nХочешь выбрать что-то другое?»", reply_markup=ReplyKeyboardRemove()
     )
     await start(update, context)
     return ConversationHandler.END
@@ -168,5 +168,4 @@ del_conv = ConversationHandler(
         THREE: [MessageHandler(filters.TEXT, promo_delivery)],
         FOUR: [MessageHandler(filters.TEXT, finish_delivery)],
     },
-    fallbacks=[CommandHandler('cancel', stop)]
-)
+    fallbacks=[CommandHandler('cancel', stop)], conversation_timeout=300)

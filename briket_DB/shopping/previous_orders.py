@@ -27,7 +27,7 @@ async def show_po(user_id, update: Update, page: int):
     try:
         po_order = orders_db.find(filter={'user_id': user_id})[page]
     except IndexError:
-        await update.callback_query.answer(text='Вы ещё не сделали ни одного заказа, самое время начать)',
+        await update.callback_query.answer(text='Ты ещё не сделал ни одного заказа, самое время начать)',
                                            show_alert=True)
         return
     order = po_order['order_items']
@@ -37,7 +37,7 @@ async def show_po(user_id, update: Update, page: int):
             if dish == 'status':
                 continue
             cart += '{}: {} * {}\n'.format(dish, order[resident][dish]['quantity'], order[resident][dish]['price'])
-    cart += 'Итого: {}р.'.format((po_order['total']))
+    cart += 'Итого: {} руб.'.format((po_order['total']))
     await update.callback_query.edit_message_text(text=cart)
     await update.callback_query.edit_message_reply_markup(po_inlinae(page, update.callback_query.from_user.id, order_num=po_order['order_num']))
     return

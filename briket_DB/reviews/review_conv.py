@@ -15,7 +15,7 @@ async def start_rev(update: Update, context: ContextTypes.DEFAULT_TYPE):
         key_list.append([KeyboardButton(text=resident['resident'])])
 
     key = ReplyKeyboardMarkup(keyboard=key_list, one_time_keyboard=True)
-    await update.message.reply_text(text='Выберете заведение на которое хотите оставить отзыв,\n'
+    await update.message.reply_text(text='Выбери заведение на которое хочешь оставить отзыв,\n'
                                          'на клавиатуре ниже', reply_markup=key)
     return TEXT
 
@@ -32,7 +32,7 @@ async def text_rev(update: Update, context: ContextTypes.DEFAULT_TYPE):
         resident_name=resident,
         text='...'
     )
-    await update.message.reply_text(text='Введите ваш отзыв')
+    await update.message.reply_text(text='Введи отзыв')
     return LAST
 
 
@@ -42,7 +42,7 @@ async def end_rev(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await admin_new_rev(update=update, context=context, user_id=update.message.from_user.id,
                         resident=get_resident(user_id=update.message.from_user.id,
                                               text=msg))
-    await update.message.reply_text(text='Ваш отзыв успешно отправлен!\n Он будет опубликован после модерации.')
+    await update.message.reply_text(text='Отзыв успешно отправлен!\n Он будет опубликован после модерации.')
     await customer_keyboard(update, context)
     return ConversationHandler.END
 

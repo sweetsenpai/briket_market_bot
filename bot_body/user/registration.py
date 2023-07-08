@@ -1,6 +1,6 @@
 import logging
 from briket_DB.shopping.promotions import chek_personal_code
-from briket_DB.sql_main_files.customers import find_id, create, insert_new_addres, inser_new_name, insert_new_email
+from briket_DB.sql_main_files.customers import find_id, create, insert_new_addres, inser_new_name, insert_new_email, insert_new_phone
 from briket_DB.sql_main_files.residents import find_phone
 from telegram import ReplyKeyboardRemove, Update, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -21,53 +21,28 @@ PHONE, LOCATION, INFO, EMAIL = range(4)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.message.chat_id
-    share_button = KeyboardButton(text='Поделиться номером телефона', request_contact=True)
+#    share_button = KeyboardButton(text='Поделиться номером телефона', request_contact=True)
 
-    key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
-                                    keyboard=[[share_button]],
-                                    resize_keyboard=False)
+#    key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
+#                                    keyboard=[[share_button]],
+#                                    resize_keyboard=False)
 
     if find_id(chat_id) is not None:
         await update.message.reply_text(get_text_api('KBermmJp'))
 
     elif find_id(chat_id) is None:
-        await update.message.reply_text(text=get_text_api('a6EZbbzk'),
-                                        reply_markup=key_board)
+        await update.message.reply_text(text=get_text_api('a6EZbbzk'))
 
-        return PHONE
+        return INFO
 
 
-async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user = update.message.from_user
 
-    try:
-        user_contact = update.message.contact.phone_number
-        user_contact = user_contact.replace('+', '')
-    except AttributeError:
-        raw_number = update.message.text.replace('+', '')
-        raw_number = raw_number.replace(' ', '')
-        raw_number = raw_number.replace('-', '')
-        raw_number = raw_number.replace('(', '')
-        raw_number = raw_number.replace(')', '')
-        raw_number = list(raw_number)
-        raw_number[0] = '7'
-        user_contact = ''.join(raw_number)
-
-    resident_search = find_phone(user.id, user_contact)
-    if resident_search is not None:
-        await context.bot.send_message(chat_id=resident_search['chat_id'],
-                                       text='Администратор внес вас в раздел резидентов.\n'
-                                            'Чтобы пройти регистрацию от лица заведения,\n'
-                                            'нажмите сюда -> /registration')
-        return ConversationHandler.END
-    logger.info(
-        "Contact of {}: {}".format(user.first_name, user_contact)
-    )
-
     await update.message.reply_text(text=get_text_api('MBMfCNhN'))
     customer = {'chat_id': user.id,
-                'phone': str(user_contact),
+                'name': update.message.text,
                 'addres': str('')}
     create(customer)
     return LOCATION
@@ -87,27 +62,60 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except:
         user = update.message.from_user
         user_location = update.message.text
+        share_button = KeyboardButton(text='Поделиться номером телефона', request_contact=True)
+
+        key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
+                                            keyboard=[[share_button]],
+                                            resize_keyboard=False)
         await update.message.reply_text(
-            "Как тебя зовут?", reply_markup=ReplyKeyboardRemove()
+            "Поделись номером телефона", reply_markup=key_board
         )
         insert_new_addres(user.id, user_location)
 
-    return INFO
+    return PHONE
 
 
 async def skip_location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     user = update.message.from_user
     logger.info("User %s did not send a location.", user.first_name)
+    share_button = KeyboardButton(text='Поделиться номером телефона', request_contact=True)
+
+    key_board = ReplyKeyboardMarkup(one_time_keyboard=True,
+                                    keyboard=[[share_button]],
+                                    resize_keyboard=False)
     await update.message.reply_text(
-        "Как тебя зовут?", reply_markup=ReplyKeyboardRemove()
+        "Поделись номером телефона", reply_markup=key_board
     )
-    return INFO
+    return PHONE
 
 
-async def info(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_name = update.message.text
-    inser_new_name(chat_id=update.message.from_user.id,
-                   name=user_name)
+async def phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.message.from_user
+    try:
+        user_contact = update.message.contact.phone_number
+        user_contact = user_contact.replace('+', '')
+    except AttributeError:
+        raw_number = update.message.text.replace('+', '')
+        raw_number = raw_number.replace(' ', '')
+        raw_number = raw_number.replace('-', '')
+        raw_number = raw_number.replace('(', '')
+        raw_number = raw_number.replace(')', '')
+        raw_number = list(raw_number)
+        raw_number[0] = '7'
+        user_contact = ''.join(raw_number)
+
+    resident_search = find_phone(user.id, user_contact)
+
+    if resident_search is not None:
+        await context.bot.send_message(chat_id=resident_search['chat_id'],
+                                       text='Администратор внес вас в раздел резидентов.\n'
+                                            'Чтобы пройти регистрацию от лица заведения,\n'
+                                            'нажмите сюда -> /registration')
+        return ConversationHandler.END
+    logger.info(
+        "Contact of {}: {}".format(user.first_name, user_contact)
+    )
+    insert_new_phone(update.message.from_user.id, user_contact)
     await update.message.reply_text("Спасибо")
     await update.message.reply_text(
         text=get_text_api('jTrJc5RZ'), reply_markup=ReplyKeyboardRemove()
@@ -119,7 +127,7 @@ async def email(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_mail = update.message.text
     p = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     if re.match(p, user_mail) is None:
-        await update.message.reply_text("Вы указали невалидный email, попробуйте ещё раз. ")
+        await update.message.reply_text("Невалидный email, попробуй ещё раз. ")
         return EMAIL
     insert_new_email(chat_id=update.message.from_user.id,
                      email=user_mail)
@@ -146,7 +154,7 @@ async def custommer_account(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.chat_id
     user = find_id(user_id)
     if user is None:
-        await update.message.reply_text(text='Пожалуйста, пройдите регистрацию \n'
+        await update.message.reply_text(text='Пожалуйста, пройди регистрацию \n'
                                              'чтобы получить персональный промокод на скидку.')
         return
     acc_info = 'Привет, {}!\n' \

@@ -12,7 +12,7 @@ def generate_personal_code(user_id):
         'code': result_str,
         'description': '',
         'ammount': 0,
-        'procent': 5,
+        'procent': 20,
         'one_time': True,
         'start_price': 500,
         'uses': [''],
@@ -80,9 +80,9 @@ def chek_promo(promo_code, user_id):
             return 'Промокод уже использован', False
 
     if promo['ammount'] != 0:
-        return 'Скидка в {}р. будет применена к вашему заказу.'.format(promo['ammount']), True
+        return 'Скидка в {} руб. будет применена к твоему заказу.'.format(promo['ammount']), True
 
-    return 'Скидка в {}%. будет применена к вашему заказу.'.format(promo['procent']), True
+    return 'Скидка в {}%. будет применена к твоему заказу.'.format(promo['procent']), True
 
 
 def add_promo_cart(promo: str, user_id: int):

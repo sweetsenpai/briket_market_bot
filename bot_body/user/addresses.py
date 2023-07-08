@@ -29,7 +29,7 @@ def inline_addresses(user_id):
 
 
 async def address_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(text='Введите адрес.')
+    await update.message.reply_text(text='Введи адрес.')
     return ONE
 
 

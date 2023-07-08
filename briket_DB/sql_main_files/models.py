@@ -35,3 +35,16 @@ class ResidentSchema(ma.SQLAlchemyAutoSchema):
         model = Resident
         sqla_session = db.session
         load_instance = True
+
+
+class Workers(db.Model):
+    __tablename__ = 'workers'
+    worker_id = db.Column(db.Integer, primary_key=True)
+    resident_name = db.Column(db.String(32))
+
+
+class WorkertSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Workers
+        sqla_session = db.session
+        load_instance = True

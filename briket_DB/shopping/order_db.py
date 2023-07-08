@@ -1,5 +1,6 @@
 import asyncio
 
+from briket_DB.sql_main_files.workers import find_by_resident_id
 import telegram.error
 
 from briket_DB.config import mongodb
@@ -41,7 +42,7 @@ async def push_order(user_id: int, context: ContextTypes.DEFAULT_TYPE):
 
     msg = 'Номер вашего заказа №{}\n' \
           '{}\n\n' \
-          'Вы получите оповещение, когда ваш заказ будет готов к выдаче!'.format(cart['order_num'], show_cart(user_id=user_id))
+          'Ты получишь оповещение, когда  заказ будет готов к выдаче!'.format(cart['order_num'], show_cart(user_id=user_id))
     await context.bot.sendMessage(chat_id=user_id, text=msg)
     sh_cart.delete_one({"user_id": user_id})
     return
@@ -80,7 +81,12 @@ async def send_order_residents(order_num: int, context: ContextTypes.DEFAULT_TYP
         x = await context.bot.sendMessage(text=resident_order,
                                       chat_id=get_chat_id(resident),
                                       reply_markup=resident_inline_keyboard(order_num, resident=resident)[0])
-
+        workers = find_by_resident_id(get_chat_id(resident))
+        if workers is not False:
+            for worker in workers:
+                await context.bot.sendMessage(text=resident_order,
+                                              chat_id=worker,
+                                              reply_markup=resident_inline_keyboard(order_num, resident=resident)[0])
         orders_db.find_one_and_update(filter={'order_num': order_num},
                                       update={'$push': {'chats_data': {'chat_id': x['chat']['id'],
                                                                        'message_id': x['message_id']}}})
@@ -133,13 +139,13 @@ async def finish_order(order_num: int, update: Update, resident: str, context: C
         if full_order['delivery_type'] == 'Доставка':
             await context.bot.sendMessage(
                 chat_id=full_order['user_id'],
-                text='Ваш заказ №{}\n'
+                text='Твой заказ №{}\n'
                      'Передан в доставку!🎉🎉🎉'.format(full_order['order_num'])
             )
         elif full_order['delivery_type'] == 'Самовывоз':
             await context.bot.sendMessage(
             chat_id=full_order['user_id'],
-            text='Ваш заказ №{}\n'
+            text='Твой заказ №{}\n'
                  'Готов к выдаче!🎉🎉🎉'.format(full_order['order_num'])
         )
         orders_db.find_one_and_update(filter=full_order,

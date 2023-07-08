@@ -24,7 +24,7 @@ PHONE_AD_ADD, PHONE_RS_ADD = range(2)
 
 async def add_new_admin_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if admin_check(update.message.from_user.id) is False:
-        await update.message.reply_text(text='Вам отказанно в праве доступа.')
+        await update.message.reply_text(text='Тебе отказанно в праве доступа.')
         return ConversationHandler.END
     await update.message.reply_text(text=get_text_api('0Gsm3Vnt'))
     return PHONE_AD_ADD
@@ -72,11 +72,11 @@ def del_resident_keyboard():
 
 async def del_resident(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if admin_check(update.message.from_user.id) is False:
-        await update.message.reply_text(text='Вам отказанно в праве доступа.')
+        await update.message.reply_text(text='Тебе отказанно в праве доступа.')
         return
     else:
         await update.message.reply_text(
-            text='Выберете резидента которого необходимо удалить:',
+            text='Выбери резидента которого необходимо удалить:',
             reply_markup=del_resident_keyboard()
         )
         return
@@ -150,7 +150,7 @@ async def add_new_resident_end(update: Update, context: ContextTypes.DEFAULT_TYP
             phone))
         customer_result = find_customer_by_phone(phone)
         if customer_result is not None:
-            await context.bot.send_message(chat_id=customer_result['chat_id'], text='Администратор внес вас в раздел резидентов.\n'
+            await context.bot.send_message(chat_id=customer_result['chat_id'], text='Администратор внес тебя в раздел резидентов.\n'
                                                                                     'Чтобы пройти регистрацию от лица заведения,\n'
                                                                                     'нажмите сюда -> /registration')
         return ConversationHandler.END
@@ -167,7 +167,7 @@ async def cancel_conv(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def admin_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if admin_check(update.message.from_user.id) is False:
-        await update.message.reply_text(text='Вам отказанно в праве доступа.')
+        await update.message.reply_text(text='Тебе отказанно в праве доступа.')
         return
     await update.message.reply_text(text=get_text_api('Fy9ejgAv'))
     return
@@ -180,7 +180,7 @@ async def resident_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if res_check(update.message.from_user.id) is True:
         await update.message.reply_text(text=get_text_api('ph3Z6zLK'))
         return
-    await update.message.reply_text(text='Вам отказано в доступе!')
+    await update.message.reply_text(text='Тебе отказано в доступе!')
     return
 
 
@@ -190,13 +190,13 @@ async def report(update: Update, context: ContextTypes.DEFAULT_TYPE):
         day = KeyboardButton(text='За день')
         mounth = KeyboardButton(text='Месячный')
         keyboard = ReplyKeyboardMarkup(keyboard=[[day], [mounth]])
-        await update.message.reply_text(text='Выберете вид отчета на клавиатуре:', reply_markup=keyboard)
+        await update.message.reply_text(text='Выбери вид отчета на клавиатуре:', reply_markup=keyboard)
         return
     if res_check(id) is not None:
         day = KeyboardButton(text='За день')
         mounth = KeyboardButton(text='Месячный')
         keyboard = ReplyKeyboardMarkup(keyboard=[[day], [mounth]])
-        await update.message.reply_text(text='Выберете вид отчета на клавиатуре:', reply_markup=keyboard)
+        await update.message.reply_text(text='Выбери вид отчета на клавиатуре:', reply_markup=keyboard)
         return
 
 
@@ -211,7 +211,7 @@ async def day_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if read_one_chatid(chat_id) is not None:
         await update.message.reply_text(text=get_resident_report_day(read_one_chatid(chat_id)['resident_name']), parse_mode='HTML')
         return
-    await update.message.reply_text(text="У вас нет доступа к этой функции(",
+    await update.message.reply_text(text="У тебя нет доступа к этой функции(",
                                     parse_mode='HTML')
     return
 
@@ -227,7 +227,7 @@ async def mouth_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if read_one_chatid(chat_id) is not None:
         await update.message.reply_text(text=get_resident_report_month(read_one_chatid(chat_id)['resident_name']), parse_mode='HTML')
         return
-    await update.message.reply_text(text="У вас нет доступа к этой функции(",
+    await update.message.reply_text(text="У тебя нет доступа к этой функции(",
                                     parse_mode='HTML')
     return
 

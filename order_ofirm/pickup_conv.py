@@ -75,7 +75,7 @@ async def finish_pickup(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(text='Оформление закза прервано')
+    await update.message.reply_text(text="Заказ отменен :( \nХочешь выбрать что-то другое?»")
     await start(update, context)
     return ConversationHandler.END
 
@@ -85,4 +85,4 @@ pickup_conversation = ConversationHandler(
         ONE: [MessageHandler(filters.TEXT, second_pickup)],
         TWO: [MessageHandler(filters.TEXT, finish_pickup)]
     },
-    fallbacks=[CommandHandler('stop', stop)])
+    fallbacks=[CommandHandler('stop', stop)], conversation_timeout=300)
