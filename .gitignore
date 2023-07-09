@@ -8,5 +8,11 @@ bot_body/file_6.jpg
 *.jpg
 *.txt
 briket_DB/passwords.py
+briket_DB/sql_main_files/briket.db
 *.exe
 *.chromedriver
+arbitrarycallbackdatabot
+bot_body/arbitrarycallbackdatabot
+bot_body/arbitrarycallbackdatabot
+*.sqbpro
+*.out

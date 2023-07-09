@@ -93,60 +93,67 @@ async def inline_query(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     elif '#' in query:
         answer = []
         data = query.split('/')
-        for dish in get_dishs_db(data[1], data[2]):
-            dish_data = get_one_dish(resident=data[1], name=dish)
-            if dish_data['Белки'] != '' and dish_data['Жиры'] != '' and dish_data['Углеводы'] != '':
-                answer.append(
-                    InlineQueryResultArticle(
-                        id=str(uuid4()),
-                        title=dish,
-                        description='Вес: {}гр.\n'
-                                    'Цена: {} руб.'.format(dish_data['Вес'], dish_data['Цена']),
-                        input_message_content=InputTextMessageContent(
-                            message_text='<b>{}</b>\n'
-                                         '{}\n'
-                                         'Вес: {} \n'
-                                         'Цена: {} руб.'
-                                         '<a href="{}">‎</a>'
-                                         '\nБ|Ж|У: {}|{}|{}'.format(dish, dish_data['Описание'], dish_data['Вес'],
-                                                                    dish_data['Цена'], dish_data['IMG'],
-                                                                    dish_data['Белки'], dish_data['Жиры'],
-                                                                    dish_data['Углеводы']),
-                            disable_web_page_preview=False,
-                            parse_mode=constants.ParseMode.HTML
+        try:
+            for dish in get_dishs_db(data[1], data[2]):
+                dish_data = get_one_dish(resident=data[1], name=dish)
+                if dish_data['Белки'] != '' and dish_data['Жиры'] != '' and dish_data['Углеводы'] != '':
+                    answer.append(
+                        InlineQueryResultArticle(
+                            id=str(uuid4()),
+                            title=dish,
+                            description='Вес: {} гр./мл.\n'
+                                        'Цена: {} руб.'.format(dish_data['Вес'], dish_data['Цена']),
+                            input_message_content=InputTextMessageContent(
+                                message_text='<b>{}</b>\n'
+                                             '{}\n'
+                                             'Вес: {} гр./мл.\n'
+                                             'Цена: {} руб.'
+                                             '<a href="{}">‎</a>'
+                                             '\nБ|Ж|У: {}|{}|{}'.format(dish, dish_data['Описание'], dish_data['Вес'],
+                                                                        dish_data['Цена'], dish_data['IMG'],
+                                                                        dish_data['Белки'], dish_data['Жиры'],
+                                                                        dish_data['Углеводы']),
+                                disable_web_page_preview=False,
+                                parse_mode=constants.ParseMode.HTML
+                                ),
+                            reply_markup=dish_card_keyboard(query=query, resident=data[1], dish=dish, price=dish_data['Цена'],
+                                                            user_id=update.inline_query.from_user.id),
+                            thumb_url=dish_data['IMG'],
+                            thumb_height=50,
+                            thumb_width=50
+                        )
+                    )
+                else:
+                    answer.append(
+                        InlineQueryResultArticle(
+                            id=str(uuid4()),
+                            title=dish,
+                            description='Вес: {}гр.\n'
+                                        'Цена: {} руб.'.format(dish_data['Вес'], dish_data['Цена']),
+                            input_message_content=InputTextMessageContent(
+                                message_text='<b>{}</b>\n'
+                                             '{}\n'
+                                             'Вес: {} гр./мл.\n'
+                                             'Цена: {} руб.'
+                                             '<a href="{}">‎</a>'.format(dish, dish_data['Описание'], dish_data['Вес'],
+                                                                         dish_data['Цена'], dish_data['IMG']),
+                                disable_web_page_preview=False,
+                                parse_mode=constants.ParseMode.HTML
                             ),
-                        reply_markup=dish_card_keyboard(query=query, resident=data[1], dish=dish, price=dish_data['Цена'],
-                                                        user_id=update.inline_query.from_user.id),
-                        thumb_url=dish_data['IMG'],
-                        thumb_height=50,
-                        thumb_width=50
+                            reply_markup=dish_card_keyboard(query=query, resident=data[1], dish=dish,
+                                                            price=dish_data['Цена'],
+                                                            user_id=update.inline_query.from_user.id),
+                            thumb_url=dish_data['IMG'],
+                            thumb_height=50,
+                            thumb_width=50
+                        )
                     )
-                )
-            else:
-                answer.append(
-                    InlineQueryResultArticle(
-                        id=str(uuid4()),
-                        title=dish,
-                        description='Вес: {}гр.\n'
-                                    'Цена: {} руб.'.format(dish_data['Вес'], dish_data['Цена']),
-                        input_message_content=InputTextMessageContent(
-                            message_text='<b>{}</b>\n'
-                                         '{}\n'
-                                         'Вес: {} \n'
-                                         'Цена: {} руб.'
-                                         '<a href="{}">‎</a>'.format(dish, dish_data['Описание'], dish_data['Вес'],
-                                                                     dish_data['Цена'], dish_data['IMG']),
-                            disable_web_page_preview=False,
-                            parse_mode=constants.ParseMode.HTML
-                        ),
-                        reply_markup=dish_card_keyboard(query=query, resident=data[1], dish=dish,
-                                                        price=dish_data['Цена'],
-                                                        user_id=update.inline_query.from_user.id),
-                        thumb_url=dish_data['IMG'],
-                        thumb_height=50,
-                        thumb_width=50
-                    )
-                )
+        except KeyError:
+            answer.append(InlineQueryResultArticle(id=str(uuid4()),
+                                                   title='Пустота',
+                                                   input_message_content=InputTextMessageContent(
+                                                       message_text='Пока-что тут ничего нет, посмотри что-нибудь ещё.'
+                                                   )))
 
         await update.inline_query.answer(answer, cache_time=300)
         return

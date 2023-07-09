@@ -76,7 +76,7 @@ def show_cart(user_id: int):
         cart = ''
         for resident in order.keys():
             for dish in order[resident].keys():
-                cart += '{}: {} * {}\n'.format(dish, order[resident][dish]['quantity'], order[resident][dish]['price'])
+                cart += '{}: {} * {} руб.\n'.format(dish, order[resident][dish]['quantity'], order[resident][dish]['price'])
         cart += 'Итого: {} руб.'.format(user_cart['total'])
         return cart
     except TypeError:
